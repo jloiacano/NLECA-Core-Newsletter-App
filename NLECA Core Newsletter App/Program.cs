@@ -17,18 +17,18 @@ namespace NLECA_Core_Newsletter_App
         public static void Main(string[] args)
         {
             IHost host = CreateHostBuilder(args).Build();
-            MigrateDatabase(host);
+            //MigrateDatabase(host);
             host.Run();
         }
 
-        public static void MigrateDatabase(IHost host)
-        {
-            using (IServiceScope scope = host.Services.CreateScope())
-            {
-                ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                context.Database.Migrate();
-            }
-        }
+        //public static void MigrateDatabase(IHost host)
+        //{
+        //    using (IServiceScope scope = host.Services.CreateScope())
+        //    {
+        //        ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        //        context.Database.Migrate();
+        //    }
+        //}
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
