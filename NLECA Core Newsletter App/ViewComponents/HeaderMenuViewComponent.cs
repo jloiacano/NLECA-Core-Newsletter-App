@@ -6,17 +6,11 @@ namespace NLECA_Core_Newsletter_App.ViewComponents
 {
     public class HeaderMenuViewComponent : ViewComponent
     {
-        private readonly IConfiguration config;
-
-        public HeaderMenuViewComponent(IConfiguration config)
-        {
-            this.config = config;
-        }
         public IViewComponentResult Invoke()
         {
             HeaderMenuModel headerMenu = new HeaderMenuModel()
             {
-                BrandName = config.GetConnectionString("nlecaDBConnection")
+                BrandName = "NLECA"
             };
 
             return View(headerMenu);
