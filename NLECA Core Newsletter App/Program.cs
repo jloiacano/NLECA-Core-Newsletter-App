@@ -17,7 +17,7 @@ namespace NLECA_Core_Newsletter_App
         public static void Main(string[] args)
         {
             IHost host = CreateHostBuilder(args).Build();
-            MigrateDatabase(host);
+            //MigrateDatabase(host);
             host.Run();
         }
 
