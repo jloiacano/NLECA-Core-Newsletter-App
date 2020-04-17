@@ -32,8 +32,7 @@ namespace NLECA_Core_Newsletter_App.Controllers
         public IActionResult Privacy()
         {
             PrivacyViewModel model = new PrivacyViewModel();
-            string connectionString = _config.GetConnectionString("DefaultConnection");
-            model.Exception = CheckIfDatabaseExists(connectionString);
+            model.Message = "This is the privacy page.";
 
             return View(model);
         }
@@ -42,29 +41,6 @@ namespace NLECA_Core_Newsletter_App.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        private string CheckIfDatabaseExists(string connectionString)
-        {
-            string toReturn = "no database";
-
-            try
-            {
-                Microsoft.Data.SqlClient.SqlConnection temporaryConnection = new Microsoft.Data.SqlClient.SqlConnection(connectionString);
-
-                using (temporaryConnection)
-                {
-                    temporaryConnection.Open();
-                    temporaryConnection.Close();
-                    toReturn = "connected....";
-                }
-
-            }
-            catch (System.Exception ex)
-            {
-                return "there was an exception! " + ex.ToString();
-            }
-            return toReturn;
         }
     }
 }
