@@ -16,12 +16,10 @@ namespace NLECA_Core_Newsletter_App.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IConfiguration _config;
 
-        public HomeController(ILogger<HomeController> logger, IConfiguration config)
+        public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
-            _config = config;
         }
 
         public IActionResult Index()

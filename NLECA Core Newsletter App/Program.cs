@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLECA_Core_Newsletter_App.Data;
+using NLECA_Core_Newsletter_App.Data.Initializer;
 
 namespace NLECA_Core_Newsletter_App
 {
@@ -18,6 +20,26 @@ namespace NLECA_Core_Newsletter_App
         {
             IHost host = CreateHostBuilder(args).Build();
             MigrateDatabase(host);
+
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false)
+                .Build();
+
+            using (IServiceScope scope = host.Services.CreateScope())
+            {
+                IServiceProvider serviceProvider = scope.ServiceProvider;
+                try
+                {
+                    var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+                    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                    RoleAndAdminInitializer initializer = new RoleAndAdminInitializer(config);
+                    initializer.SeedData(userManager, roleManager);
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
             host.Run();
         }
 
