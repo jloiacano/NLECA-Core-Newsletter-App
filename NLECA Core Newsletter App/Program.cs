@@ -18,12 +18,12 @@ namespace NLECA_Core_Newsletter_App
     {
         public static void Main(string[] args)
         {
-            IHost host = CreateHostBuilder(args).Build();
-            MigrateDatabase(host);
-
             var config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false)
                 .Build();
+
+            IHost host = CreateHostBuilder(args).Build();
+            MigrateDatabase(host);
 
             using (IServiceScope scope = host.Services.CreateScope())
             {
