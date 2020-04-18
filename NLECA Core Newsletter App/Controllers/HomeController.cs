@@ -16,10 +16,12 @@ namespace NLECA_Core_Newsletter_App.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IConfiguration _config;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IConfiguration config)
         {
             _logger = logger;
+            _config = config;
         }
 
         public IActionResult Index()
@@ -30,7 +32,8 @@ namespace NLECA_Core_Newsletter_App.Controllers
         public IActionResult Privacy()
         {
             PrivacyViewModel model = new PrivacyViewModel();
-            model.Message = "This is the privacy page.";
+            //model.Message = "This is the privacy page.";
+            model.Message = _config["SuperAdminUser:UserName"];
 
             return View(model);
         }
