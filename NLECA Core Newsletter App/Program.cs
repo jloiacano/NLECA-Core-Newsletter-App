@@ -13,16 +13,19 @@ namespace NLECA_Core_Newsletter_App
 {
     public class Program
     {
-        public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
+        private static IConfiguration Configuration;
+        public static void Main(string[] args)
+        {
+            IHost host = CreateHostBuilder(args).Build();
+
+            Configuration = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
             .Build();
-        public static void Main(string[] args)
-        {
+
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(Configuration)
                 .CreateLogger();
-            IHost host = CreateHostBuilder(args).Build();
 
             //TODO - J - Delete below log reference (Be careful not to delete MigrateDatabase() function)
             Log.Error(
