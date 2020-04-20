@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NLECA_Core_Newsletter_App.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
-using NLECA_Core_Newsletter_App.Models;
+using System.Diagnostics;
 
 namespace NLECA_Core_Newsletter_App.Controllers
 {
@@ -32,8 +25,7 @@ namespace NLECA_Core_Newsletter_App.Controllers
         public IActionResult Privacy()
         {
             PrivacyViewModel model = new PrivacyViewModel();
-            //model.Message = "This is the privacy page.";
-            model.Message = _config["SuperAdminUser:UserName"];
+            model.Message = "This is the privacy page.";
 
             return View(model);
         }

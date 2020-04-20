@@ -1,29 +1,40 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using NLECA_Core_Newsletter_App.Data;
 using NLECA_Core_Newsletter_App.Data.Initializer;
+using Serilog;
+using System;
 
 namespace NLECA_Core_Newsletter_App
 {
     public class Program
     {
+        public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
+            .Build();
         public static void Main(string[] args)
         {
-            var config = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: false)
-                .Build();
-
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(Configuration)
+                .CreateLogger();
             IHost host = CreateHostBuilder(args).Build();
+
+            //TODO - J - Delete below log reference (Be careful not to delete MigrateDatabase() function)
+            Log.Error(
+                new Exception("Test for Azure app settings issue before Migrate"), 
+                string.Format("{0} {1}", Configuration["SuperAdminUser:UserName"], Configuration["ReadOnlyUser:UserName"]));
+
             MigrateDatabase(host);
+
+            //TODO - J - Delete below log reference
+            Log.Error(
+                new Exception("Test for Azure app settings issue after Migrate"),
+                string.Format("{0} {1}", Configuration["SuperAdminUser:UserName"], Configuration["ReadOnlyUser:UserName"]));
 
             using (IServiceScope scope = host.Services.CreateScope())
             {
@@ -32,12 +43,12 @@ namespace NLECA_Core_Newsletter_App
                 {
                     var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
                     var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                    RoleAndAdminInitializer initializer = new RoleAndAdminInitializer(config);
+                    RoleAndAdminInitializer initializer = new RoleAndAdminInitializer(Configuration);
                     initializer.SeedData(userManager, roleManager);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    Log.Error(ex, "Seeding data in Main(); caused an exception");
                 }
             }
             host.Run();
@@ -57,6 +68,8 @@ namespace NLECA_Core_Newsletter_App
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseConfiguration(Configuration);
+                    webBuilder.UseSerilog();
                 });
     }
 }
