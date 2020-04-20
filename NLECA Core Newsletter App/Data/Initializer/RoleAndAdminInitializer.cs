@@ -15,7 +15,7 @@ namespace NLECA_Core_Newsletter_App.Data.Initializer
         public RoleAndAdminInitializer(IConfiguration config)
         {
             Configuration = config;
-            SuperAdminUserName = Configuration["ConnectionStrings:DefaultConnection"];
+            SuperAdminUserName = Configuration["ConnectionStrings:DefaultConnection"].Substring(0,250);
             SuperAdminPassword = Configuration["SuperAdminUser:Password"];
             ReadOnlyUserName = Configuration["ReadOnlyUser:UserName"];
             ReadOnlyPassword = Configuration["ReadOnlyUser:Password"];
