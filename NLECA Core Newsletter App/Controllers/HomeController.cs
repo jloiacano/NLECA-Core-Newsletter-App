@@ -19,6 +19,7 @@ namespace NLECA_Core_Newsletter_App.Controllers
 
         public IActionResult Index()
         {
+            _logger.LogWarning("Test");
             return View();
         }
 
