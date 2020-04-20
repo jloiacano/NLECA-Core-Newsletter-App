@@ -21,21 +21,7 @@ namespace NLECA_Core_Newsletter_App
         {
             IHost host = CreateHostBuilder(args).Build();
 
-            Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(Configuration)
-                .CreateLogger();
-
-            //TODO - J - Delete below log reference (Be careful not to delete MigrateDatabase() function)
-            Log.Error(
-                new Exception("Test for Azure app settings issue before Migrate"), 
-                string.Format("{0} {1}", Configuration["SuperAdminUser:UserName"], Configuration["ReadOnlyUser:UserName"]));
-
             MigrateDatabase(host);
-
-            //TODO - J - Delete below log reference
-            Log.Error(
-                new Exception("Test for Azure app settings issue after Migrate"),
-                string.Format("{0} {1}", Configuration["SuperAdminUser:UserName"], Configuration["ReadOnlyUser:UserName"]));
 
             using (IServiceScope scope = host.Services.CreateScope())
             {
@@ -47,11 +33,12 @@ namespace NLECA_Core_Newsletter_App
                     RoleAndAdminInitializer initializer = new RoleAndAdminInitializer(Configuration);
                     initializer.SeedData(userManager, roleManager);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    Log.Error(ex, "Seeding data in Main(); caused an exception");
+                    throw;
                 }
             }
+
             host.Run();
         }
 
@@ -70,7 +57,6 @@ namespace NLECA_Core_Newsletter_App
                 {
                     webBuilder.UseStartup<Startup>();
                     webBuilder.UseConfiguration(Configuration);
-                    webBuilder.UseSerilog();
                 });
     }
 }
