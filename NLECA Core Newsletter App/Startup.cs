@@ -24,11 +24,6 @@ namespace NLECA_Core_Newsletter_App
             Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(configuration).CreateLogger();
             
             Configuration = configuration;
-
-            //TESTING CONFIGURATION FOR RIGHT PLACE TO SEED SUPERADMIN AND READONLY USERS
-            //TODO - J - Remove once seeding correctly is accomplished
-            string errorToLog = Configuration["SuperAdminUser:UserName"];
-            Log.Error(errorToLog);
         }
 
         public IConfiguration Configuration { get; }
@@ -78,6 +73,11 @@ namespace NLECA_Core_Newsletter_App
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+
+            //TESTING CONFIGURATION FOR RIGHT PLACE TO SEED SUPERADMIN AND READONLY USERS
+            //TODO - J - Remove once seeding correctly is accomplished
+            string errorToLog = Configuration["SuperAdminUser:UserName"] + " second attempt";
+            Log.Error(errorToLog);
         }
     }
 }
