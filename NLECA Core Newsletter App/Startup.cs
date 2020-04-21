@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using NLECA_Core_Newsletter_App.Data.Initializer;
 
 namespace NLECA_Core_Newsletter_App
 {
@@ -42,7 +43,7 @@ namespace NLECA_Core_Newsletter_App
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IHost host)
         {
             if (env.IsDevelopment())
             {
@@ -74,10 +75,22 @@ namespace NLECA_Core_Newsletter_App
                 endpoints.MapRazorPages();
             });
 
-            //TESTING CONFIGURATION FOR RIGHT PLACE TO SEED SUPERADMIN AND READONLY USERS
-            //TODO - J - Remove once seeding correctly is accomplished
-            string errorToLog = Configuration["SuperAdminUser:UserName"] + " second attempt";
-            Log.Error(errorToLog);
+            // Seeding database roles and essential users here to have access to Azure configured App Settings
+            using (IServiceScope scope = host.Services.CreateScope())
+            {
+                IServiceProvider serviceProvider = scope.ServiceProvider;
+                try
+                {
+                    var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+                    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                    RoleAndAdminInitializer initializer = new RoleAndAdminInitializer(Configuration);
+                    initializer.SeedData(userManager, roleManager);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Seeding of the database failed in Startup.cs Configure()");
+                }
+            }
         }
     }
 }

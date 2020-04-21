@@ -23,22 +23,6 @@ namespace NLECA_Core_Newsletter_App
 
             MigrateDatabase(host);
 
-            using (IServiceScope scope = host.Services.CreateScope())
-            {
-                IServiceProvider serviceProvider = scope.ServiceProvider;
-                try
-                {
-                    var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
-                    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                    RoleAndAdminInitializer initializer = new RoleAndAdminInitializer(Configuration);
-                    initializer.SeedData(userManager, roleManager);
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
-            }
-
             host.Run();
         }
 
