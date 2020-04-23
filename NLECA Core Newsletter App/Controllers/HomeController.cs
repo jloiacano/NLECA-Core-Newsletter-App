@@ -25,8 +25,7 @@ namespace NLECA_Core_Newsletter_App.Controllers
         public IActionResult Privacy()
         {
             PrivacyViewModel model = new PrivacyViewModel();
-            //model.Message = "This is the privacy page.";
-            model.Message = _config["testSetting"];
+            model.Message = "This is the privacy page.";
 
             return View(model);
         }
