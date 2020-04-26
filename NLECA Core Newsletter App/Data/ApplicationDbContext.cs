@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace NLECA_Core_Newsletter_App.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationIdentityUser, ApplicationRole, int>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

@@ -35,8 +35,8 @@ namespace NLECA_Core_Newsletter_App
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddRoles<IdentityRole>()
+            services.AddDefaultIdentity<ApplicationIdentityUser>()
+                .AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -101,8 +101,8 @@ namespace NLECA_Core_Newsletter_App
                 IServiceProvider serviceProvider = scope.ServiceProvider;
                 try
                 {
-                    var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
-                    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                    var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationIdentityUser>>();
+                    var roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
                     RoleAndAdminInitializer initializer = new RoleAndAdminInitializer(Configuration);
                     initializer.SeedData(userManager, roleManager);
                 }
