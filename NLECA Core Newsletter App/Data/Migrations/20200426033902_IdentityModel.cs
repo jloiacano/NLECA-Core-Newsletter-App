@@ -8,6 +8,21 @@ namespace NLECA_Core_Newsletter_App.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "SerilogLog",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false),
+                    Message = table.Column<string>(nullable: true),
+                    MessageTemplate = table.Column<string>(nullable: true),
+                    Level = table.Column<string>(maxLength: 128, nullable: true),
+                    TimeStamp = table.Column<DateTimeOffset>(maxLength: 7, nullable: false),
+                    Exception = table.Column<string>(nullable: true),
+                    Properties = table.Column<string>(type: "xml", nullable: true),
+                    LogEvent = table.Column<string>(nullable: true),
+                }); ;
+
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
                 {
