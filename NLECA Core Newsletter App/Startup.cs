@@ -1,20 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using NLECA_Core_Newsletter_App.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Serilog;
+using NLECA_Core_Newsletter_App.Data;
 using NLECA_Core_Newsletter_App.Data.Initializer;
+using NLECA_Core_Newsletter_App.Service.Interfaces;
+using NLECA_Core_Newsletter_App.Service.Services;
+using Serilog;
+using System;
 
 namespace NLECA_Core_Newsletter_App
 {
@@ -60,6 +57,7 @@ namespace NLECA_Core_Newsletter_App
                     twitterOptions.ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"];
                     twitterOptions.RetrieveUserDetails = true;
                 });
+            services.AddScoped<INewsletterService, NewsletterService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

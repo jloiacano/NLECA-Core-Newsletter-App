@@ -13,6 +13,19 @@
         <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
             <partial name="_LoginPartial" />
             <ul class="navbar-nav flex-grow-1">
+                @if (User.IsInRole("SuperAdmin") || User.IsInRole("Admin") || User.IsInRole("ReadOnlyUser"))
+                {
+                    <li class="dropdown">
+                        <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Admin
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="EditNewsletter">>Edit Newsletter</a>
+                            <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Index">>Add An Alert</a>
+                            <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Index">>Manage Users</a>
+                        </div>
+                    </li>
+                }
                 <li class="nav-item">
                     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                 </li>

@@ -2,7 +2,11 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NLECA_Core_Newsletter_App.Models;
+using NLECA_Core_Newsletter_App.Models.Newsletter;
+using NLECA_Core_Newsletter_App.Service.Interfaces;
 using System.Diagnostics;
+using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NLECA_Core_Newsletter_App.Controllers
 {
@@ -10,18 +14,32 @@ namespace NLECA_Core_Newsletter_App.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IConfiguration _config;
+        private readonly INewsletterService _newsletter;
 
-        public HomeController(ILogger<HomeController> logger, IConfiguration config)
+        public HomeController(ILogger<HomeController> logger, IConfiguration config, INewsletterService newsletter)
         {
             _logger = logger;
             _config = config;
+            _newsletter = newsletter;
         }
 
         public IActionResult Index()
         {
-            return View();
+            Newsletter model = new Newsletter();
+
+            try
+            {
+                model = _newsletter.GetNewsletter();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("There was an error retrieving the newsletter model in the Home Controller", ex);
+            }
+
+            return View(model);
         }
 
+        [Authorize(Roles = "SuperAdmin,Admin,ReadOnlyUser")]
         public IActionResult Privacy()
         {
             PrivacyViewModel model = new PrivacyViewModel();
