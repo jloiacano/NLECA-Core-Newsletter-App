@@ -1,0 +1,28 @@
+﻿@using NLECA_Core_Newsletter_App.Models.Newsletter
+
+@model List<Newsletter> 
+
+@{
+    ViewData["Title"] = "EditNewsletter";
+    bool canEdit = User.IsInRole("SuperAdmin") || User.IsInRole("Admin");
+    string editorEnabledClass = canEdit ? "" : "disabled";
+}
+
+<h1>Newsletter Manager</h1>
+
+@foreach (Newsletter newsletter in Model)
+{
+<form action="/Newsletter/EditNewsletter" method="post">
+    <h2>@newsletter.CreatedDate</h2>
+    <h3>@newsletter.Memo</h3>
+    <input type="hidden" value="@newsletter.NewsletterId" />
+    <button type="submit" @editorEnabledClass>Edit</button>
+</form>
+    
+}
+
+@*Add Newsletter*@
+<form action="/" method="post">
+    <button type="submit" @editorEnabledClass>Add New Newsletter</button>
+</form>
+

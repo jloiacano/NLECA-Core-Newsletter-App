@@ -3,36 +3,45 @@
     Layout = null;
 }
 
-<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-    <div class="container">
-        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">@Model.BrandName</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-            <partial name="_LoginPartial" />
-            <ul class="navbar-nav flex-grow-1">
-                @if (User.IsInRole("SuperAdmin") || User.IsInRole("Admin") || User.IsInRole("ReadOnlyUser"))
-                {
-                    <li class="dropdown">
-                        <button class="btn btn-danger dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Admin
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="EditNewsletter">>Edit Newsletter</a>
-                            <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Index">>Add An Alert</a>
-                            <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Index">>Manage Users</a>
-                        </div>
-                    </li>
-                }
-                <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">@Model.BrandName</a>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+
+            @if (User.IsInRole("SuperAdmin") || User.IsInRole("Admin") || User.IsInRole("ReadOnlyUser"))
+            {
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Admin
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" asp-area="" asp-controller="Newsletter" asp-action="NewsletterManager">Manage Newsletters</a>
+                        <a class="dropdown-item" asp-area="" asp-controller="Newsletter" asp-action="AlertManager">Manage Alerts</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Index">Manage Users</a>
+                    </div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                </li>
-            </ul>
-        </div>
+            }
+
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </li>
+
+        </ul>
+        <partial name="_LoginPartial" />
+        @*<form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>*@
     </div>
 </nav>
