@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using NLECA_Core_Newsletter_App.Data.SQLHelperTypes;
 using NLECA_Core_Newsletter_App.Models.Newsletter;
 using NLECA_Core_Newsletter_App.Service.Interfaces;
 using System;
@@ -15,23 +16,61 @@ namespace NLECA_Core_Newsletter_App.Service.Services
         private readonly string dbConnectionString;
         private readonly ILogger<NewsletterService> _logger;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public NewsletterService(IConfiguration config, ILogger<NewsletterService> logger, IHttpContextAccessor httpContextAccessor)
+        private readonly ISQLHelperService _sql;
+        public NewsletterService(IConfiguration config, ILogger<NewsletterService> logger, ISQLHelperService sqlHelper, IHttpContextAccessor httpContextAccessor)
         {
             dbConnectionString = config["ConnectionStrings:DefaultConnection"];
             _logger = logger;
             _httpContextAccessor = httpContextAccessor;
+            _sql = sqlHelper;
         }
 
+        #region // CREATE
+        /// <summary>
+        /// Adds a newsletter to the database along with all it's articles
+        /// </summary>
+        /// <param name="newsletter"></param>
+        /// <returns>true if newsletter was added successfully</returns>
+        public int AddNewsletter(NewsletterModel newsletter)
+        {
+            int returnedNewsletterId = -1;
+
+            try
+            {
+                string insertStatement = _sql.CreateInsertStatement("Newsletters", new Dictionary<string, string>()
+                    {
+                        { "CreatedDate", _sql.ConvertDateTimeForSQL(newsletter.CreatedDate) }
+                        ,{ "CreatedBy", newsletter.CreatedBy.ToString() }
+                        ,{ "Memo", newsletter.Memo }
+                        ,{ "DisplayDate", newsletter.DisplayDate }
+                        ,{ "PublishedDate", _sql.ConvertDateTimeForSQL(newsletter.PublishedDate) }
+                        ,{ "IsCurrent", newsletter.IsCurrent == true ? "1" : "0" }
+                    }
+                    , "NewsletterId");
+
+                returnedNewsletterId = _sql.ExecuteInsertStatementWithReturn(insertStatement);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("There was an error Adding/Inserting the newsletter model in the Newsletter Service", ex);
+            }
+
+            return returnedNewsletterId;
+        }
+        #endregion
+
+        #region // READ
         /// <summary>
         /// Gets the most recent published newsletter
         /// </summary>
         /// <returns>The most recent published newsletter</returns>
-        public Newsletter GetNewsletter()
+        public NewsletterModel GetPublishedNewsletter()
         {
-            Newsletter newsletter = new Newsletter();
+            NewsletterModel newsletter = new NewsletterModel();
 
             SqlConnection connection = new SqlConnection(dbConnectionString);
             string querryForNewsletter = "SELECT TOP 1 * FROM Newsletters ORDER BY CreatedDate DESC";
+            //TODO - J - Update select statement to reflect "published"
 
             try
             {
@@ -43,22 +82,37 @@ namespace NLECA_Core_Newsletter_App.Service.Services
                 {
                     newsletter.NewsletterId = Int32.Parse(reader["NewsletterId"].ToString());
                     newsletter.CreatedDate = DateTime.Parse(reader["CreatedDate"].ToString());
-                    newsletter.CreatedBy = Int32.Parse(reader["CreatedDate"].ToString());
+                    newsletter.CreatedBy = Int32.Parse(reader["CreatedBy"].ToString());
                     newsletter.Memo = reader["Memo"].ToString();
+                    newsletter.DisplayDate = reader["DisplayDate"].ToString();
                     newsletter.PublishedDate = DateTime.Parse(reader["PublishedDate"].ToString());
                     newsletter.IsCurrent = reader["IsCurrent"].ToString() == "0" ? false : true;
                 }
 
+                connection.Close();
+
                 if (newsletter.NewsletterId != 0)
                 {
-                    List<Article> articles = new List<Article>();
-                    string querryForArticles = string.Format("SELECT * FROM Articles WHERE NewsletterId = {0}", newsletter.NewsletterId.ToString());
-                    command.CommandText = querryForArticles;
+                    List<ArticleModel> articles = new List<ArticleModel>();
+
+                    command.CommandText = _sql.CreateSelectStatement("Articles", 
+                        new WhereClause(
+                            new SqlHelperComparableDictionary(
+                                SqlComparator.IsEqualTo,
+                                new Dictionary<string, string>()
+                                    {
+                                        { "NewsletterId", newsletter.NewsletterId.ToString() }
+                                    }
+                                )
+                            )
+                        );
+
+                    connection.Open();
                     reader = command.ExecuteReader();
 
                     while (reader.Read())
                     {
-                        Article article = new Article();
+                        ArticleModel article = new ArticleModel();
                         article.ArticleId = Int32.Parse(reader["ArticleId"].ToString());
                         article.NewsletterId = newsletter.NewsletterId;
                         article.Text = reader["Text"].ToString();
@@ -67,76 +121,163 @@ namespace NLECA_Core_Newsletter_App.Service.Services
                     }
 
                     newsletter.Articles = articles;
-                }
 
-                connection.Close();
+                    connection.Close();
+                }
             }
             catch (Exception ex)
             {
-                _logger.LogError("There was an error retrieving the newsletter model in the Newsletter Service", ex);
+                _logger.LogError("There was an error retrieving the newsletter model in NewsletterService/GetPublishedNewsletter", ex);
+            }
+            finally
+            {
+                if (connection.State == System.Data.ConnectionState.Open)
+                {
+                    connection.Close();
+                }
             }
 
             return newsletter;
         }
 
         /// <summary>
-        /// Adds a newsletter to the database along with all it's articles
+        /// Gets all the newsletters
         /// </summary>
-        /// <param name="newsletter"></param>
-        /// <returns>true if newsletter was added successfully</returns>
-        public bool AddNewsletter(Newsletter newsletter)
+        /// <returns>all the newsletters</returns>
+        public List<NewsletterModel> GetAllNewsletters()
         {
+            List<NewsletterModel> newslettersToReturn = new List<NewsletterModel>();
+
             SqlConnection connection = new SqlConnection(dbConnectionString);
-            string statementForNewsletter = string.Format(
-                "INSERT INTO Newsletters ({0}, {1}, {2}, {3}, {4}) OUTPUT Inserted.NewsletterId VALUES ('{5}', {6}, '{7}', '{8}', {9})"
-                , "CreatedDate"
-                , "CreatedBy"
-                , "Memo"
-                , "PublishedDate"
-                , "IsCurrent"
-                , newsletter.CreatedDate
-                , newsletter.CreatedBy
-                , newsletter.Memo
-                , newsletter.PublishedDate
-                , newsletter.IsCurrent == true ? "1" : "0"
-                );
+            string queryForNewsletters = _sql.CreateSelectStatement("Newsletters", null);
 
-            connection.Open();
-            SqlCommand command = new SqlCommand(statementForNewsletter, connection);
-            int insertedNewsletterId = (int)command.ExecuteNonQuery();
-
-            foreach (var article in newsletter.Articles)
+            try
             {
-                string statemetForArticle = string.Format(
-                "INSERT INTO Articles ({0}, {1}) VALUES ({2}, '{3}')"
-                , "NewsletterId"
-                , "Text"
-                , insertedNewsletterId
-                , article.Text
-                );
+                connection.Open();
+                SqlCommand command = new SqlCommand(queryForNewsletters, connection);
+                SqlDataReader reader = command.ExecuteReader();
 
-                command.CommandText = statemetForArticle;
-                command.ExecuteNonQuery();
-            }
+                while (reader.Read())
+                {
+                    NewsletterModel newsletterToAdd = new NewsletterModel()
+                    {
+                        NewsletterId = Int32.Parse(reader["NewsletterId"].ToString()),
+                        CreatedDate = DateTime.Parse(reader["CreatedDate"].ToString()),
+                        CreatedBy = Int32.Parse(reader["CreatedBy"].ToString()),
+                        Memo = reader["Memo"].ToString(),
+                        DisplayDate = reader["DisplayDate"].ToString(),
+                        PublishedDate = DateTime.Parse(reader["PublishedDate"].ToString()),
+                        IsCurrent = reader["IsCurrent"].ToString() == "0" ? false : true,
+                    };
 
-            if (connection.State == System.Data.ConnectionState.Open)
-            {
+                    newslettersToReturn.Add(newsletterToAdd);
+                }
                 connection.Close();
             }
+            catch (Exception ex)
+            {
+                _logger.LogError("There was an error retrieving newsletters in NewsletterService/GetAllNewsletters", ex);
+            }
+            finally
+            {
+                if (connection.State == System.Data.ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
 
-            return true;
+            return newslettersToReturn;
         }
 
+
+        /// <summary>
+        /// Gets a newsletter by it's id number
+        /// </summary>
+        /// <returns>the requested newsletter</returns>
+        public NewsletterModel GetNewsletterById(int newsletterId)
+        {
+            NewsletterModel newsletter = new NewsletterModel();
+
+            SqlConnection connection = new SqlConnection(dbConnectionString);
+            string selectStatement = _sql.CreateSelectStatement("Newsletters", 
+                new WhereClause(
+                    new SqlHelperComparableDictionary(
+                        SqlComparator.IsEqualTo,
+                        new Dictionary<string, string>()
+                            {
+                                { "NewsletterId", newsletterId.ToString() }
+                            }
+                        )
+                    )
+                );
+
+            try
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand(selectStatement, connection);
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    newsletter = new NewsletterModel()
+                    {
+                        NewsletterId = Int32.Parse(reader["NewsletterId"].ToString()),
+                        CreatedDate = DateTime.Parse(reader["CreatedDate"].ToString()),
+                        CreatedBy = Int32.Parse(reader["CreatedBy"].ToString()),
+                        Memo = reader["Memo"].ToString(),
+                        DisplayDate = reader["DisplayDate"].ToString(),
+                        PublishedDate = DateTime.Parse(reader["PublishedDate"].ToString()),
+                        IsCurrent = reader["IsCurrent"].ToString() == "0" ? false : true,
+                    };
+                }
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("There was an error retrieving the newsletter in NewsletterService/GetNewsletterById with the Id: " + newsletterId, ex);
+            }
+            finally
+            {
+                if (connection.State == System.Data.ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
+
+            return newsletter;
+        }
+        #endregion
+
+        #region // UPDATE
         /// <summary>
         /// Updates a newsletterto the newsletter passed in by it's id 
         /// </summary>
         /// <param name="newsletter"></param>
         /// <returns>true if newsletter was updated successfully</returns>
-        public bool EditNewsletter(Newsletter newsletter)
+        public bool UpdateNewsletter(NewsletterModel newsletter)
         {
-            return true;
+            string updateStatement = _sql.CreateUpdateStatement(
+                "Newsletters"
+                , new Dictionary<string, string>()
+                {
+                    {"Memo", newsletter.Memo },
+                    {"DisplayDate", newsletter.DisplayDate }
+                }
+                , new WhereClause(
+                    new SqlHelperComparableDictionary(
+                        SqlComparator.IsEqualTo,
+                        new Dictionary<string, string>()
+                            {
+                                { "NewsletterId", newsletter.NewsletterId.ToString() }
+                            }
+                        )
+                    )
+                );
+            return _sql.ExecuteUpdateStatement(updateStatement);
         }
+        #endregion
 
+        #region // DELETE
         /// <summary>
         /// Deletes a newsletter entry from the database
         /// </summary>
@@ -144,50 +285,31 @@ namespace NLECA_Core_Newsletter_App.Service.Services
         /// <returns>true if newsletter was deleted successfully</returns>
         public bool DeleteNewsletter(int newsletterId)
         {
-            return true;
-        }
+            bool success = false;
 
+            string deleteStatement = _sql.CreateDeleteStatement("Newsletters",
+                new WhereClause(
+                    new SqlHelperComparableDictionary(
+                        SqlComparator.IsEqualTo,
+                        new Dictionary<string, string>()
+                            {
+                                { "NewsletterId", newsletterId.ToString() }
+                            }
+                        )
+                    )
+                );
 
-        //TEMPORARY
-        //TODO - J - Remove once used.
-        private bool AddMockNewsletter(int id, int numberOfArticles)
-        {
-            Newsletter newsletter = CreateMockNewsletter(id, numberOfArticles);
-
-            return true;
-        }
-
-        //TEMPORARY
-        //TODO - J - Remove once used.
-        private Newsletter CreateMockNewsletter(int id, int numberOfArticles)
-        {
-            List<Article> articles = new List<Article>();
-            string currentUser = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            int currentUserId = string.IsNullOrEmpty(currentUser) ? 1 : Int32.Parse(currentUser);
-
-            for (int i = 0; i < numberOfArticles; i++)
+            try
             {
-                Article toAdd = new Article()
-                {
-                    ArticleId = i,
-                    NewsletterId = id,
-                    Text = string.Format("This is mock article #{0}.", i.ToString())
-                };
-                articles.Add(toAdd);
-
+                success = _sql.ExecuteDeleteStatement(deleteStatement);
             }
-            Newsletter newsletter = new Newsletter()
+            catch (Exception ex)
             {
-                NewsletterId = id,
-                CreatedBy = currentUserId,
-                CreatedDate = DateTime.Now,
-                Memo = "This is a mock newsletter",
-                PublishedDate = DateTime.Now,
-                IsCurrent = true,
-                Articles = articles
-            };
+                _logger.LogError("There was an error deleting the newsletter in NewsletterService/DeleteNewsletter with the Id: " + newsletterId, ex);
+            }
 
-            return newsletter;
+            return success;
         }
+        #endregion
     }
 }

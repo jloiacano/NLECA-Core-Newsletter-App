@@ -25,11 +25,11 @@ namespace NLECA_Core_Newsletter_App.Controllers
 
         public IActionResult Index()
         {
-            Newsletter model = new Newsletter();
+            NewsletterModel model = new NewsletterModel();
 
             try
             {
-                model = _newsletter.GetNewsletter();
+                model = _newsletter.GetPublishedNewsletter();
             }
             catch (Exception ex)
             {

@@ -82,4 +82,7 @@
     <None Include="Local.publish.xml" />
     <None Include="Azure.publish.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="Main NLECA Database.refactorlog" />
+  </ItemGroup>
 </Project>

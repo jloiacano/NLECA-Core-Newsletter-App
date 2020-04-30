@@ -1,6 +1,6 @@
 ﻿@using NLECA_Core_Newsletter_App.Models.Newsletter
 
-@model List<Newsletter> 
+@model List<NewsletterModel>
 
 @{
     ViewData["Title"] = "EditNewsletter";
@@ -9,20 +9,26 @@
 }
 
 <h1>Newsletter Manager</h1>
+<hr />
 
-@foreach (Newsletter newsletter in Model)
+@foreach (NewsletterModel newsletter in Model)
 {
-<form action="/Newsletter/EditNewsletter" method="post">
-    <h2>@newsletter.CreatedDate</h2>
-    <h3>@newsletter.Memo</h3>
-    <input type="hidden" value="@newsletter.NewsletterId" />
-    <button type="submit" @editorEnabledClass>Edit</button>
-</form>
-    
+    <form action="/Newsletter/EditNewsletter" method="post">
+        <input type="hidden" name="newsletterId" value="@newsletter.NewsletterId" />
+        <h2>@DateTime.Parse(newsletter.DisplayDate).ToString("MMMM yyyy") Newsletter</h2>
+        <span>@newsletter.Memo - Created:  @newsletter.CreatedDate.ToString("MMMM dd, yyyy")</span>
+        <button type="submit" @editorEnabledClass>Edit</button>
+    </form>
+    <input type="hidden" name="newsletterId" value="@newsletter.NewsletterId" />
+    <form action="/Newsletter/RemoveNewsletter" method="post">
+        <button type="submit" @editorEnabledClass>DELETE</button>
+    </form>
+    <hr />
+
 }
 
 @*Add Newsletter*@
-<form action="/" method="post">
+<form action="/Newsletter/AddNewsletter" method="post">
     <button type="submit" @editorEnabledClass>Add New Newsletter</button>
 </form>
 

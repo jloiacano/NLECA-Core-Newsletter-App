@@ -58,6 +58,8 @@ namespace NLECA_Core_Newsletter_App
                     twitterOptions.RetrieveUserDetails = true;
                 });
             services.AddScoped<INewsletterService, NewsletterService>();
+            services.AddScoped<IArticleService, ArticleService>();
+            services.AddScoped<ISQLHelperService, SQLHelperService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

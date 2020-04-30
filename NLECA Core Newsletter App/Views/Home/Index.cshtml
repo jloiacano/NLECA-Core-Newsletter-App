@@ -1,4 +1,4 @@
-﻿@model NLECA_Core_Newsletter_App.Models.Newsletter.Newsletter;
+﻿@model NewsletterModel;
 
 @using NLECA_Core_Newsletter_App.Models.Newsletter;
 
@@ -6,15 +6,16 @@
     ViewData["Title"] = "Newsletter";
 }
 
+<h1>Newsletter Added: @Model.CreatedDate</h1>
+<h2>Display Date: @DateTime.Parse(Model.DisplayDate).ToString("MMMM yyyy")</h2>
+
 @if (Model.Articles.Count() == 0)
 {
-    <h1>Error: There was a problem retrieving the newsletter</h1>
+    <h1>This newsletter does not have any articles yet...</h1>
 }
 else
 {
-    <h1>@Model.CreatedDate</h1>
-
-    @foreach (Article article in Model.Articles)
+    @foreach (ArticleModel article in Model.Articles)
     {
         <h2>@article.Text</h2>
     }

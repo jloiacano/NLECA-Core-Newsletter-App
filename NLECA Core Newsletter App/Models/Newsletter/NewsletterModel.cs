@@ -5,20 +5,21 @@ using System.Threading.Tasks;
 
 namespace NLECA_Core_Newsletter_App.Models.Newsletter
 {
-    public class Newsletter
+    public class NewsletterModel
     {
         public int NewsletterId { get; set; }
         public DateTime CreatedDate { get; set; }
         public int CreatedBy { get; set; }
         public string Memo { get; set; }
+        public string DisplayDate { get; set; }
         public DateTime PublishedDate { get; set; }
         public bool IsCurrent { get; set; }
 
-        public IEnumerable<Article> Articles { get; set; }
+        public IEnumerable<ArticleModel> Articles { get; set; }
 
-        public Newsletter()
+        public NewsletterModel()
         {
-            Articles = new List<Article>();
+            Articles = new List<ArticleModel>();
         }
     }
 }

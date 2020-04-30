@@ -1,0 +1,66 @@
+﻿@using NLECA_Core_Newsletter_App.Models.Newsletter;
+@model NewsletterModel
+
+@{
+    ViewData["Title"] = "Newsletter Editor";
+    bool canEdit = User.IsInRole("SuperAdmin") || User.IsInRole("Admin");
+    string editorEnabledDisabled = canEdit ? "" : "disabled";
+}
+
+@section Scripts{
+    <script type="text/javascript" src="~/js/Newsletter/EditNewsletter.js"></script>
+}
+
+<h1>EditNewsletter</h1>
+
+<form action="/Newsletter/UpdateNewsletter" method="post">
+    <input type="hidden" name="newsletterId" value="@Model.NewsletterId" />
+    <input type="hidden" name="oldMemo" value="@Model.Memo" />
+    <input type="hidden" name="oldDisplayDate" value="@Model.DisplayDate" />
+
+    <div id="memoArea">
+        Memo: @Model.Memo
+        <button type="button" id="memoEditButton">Edit</button>
+    </div>
+
+    <div id="memoEditArea" style="display: none;">
+        <label for="memo">Updated Memo: </label>
+        <input type="text" name="memo" value="@Model.Memo" placeholder="@Model.Memo" />
+        <button type="button" id="memoEditCancel">Cancel</button>
+    </div>
+
+    <div id="displayDateArea">
+        Display Date: @DateTime.Parse(Model.DisplayDate).ToString("MMMM yyyy")
+        <button type="button" id="displayDateEditButton">Edit</button>
+    </div>
+
+    <div id="displayDateEditArea" style="display: none;">
+        <input type="hidden" name="newsletterId" value="@Model.NewsletterId" />
+        <label for="displayDate">Display Date: </label>
+        <input type="month" id="start" name="displayDate" min="2018-03" value="@Model.DisplayDate">
+        <button type="button" id="displayDateEditCancel">Cancel</button>
+
+    </div>
+    <button type="submit" id="memoAndDisplayDateSaveChanges">Save Changes</button>
+</form>
+
+<hr />
+<button>Add Article Clipart</button>
+<button>Edit Newsletter Header</button>
+
+@foreach (ArticleModel article in Model.Articles)
+{
+    <div>@article.Text</div>
+    <div>
+        <button>Edit Text</button>
+        <button>Change Image/Location</button>
+        <button>Move Up/Down</button>
+        <button>Delete</button>
+    </div>
+}
+
+<div>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addArticleModal">Add Another Article</button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editArticleModal">Edit Article</button>
+    <button>Change Article Order</button>
+</div>
