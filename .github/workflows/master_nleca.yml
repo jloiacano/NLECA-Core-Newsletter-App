@@ -9,6 +9,13 @@ on:
       - master
 
 jobs:
+	- job: CleanSolution
+	  displayName: Clean Solution
+	  continueOnError: true
+	  workspace:
+		clean: outputs
+	  steps:
+	  - script: echo Solution Cleaned.
   build-and-deploy:
     runs-on: ubuntu-latest
 
