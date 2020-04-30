@@ -6,7 +6,9 @@
     ViewData["Title"] = "Newsletter";
 }
 
-<h1>Newsletter Added: @Model.CreatedDate</h1>
+    <span style="color: red; font-size: larger;">Site currently in development.</span>
+    <span style="font-size: larger;">Check back later for progress.</span>
+<h1>Mock Newsletter Added: @Model.CreatedDate</h1>
 <h2>Display Date: @DateTime.Parse(Model.DisplayDate).ToString("MMMM yyyy")</h2>
 
 @if (Model.Articles.Count() == 0)
