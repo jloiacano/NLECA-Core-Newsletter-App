@@ -31,5 +31,5 @@ jobs:
       with:
         app-name: 'nleca'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_e2ff0f33ec024fd78e6241626c319307 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_6215c931b7084584a8158352b0cba493 }}
         package: ${{env.DOTNET_ROOT}}/myapp 
