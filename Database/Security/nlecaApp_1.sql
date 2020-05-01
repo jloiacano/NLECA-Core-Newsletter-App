@@ -1,3 +1,3 @@
 ﻿CREATE LOGIN [nlecaApp]
-    WITH PASSWORD = N'jbauvBOnZhqiicitjqrhzm8nmsFT7_&#$!~<dr$4nEd`$cJv';
+    WITH PASSWORD = N'hilgbn{bmsq~rOjyvfdQoyd|msFT7_&#$!~<PI|7tvfkzh!f';
 
