@@ -77,5 +77,9 @@
     <Build Include="Security\nlecaApp.sql" />
     <Build Include="Security\nlecaApp_1.sql" />
     <Build Include="Security\RoleMemberships.sql" />
+    <Build Include="dbo\Tables\Articles.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Azure.publish.xml" />
   </ItemGroup>
 </Project>
