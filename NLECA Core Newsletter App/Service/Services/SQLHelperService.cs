@@ -40,7 +40,7 @@ namespace NLECA_Core_Newsletter_App.Service.Services
         /// <summary>
         /// Calls the named stored procedure to retrieve a dataset
         /// </summary>
-        /// <param name="storedProcedureName"></param>
+        /// <param name="storedProcedureName">String value of the name of the stored procedure to execute</param>
         /// <returns>DataSet from the stored procedure</returns>
         public DataSet GetDatasetFromStoredProcedure(string storedProcedureName)
         {
@@ -89,8 +89,8 @@ namespace NLECA_Core_Newsletter_App.Service.Services
         /// <summary>
         /// Calls the named stored procedure using the passed in parameters to retrieve a dataset
         /// </summary>
-        /// <param name="storedProcedureName"></param>
-        /// <param name="parameters"></param>
+        /// <param name="storedProcedureName">String value of the name of the stored procedure to execute</param>
+        /// <param name="parameters">Array of <see cref="SqlParameter"/>s for the stored procedure</param>
         /// <returns>DataSet from the stored procedure</returns>
         public DataSet GetDatasetFromStoredProcedure(string storedProcedureName, SqlParameter[] parameters)
         {
@@ -142,7 +142,7 @@ namespace NLECA_Core_Newsletter_App.Service.Services
         /// <summary>
         /// Calls the named stored procedure to retrieve an integer result
         /// </summary>
-        /// <param name="storedProcedureName"></param>
+        /// <param name="storedProcedureName">String value of the name of the stored procedure to execute</param>
         /// <returns>integer result of the stored procedure</returns>
         public int GetReturnValueFromStoredProcedure(string storedProcedureName)
         {
@@ -186,8 +186,8 @@ namespace NLECA_Core_Newsletter_App.Service.Services
         /// <summary>
         /// Calls the named stored procedure using the passed in parameters to retrieve an integer result
         /// </summary>
-        /// <param name="storedProcedureName"></param>
-        /// <param name="parameters"></param>
+        /// <param name="storedProcedureName">String value of the name of the stored procedure to execute</param>
+        /// <param name="parameters">Array of <see cref="SqlParameter"/>s for the stored procedure</param>
         /// <returns>integer result of the stored procedure</returns>
         public int GetReturnValueFromStoredProcedure(string storedProcedureName, SqlParameter[] parameters)
         {
