@@ -5,6 +5,12 @@ namespace NLECA_Core_Newsletter_App.Service.Interfaces
 {
     public interface INewsletterService
     {
+        /// <summary>
+        /// Adds a newsletter to the database
+        /// </summary>
+        /// <param name="newsletter"></param>
+        /// <returns>true if newsletter was added successfully</returns>
+        int AddNewsletter();
 
         /// <summary>
         /// Gets the most recent published newsletter
@@ -23,13 +29,6 @@ namespace NLECA_Core_Newsletter_App.Service.Interfaces
         /// </summary>
         /// <returns>the requested newsletter</returns>
         NewsletterModel GetNewsletterById(int newsletterId);
-
-        /// <summary>
-        /// Adds a newsletter to the database
-        /// </summary>
-        /// <param name="newsletter"></param>
-        /// <returns>true if newsletter was added successfully</returns>
-        int AddNewsletter(NewsletterModel newsletter);
 
         /// <summary>
         /// Updates a newsletter to the newsletter passed in by it's id 

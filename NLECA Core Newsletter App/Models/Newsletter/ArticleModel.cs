@@ -9,10 +9,10 @@ namespace NLECA_Core_Newsletter_App.Models.Newsletter
     {
         public int ArticleId { get; set; }
         public int NewsletterId { get; set; }
-        public int Sequence { get; set; }
+        public int ArticleSequence { get; set; }
         public string ImageFileLocation { get; set; }
         public int ArticleType { get; set; }
-        public string Text { get; set; }
+        public string ArticleText { get; set; }
         public int AddedBy { get; set; }
         public DateTime DateAdded { get; set; }
 
@@ -28,10 +28,10 @@ namespace NLECA_Core_Newsletter_App.Models.Newsletter
             if (
                 article1.ArticleId == article2.ArticleId
                 && article1.NewsletterId == article2.NewsletterId
-                && article1.Sequence == article2.Sequence
+                && article1.ArticleSequence == article2.ArticleSequence
                 && article1.ImageFileLocation == article2.ImageFileLocation
                 && article1.ArticleType == article2.ArticleType
-                && article1.Text == article2.Text
+                && article1.ArticleText == article2.ArticleText
                 )
             {
                 return true;
@@ -54,10 +54,10 @@ namespace NLECA_Core_Newsletter_App.Models.Newsletter
             bool isEqual = (
                 ArticleId == article2.ArticleId 
                 && NewsletterId == article2.NewsletterId
-                && Sequence == article2.Sequence
+                && ArticleSequence == article2.ArticleSequence
                 && ImageFileLocation == article2.ImageFileLocation
                 && ArticleType == article2.ArticleType
-                && Text == article2.Text
+                && ArticleText == article2.ArticleText
                 );
             return isEqual;
         }
@@ -66,11 +66,11 @@ namespace NLECA_Core_Newsletter_App.Models.Newsletter
         {
             var toReturn = 
                 ArticleId.GetHashCode() ^ 
-                NewsletterId.GetHashCode() ^ 
-                Sequence.GetHashCode() ^ 
+                NewsletterId.GetHashCode() ^
+                ArticleSequence.GetHashCode() ^ 
                 ImageFileLocation.GetHashCode() ^ 
-                ArticleType.GetHashCode() ^ 
-                Text.GetHashCode();
+                ArticleType.GetHashCode() ^
+                ArticleText.GetHashCode();
             return toReturn;
         }
         #endregion

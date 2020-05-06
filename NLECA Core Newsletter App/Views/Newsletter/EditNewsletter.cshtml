@@ -46,21 +46,30 @@
 
 <hr />
 <button>Add Article Clipart</button>
-<button>Edit Newsletter Header</button>
+<hr />
 
 @foreach (ArticleModel article in Model.Articles)
 {
-    <div>@article.Text</div>
+    <div>@article.ArticleText</div>
     <div>
-        <button>Edit Text</button>
-        <button>Change Image/Location</button>
-        <button>Move Up/Down</button>
-        <button>Delete</button>
+        <form action="/Article/EditArticle" method="post">
+            <input type="hidden" name="articleId" value="@article.ArticleId" />
+            <button type="submit">Edit</button>
+        </form>
+
+        <form action="/Article/RemoveArticle" method="post">
+            <input type="hidden" name="newsletterId" value="@article.NewsletterId" />
+            <input type="hidden" name="articleId" value="@article.ArticleId" />
+            <button type="submit">Delete</button>
+        </form>
     </div>
+    <hr />
 }
 
 <div>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addArticleModal">Add Another Article</button>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editArticleModal">Edit Article</button>
+    <form action="/Article/AddArticle" method="post">
+        <input type="hidden" name="newsletterId" value="@Model.NewsletterId" />
+        <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addArticleModal">Add Article</button>
+    </form>
     <button>Change Article Order</button>
 </div>

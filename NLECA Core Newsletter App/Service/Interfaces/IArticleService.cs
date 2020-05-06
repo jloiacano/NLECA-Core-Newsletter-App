@@ -8,22 +8,22 @@ namespace NLECA_Core_Newsletter_App.Service.Interfaces
         /// Adds an article to the database
         /// </summary>
         /// <param name="article"></param>
-        /// <returns>true if article was added successfully</returns>
-        bool AddArticle(ArticleModel article);
+        /// <returns>The Id of the Article which was added</returns>
+        int AddArticleToNewsletter(int newsletterId);
 
         /// <summary>
         /// Gets an Article by it's id
         /// </summary>
         /// <param name="articleId"></param>
         /// <returns>the article requested</returns>
-        ArticleModel GetArticleById(int articleId);
+        ArticleModel GetArticleByArticleId(int articleId);
 
         /// <summary>
         /// Updates an article
         /// </summary>
         /// <param name="article"></param>
         /// <returns>true if article was updated successfully</returns>
-        bool EditArticle(ArticleModel article);
+        bool UpdateArticle(ArticleModel article);
 
         /// <summary>
         /// Deletes an article entry from the database

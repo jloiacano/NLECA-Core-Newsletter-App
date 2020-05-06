@@ -19,8 +19,8 @@
         <span>@newsletter.Memo - Created:  @newsletter.CreatedDate.ToString("MMMM dd, yyyy")</span>
         <button type="submit" @editorEnabledClass>Edit</button>
     </form>
-    <input type="hidden" name="newsletterId" value="@newsletter.NewsletterId" />
     <form action="/Newsletter/RemoveNewsletter" method="post">
+        <input type="hidden" name="newsletterId" value="@newsletter.NewsletterId" />
         <button type="submit" @editorEnabledClass>DELETE</button>
     </form>
     <hr />

@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using NLECA_Core_Newsletter_App.Data.SQLHelperTypes;
 using NLECA_Core_Newsletter_App.Models.Newsletter;
 using NLECA_Core_Newsletter_App.Service.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Security.Claims;
 
 namespace NLECA_Core_Newsletter_App.Service.Services
@@ -31,24 +32,36 @@ namespace NLECA_Core_Newsletter_App.Service.Services
         /// </summary>
         /// <param name="newsletter"></param>
         /// <returns>true if newsletter was added successfully</returns>
-        public int AddNewsletter(NewsletterModel newsletter)
+        public int AddNewsletter()
         {
+            NewsletterModel newsletter = new NewsletterModel();
+
+            string currentUser = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            int currentUserId = -1;
+
+            if (string.IsNullOrEmpty(currentUser))
+            {
+                _logger.LogError("CurrentUserId was unable to be acquired in NewsletterService/AddNewsletter", null);
+            }
+            else
+            {
+                currentUserId = string.IsNullOrEmpty(currentUser) ? -1 : Int32.Parse(currentUser);
+            }
+
             int returnedNewsletterId = -1;
 
             try
             {
-                string insertStatement = _sql.CreateInsertStatement("Newsletters", new Dictionary<string, string>()
-                    {
-                        { "CreatedDate", _sql.ConvertDateTimeForSQL(newsletter.CreatedDate) }
-                        ,{ "CreatedBy", newsletter.CreatedBy.ToString() }
-                        ,{ "Memo", newsletter.Memo }
-                        ,{ "DisplayDate", newsletter.DisplayDate }
-                        ,{ "PublishedDate", _sql.ConvertDateTimeForSQL(newsletter.PublishedDate) }
-                        ,{ "IsCurrent", newsletter.IsCurrent == true ? "1" : "0" }
-                    }
-                    , "NewsletterId");
+                SqlParameter[] parameters = new SqlParameter[]
+                {
+                    new SqlParameter("@createdDate", _sql.ConvertDateTimeForSQL(DateTime.Now)),
+                    new SqlParameter("@createdBy", currentUserId),
+                    new SqlParameter("@memo", "Please Update"),
+                    new SqlParameter("@displayDate", DateTime.Now.ToString("yyyy-MM")),
+                    new SqlParameter("@newsletterId", returnedNewsletterId)
+                };
 
-                returnedNewsletterId = _sql.ExecuteInsertStatementWithReturn(insertStatement);
+                returnedNewsletterId = _sql.GetReturnValueFromStoredProcedure("AddNewsletter", parameters);
             }
             catch (Exception ex)
             {
@@ -68,73 +81,63 @@ namespace NLECA_Core_Newsletter_App.Service.Services
         {
             NewsletterModel newsletter = new NewsletterModel();
 
-            SqlConnection connection = new SqlConnection(dbConnectionString);
-            string querryForNewsletter = "SELECT TOP 1 * FROM Newsletters ORDER BY CreatedDate DESC";
-            //TODO - J - Update select statement to reflect "published"
+            DataSet GetPublishedNewsletterResult = _sql.GetDatasetFromStoredProcedure("GetPublishedNewsletter");
+            DataRow newsletterResult = GetPublishedNewsletterResult.Tables[0].AsEnumerable().FirstOrDefault();
 
-            try
+            if (newsletterResult != null)
             {
-                connection.Open();
-                SqlCommand command = new SqlCommand(querryForNewsletter, connection);
-                SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
+                try
                 {
-                    newsletter.NewsletterId = Int32.Parse(reader["NewsletterId"].ToString());
-                    newsletter.CreatedDate = DateTime.Parse(reader["CreatedDate"].ToString());
-                    newsletter.CreatedBy = Int32.Parse(reader["CreatedBy"].ToString());
-                    newsletter.Memo = reader["Memo"].ToString();
-                    newsletter.DisplayDate = reader["DisplayDate"].ToString();
-                    newsletter.PublishedDate = DateTime.Parse(reader["PublishedDate"].ToString());
-                    newsletter.IsCurrent = reader["IsCurrent"].ToString() == "0" ? false : true;
+                    newsletter.NewsletterId = Int32.Parse(newsletterResult["NewsletterId"].ToString());
+                    newsletter.CreatedDate = DateTime.Parse(newsletterResult["CreatedDate"].ToString());
+                    newsletter.CreatedBy = Int32.Parse(newsletterResult["CreatedBy"].ToString());
+                    newsletter.Memo = newsletterResult["Memo"].ToString();
+                    newsletter.DisplayDate = newsletterResult["DisplayDate"].ToString();
+                    newsletter.PublishedDate = DateTime.Parse(newsletterResult["PublishedDate"].ToString());
+                    newsletter.IsCurrent = newsletterResult["IsCurrent"].ToString() == "0" ? false : true;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Unable to transcribe newsletterResult to newsletter Model in NewsletterService/GetPublishedNewsletter", ex);
                 }
 
-                connection.Close();
+                SqlParameter[] getArticlesParameters = { new SqlParameter("@newsletterId", newsletter.NewsletterId) };
 
-                if (newsletter.NewsletterId != 0)
+                DataSet GetArticlesByNewsletterIdResults = _sql.GetDatasetFromStoredProcedure("GetArticlesByNewsletterId", getArticlesParameters);
+
+                try
                 {
+                    IEnumerable<DataRow> articleResults = GetArticlesByNewsletterIdResults.Tables[0].AsEnumerable();
+
                     List<ArticleModel> articles = new List<ArticleModel>();
 
-                    command.CommandText = _sql.CreateSelectStatement("Articles", 
-                        new WhereClause(
-                            new SqlHelperComparableDictionary(
-                                SqlComparator.IsEqualTo,
-                                new Dictionary<string, string>()
-                                    {
-                                        { "NewsletterId", newsletter.NewsletterId.ToString() }
-                                    }
-                                )
-                            )
-                        );
-
-                    connection.Open();
-                    reader = command.ExecuteReader();
-
-                    while (reader.Read())
+                    foreach (DataRow row in articleResults)
                     {
-                        ArticleModel article = new ArticleModel();
-                        article.ArticleId = Int32.Parse(reader["ArticleId"].ToString());
-                        article.NewsletterId = newsletter.NewsletterId;
-                        article.Text = reader["Text"].ToString();
+                        ArticleModel article = new ArticleModel()
+                        {
+                            ArticleId = Int32.Parse(row["ArticleId"].ToString()),
+                            NewsletterId = newsletter.NewsletterId,
+                            ArticleSequence = Int32.Parse(row["ArticleSequence"].ToString()),
+                            ImageFileLocation = row["ImageFileLocation"].ToString(),
+                            ArticleType = Int32.Parse(row["ArticleType"].ToString()),
+                            ArticleText = row["ArticleText"].ToString(),
+                            AddedBy = Int32.Parse(row["AddedBy"].ToString()),
+                            DateAdded = DateTime.Parse(row["DateAdded"].ToString())
+                        };
 
                         articles.Add(article);
                     }
 
                     newsletter.Articles = articles;
-
-                    connection.Close();
                 }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("There was an error retrieving the newsletter model in NewsletterService/GetPublishedNewsletter", ex);
-            }
-            finally
-            {
-                if (connection.State == System.Data.ConnectionState.Open)
+                catch (Exception ex)
                 {
-                    connection.Close();
+                    _logger.LogError("Unable to transcribe GetArticlesByNewsletterIdResults to articles in NewsletterService/GetPublishedNewsletter", ex);
                 }
+            }
+            else
+            {
+                _logger.LogWarning("newsletterResult was null in NewsletterService/GetPublishedNewsletter");
             }
 
             return newsletter;
@@ -148,42 +151,31 @@ namespace NLECA_Core_Newsletter_App.Service.Services
         {
             List<NewsletterModel> newslettersToReturn = new List<NewsletterModel>();
 
-            SqlConnection connection = new SqlConnection(dbConnectionString);
-            string queryForNewsletters = _sql.CreateSelectStatement("Newsletters", null);
+            DataSet GetAllNewslettersResult = _sql.GetDatasetFromStoredProcedure("GetAllNewsletters");
 
             try
             {
-                connection.Open();
-                SqlCommand command = new SqlCommand(queryForNewsletters, connection);
-                SqlDataReader reader = command.ExecuteReader();
+                IEnumerable<DataRow> newsletterResults = GetAllNewslettersResult.Tables[0].AsEnumerable();
 
-                while (reader.Read())
+                foreach (DataRow newsletterRow in newsletterResults)
                 {
                     NewsletterModel newsletterToAdd = new NewsletterModel()
                     {
-                        NewsletterId = Int32.Parse(reader["NewsletterId"].ToString()),
-                        CreatedDate = DateTime.Parse(reader["CreatedDate"].ToString()),
-                        CreatedBy = Int32.Parse(reader["CreatedBy"].ToString()),
-                        Memo = reader["Memo"].ToString(),
-                        DisplayDate = reader["DisplayDate"].ToString(),
-                        PublishedDate = DateTime.Parse(reader["PublishedDate"].ToString()),
-                        IsCurrent = reader["IsCurrent"].ToString() == "0" ? false : true,
+                        NewsletterId = Int32.Parse(newsletterRow["NewsletterId"].ToString()),
+                        CreatedDate = DateTime.Parse(newsletterRow["CreatedDate"].ToString()),
+                        CreatedBy = Int32.Parse(newsletterRow["CreatedBy"].ToString()),
+                        Memo = newsletterRow["Memo"].ToString(),
+                        DisplayDate = newsletterRow["DisplayDate"].ToString(),
+                        PublishedDate = DateTime.Parse(newsletterRow["PublishedDate"].ToString()),
+                        IsCurrent = newsletterRow["IsCurrent"].ToString() == "0" ? false : true
                     };
 
                     newslettersToReturn.Add(newsletterToAdd);
                 }
-                connection.Close();
             }
             catch (Exception ex)
             {
-                _logger.LogError("There was an error retrieving newsletters in NewsletterService/GetAllNewsletters", ex);
-            }
-            finally
-            {
-                if (connection.State == System.Data.ConnectionState.Open)
-                {
-                    connection.Close();
-                }
+                _logger.LogError("Unable to transcribe GetAllNewslettersResult to newsletters in NewsletterService/GetAllNewsletters", ex);
             }
 
             return newslettersToReturn;
@@ -198,50 +190,58 @@ namespace NLECA_Core_Newsletter_App.Service.Services
         {
             NewsletterModel newsletter = new NewsletterModel();
 
-            SqlConnection connection = new SqlConnection(dbConnectionString);
-            string selectStatement = _sql.CreateSelectStatement("Newsletters", 
-                new WhereClause(
-                    new SqlHelperComparableDictionary(
-                        SqlComparator.IsEqualTo,
-                        new Dictionary<string, string>()
-                            {
-                                { "NewsletterId", newsletterId.ToString() }
-                            }
-                        )
-                    )
-                );
+            SqlParameter[] parameters = new SqlParameter[] { new SqlParameter("@newsletterId", newsletterId) };            
+            DataSet GetNewsletterByNewsletterIdResult = _sql.GetDatasetFromStoredProcedure("GetNewsletterByNewsletterId", parameters);
 
             try
             {
-                connection.Open();
-                SqlCommand command = new SqlCommand(selectStatement, connection);
-                SqlDataReader reader = command.ExecuteReader();
+                DataRow newsletterResult = GetNewsletterByNewsletterIdResult.Tables[0].AsEnumerable().FirstOrDefault();
 
-                while (reader.Read())
-                {
-                    newsletter = new NewsletterModel()
-                    {
-                        NewsletterId = Int32.Parse(reader["NewsletterId"].ToString()),
-                        CreatedDate = DateTime.Parse(reader["CreatedDate"].ToString()),
-                        CreatedBy = Int32.Parse(reader["CreatedBy"].ToString()),
-                        Memo = reader["Memo"].ToString(),
-                        DisplayDate = reader["DisplayDate"].ToString(),
-                        PublishedDate = DateTime.Parse(reader["PublishedDate"].ToString()),
-                        IsCurrent = reader["IsCurrent"].ToString() == "0" ? false : true,
-                    };
-                }
-                connection.Close();
+                newsletter.NewsletterId = Int32.Parse(newsletterResult["NewsletterId"].ToString());
+                newsletter.CreatedDate = DateTime.Parse(newsletterResult["CreatedDate"].ToString());
+                newsletter.CreatedBy = Int32.Parse(newsletterResult["CreatedBy"].ToString());
+                newsletter.Memo = newsletterResult["Memo"].ToString();
+                newsletter.DisplayDate = newsletterResult["DisplayDate"].ToString();
+                newsletter.PublishedDate = DateTime.Parse(newsletterResult["PublishedDate"].ToString());
+                newsletter.IsCurrent = newsletterResult["IsCurrent"].ToString() == "0" ? false : true;
             }
             catch (Exception ex)
             {
-                _logger.LogError("There was an error retrieving the newsletter in NewsletterService/GetNewsletterById with the Id: " + newsletterId, ex);
+                _logger.LogError("Unable to transcribe GetNewsletterByNewsletterIdResult to newsletter in NewsletterService/GetNewsletterById with the Id: " + newsletterId, ex);
             }
-            finally
+
+            SqlParameter[] getArticlesParameters = { new SqlParameter("@newsletterId", newsletter.NewsletterId) };
+
+            DataSet GetArticlesByNewsletterIdResults = _sql.GetDatasetFromStoredProcedure("GetArticlesByNewsletterId", getArticlesParameters);
+
+            try
             {
-                if (connection.State == System.Data.ConnectionState.Open)
+                IEnumerable<DataRow> articleResults = GetArticlesByNewsletterIdResults.Tables[0].AsEnumerable();
+
+                List<ArticleModel> articles = new List<ArticleModel>();
+
+                foreach (DataRow row in articleResults)
                 {
-                    connection.Close();
+                    ArticleModel article = new ArticleModel()
+                    {
+                        ArticleId = Int32.Parse(row["ArticleId"].ToString()),
+                        NewsletterId = newsletter.NewsletterId,
+                        ArticleSequence = Int32.Parse(row["ArticleSequence"].ToString()),
+                        ImageFileLocation = row["ImageFileLocation"].ToString(),
+                        ArticleType = Int32.Parse(row["ArticleType"].ToString()),
+                        ArticleText = row["ArticleText"].ToString(),
+                        AddedBy = Int32.Parse(row["AddedBy"].ToString()),
+                        DateAdded = DateTime.Parse(row["DateAdded"].ToString())
+                    };
+
+                    articles.Add(article);
                 }
+
+                newsletter.Articles = articles;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Unable to transcribe GetArticlesByNewsletterIdResults to articles in NewsletterService/GetPublishedNewsletter", ex);
             }
 
             return newsletter;
@@ -256,24 +256,30 @@ namespace NLECA_Core_Newsletter_App.Service.Services
         /// <returns>true if newsletter was updated successfully</returns>
         public bool UpdateNewsletter(NewsletterModel newsletter)
         {
-            string updateStatement = _sql.CreateUpdateStatement(
-                "Newsletters"
-                , new Dictionary<string, string>()
+            int rowsEffected = 0;
+
+            try
+            {
+                SqlParameter[] parameters = new SqlParameter[]
                 {
-                    {"Memo", newsletter.Memo },
-                    {"DisplayDate", newsletter.DisplayDate }
-                }
-                , new WhereClause(
-                    new SqlHelperComparableDictionary(
-                        SqlComparator.IsEqualTo,
-                        new Dictionary<string, string>()
-                            {
-                                { "NewsletterId", newsletter.NewsletterId.ToString() }
-                            }
-                        )
-                    )
-                );
-            return _sql.ExecuteUpdateStatement(updateStatement);
+                    new SqlParameter("@newsletterId", newsletter.NewsletterId),
+                    new SqlParameter("@createdDate", _sql.ConvertDateTimeForSQL(newsletter.CreatedDate)),
+                    new SqlParameter("@createdBy", newsletter.CreatedBy),
+                    new SqlParameter("@memo", newsletter.Memo),
+                    new SqlParameter("@displayDate", newsletter.DisplayDate),
+                    new SqlParameter("@publishedDate", _sql.ConvertDateTimeForSQL(newsletter.PublishedDate)),
+                    new SqlParameter("@isCurrent", newsletter.IsCurrent == true ? "1" : "0")
+                };
+
+                rowsEffected = _sql.GetReturnValueFromStoredProcedure("UpdateNewsletter", parameters);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("There was an updating the newsletter in the Newsletter Service", ex);
+            }
+
+
+            return rowsEffected > 0 ? true : false;
         }
         #endregion
 
@@ -285,30 +291,24 @@ namespace NLECA_Core_Newsletter_App.Service.Services
         /// <returns>true if newsletter was deleted successfully</returns>
         public bool DeleteNewsletter(int newsletterId)
         {
-            bool success = false;
-
-            string deleteStatement = _sql.CreateDeleteStatement("Newsletters",
-                new WhereClause(
-                    new SqlHelperComparableDictionary(
-                        SqlComparator.IsEqualTo,
-                        new Dictionary<string, string>()
-                            {
-                                { "NewsletterId", newsletterId.ToString() }
-                            }
-                        )
-                    )
-                );
+            int rowsEffected = 0;
 
             try
             {
-                success = _sql.ExecuteDeleteStatement(deleteStatement);
+                SqlParameter[] parameters = new SqlParameter[]
+                {
+                    new SqlParameter("@newsletterId", newsletterId)
+                };
+
+                rowsEffected = _sql.GetReturnValueFromStoredProcedure("DeleteNewsletter", parameters);
             }
             catch (Exception ex)
             {
-                _logger.LogError("There was an error deleting the newsletter in NewsletterService/DeleteNewsletter with the Id: " + newsletterId, ex);
+                _logger.LogError("There was an error deleting the newsletter in the Newsletter Service", ex);
             }
 
-            return success;
+
+            return rowsEffected > 0 ? true : false;
         }
         #endregion
     }

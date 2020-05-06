@@ -47,26 +47,7 @@ namespace NLECA_Core_Newsletter_App.Controllers
         [Authorize(Roles = "SuperAdmin,Admin")]
         public IActionResult AddNewsletter()
         {
-            NewsletterModel model = new NewsletterModel();
-
-            string currentUser = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            int currentUserId = -1;
-
-            if (string.IsNullOrEmpty(currentUser))
-            {
-                _logger.LogError("CurrentUserId was unable to be acquired in /Newsletter/EditNewsletter", null);
-            }
-            else
-            {
-                currentUserId = string.IsNullOrEmpty(currentUser) ? -1 : Int32.Parse(currentUser);
-            }
-
-            model.DisplayDate = DateTime.Now.ToString("yyyy-MM");
-            model.Memo = "";
-            model.CreatedBy = currentUserId;
-            model.CreatedDate = DateTime.Now;
-
-            int newsletterId = _newsletter.AddNewsletter(model);
+            int newsletterId = _newsletter.AddNewsletter();
 
             return RedirectToAction("EditNewsletter", new { newsletterId = newsletterId });
         }

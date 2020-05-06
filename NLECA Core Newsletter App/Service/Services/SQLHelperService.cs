@@ -1,15 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using NLECA_Core_Newsletter_App.Data.SQLHelperTypes;
 using NLECA_Core_Newsletter_App.Service.Interfaces;
 using System;
-using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace NLECA_Core_Newsletter_App.Service.Services
 {
@@ -41,228 +37,230 @@ namespace NLECA_Core_Newsletter_App.Service.Services
             return dateTime.ToString("yyyy/MM/dd HH:mm:ss tt");
         }
 
-        #region // Create Statements
         /// <summary>
-        /// Creates a full SQL INSERT statement
+        /// Calls the named stored procedure to retrieve a dataset
         /// </summary>
-        /// <param name="tableName">Name of the table as it would appear in the Insert Statement</param>
-        /// <param name="columnName_rowData">Dictionary of Key(column name)/Value(row data to be inserted)</param>
-        /// <returns>valid SQL INSERT statement</returns>
-        public string CreateInsertStatement(string tableName, Dictionary<string, string> columnName_rowData)
+        /// <param name="storedProcedureName"></param>
+        /// <returns>DataSet from the stored procedure</returns>
+        public DataSet GetDatasetFromStoredProcedure(string storedProcedureName)
         {
-            string tableColumns = string.Join(", ", columnName_rowData.Select(entry => entry.Key).ToArray());
-            string rowdata = string.Join(", ", columnName_rowData.Select(entry => "'" + entry.Value + "'").ToArray());
+            CheckIfStoredProcedureExists(storedProcedureName);
 
-            string insertStatement = string.Format(
-                "INSERT INTO {0} ({1}) VALUES ({2});"
-                , tableName
-                , tableColumns
-                , rowdata
-                );
+            DataSet dataSet = new DataSet();
 
-            return insertStatement;
-        }
-
-        /// <summary>
-        /// Creates a full SQL INSERT statement
-        /// </summary>
-        /// <param name="tableName">Name of the table as it would appear in the Insert Statement</param>
-        /// <param name="columnName_rowData">Dictionary of Key(column name)/Value(row data to be inserted)</param>
-        /// <param name="output">
-        /// (OPTIONAL) will add an OUTPUT value into the statement; example entry "TableId" would add "OUTPUT Inserted.TableId"
-        /// </param>
-        /// <returns>valid SQL INSERT statement</returns>
-        public string CreateInsertStatement(string tableName, Dictionary<string, string> columnName_rowData, string output)
-        {
-            string tableColumns = string.Join(", ", columnName_rowData.Select(entry => entry.Key).ToArray());
-            string rowdata = string.Join(", ", columnName_rowData.Select(entry => "'" + entry.Value + "'").ToArray());
-            string modifiedOutput = "";
-
-            if (!string.IsNullOrWhiteSpace(output))
-            {
-                modifiedOutput = string.Format("OUTPUT Inserted.{0}", output.Trim());
-            }
-
-            string insertStatement = string.Format(
-                "INSERT INTO {0} ({1}) {2} VALUES ({3});"
-                , tableName
-                , tableColumns
-                , modifiedOutput
-                , rowdata
-                );
-
-            return insertStatement;
-        }
-
-        /// <summary>
-        /// Creates a basic SQL SELECT statement with equals WHERE conditionals
-        /// </summary>
-        /// <param name="tableName">Name of the table as it would appear in the SELECT statement</param>
-        /// <param name="whereClause">Uses <see cref="WhereClause"/> to create a useable SQL WHERE clause</param>
-        /// <returns>valid SQL SELECT statement</returns>
-        public string CreateSelectStatement(string tableName, WhereClause whereClause)
-        {
-            string whereClauseText = (whereClause is null) ? string.Empty : whereClause.Text;
-            string selectStatement = string.Format(
-                "SELECT * FROM {0} {1};"
-                , tableName
-                , whereClauseText
-                );
-
-            return selectStatement;
-        }
-
-        /// <summary>
-        /// Creates a full SQL UPDATE statement with equals WHERE conditionals
-        /// </summary>
-        /// <param name="tableName">Name of the table as it would appear in the UPDATE statement</param>
-        /// <param name="columnName_rowData">Dictionary where the key is the column name, and the value is the rowdata to SET</param>
-        /// <param name="whereClause">Uses <see cref="WhereClause"/> to create a useable SQL WHERE clause</param>
-        /// <returns>valid SQL UPDATE statement</returns>
-        public string CreateUpdateStatement(string tableName, Dictionary<string, string> columnName_rowData, WhereClause whereClause)
-        {
-            string tableColumnsToRowdata = string.Join(", ", columnName_rowData.Select(entry => entry.Key + " = '" + entry.Value + "'").ToArray());
-
-            string whereClauseText = (whereClause is null) ? string.Empty : whereClause.Text;
-            string updateStatement = string.Format(
-                "UPDATE {0} SET {1} {2};"
-                , tableName
-                , tableColumnsToRowdata
-                , whereClauseText
-                );
-
-            return updateStatement;
-        }
-
-        /// <summary>
-        /// Creates basic SQL DELETE statement
-        /// </summary>
-        /// <param name="tableName">Name of the table from which you will delete entries</param>
-        /// <param name="whereClause">Uses <see cref="WhereClause"/> to create a useable SQL WHERE clause</param>
-        /// <returns>valid SQL DELETE statement</returns>
-        public string CreateDeleteStatement(string tableName, WhereClause whereClause)
-        {
-            string whereClauseText = (whereClause is null) ? string.Empty : whereClause.Text;
-            string deleteStatement = string.Format(
-                "DELETE FROM {0} {1};"
-                , tableName
-                , whereClauseText
-                );
-
-            return deleteStatement;
-        }
-        #endregion
-
-        #region // Execute Statements
-        /// <summary>
-        /// Executes basic ADO.NET INSERT statement with custom error
-        /// </summary>
-        /// <param name="createStatement">valid SQL INSERT statement</param>
-        /// <returns>true (if no exceptions)</returns>
-        public bool ExecuteInsertStatement(string createStatement)
-        {
-            bool success = false;
-            try
-            {
-                success = ExecuteSQLStatement(createStatement);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("There was an error creating to the database using: " + createStatement, ex);
-            }
-
-            return success;
-        }
-
-        /// <summary>
-        /// Executes basic ADO.NET INSERT statement with custom error
-        /// </summary>
-        /// <param name="createStatement">valid SQL INSERT statement</param>
-        /// <returns>output of INSERT statement</returns>
-        public int ExecuteInsertStatementWithReturn(string insertStatement)
-        {
             SqlConnection connection = new SqlConnection(dbConnectionString);
-            int returnedValue = -1;
 
             try
             {
                 connection.Open();
-                SqlCommand command = new SqlCommand(insertStatement, connection);
-                returnedValue = (int)command.ExecuteScalar();
 
-                if (connection.State == System.Data.ConnectionState.Open)
+                SqlCommand command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = storedProcedureName;
+                command.Connection = connection;
+
+                // add parameters to command here....
+
+                SqlDataAdapter dataAdapter = new SqlDataAdapter();
+                dataAdapter.SelectCommand = command;
+
+                dataAdapter.Fill(dataSet);
+
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                string error = string.Format("There was an error running stored procedure: {0} from method {1}"
+                    , storedProcedureName
+                    , "GetDatasetFromStoredProcedure without parameters");
+                _logger.LogError(error, ex);
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
                 {
                     connection.Close();
                 }
             }
-            catch (Exception ex)
-            {
-                _logger.LogError("There was an error inserting into the database using: " + insertStatement, ex);
-            }
 
-            return returnedValue;
+            return dataSet;
         }
 
         /// <summary>
-        /// Executes basic ADO.NET UPDATE statement with custom error
+        /// Calls the named stored procedure using the passed in parameters to retrieve a dataset
         /// </summary>
-        /// <param name="updateStatement">valid SQL UPDATE statement</param>
-        /// <returns>true (if no exceptions)</returns>
-        public bool ExecuteUpdateStatement(string updateStatement)
+        /// <param name="storedProcedureName"></param>
+        /// <param name="parameters"></param>
+        /// <returns>DataSet from the stored procedure</returns>
+        public DataSet GetDatasetFromStoredProcedure(string storedProcedureName, SqlParameter[] parameters)
         {
-            bool success = false;
-            try
-            {
-                success = ExecuteSQLStatement(updateStatement);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("There was an error updating to the database using: " + updateStatement, ex);
-            }
+            CheckIfStoredProcedureExists(storedProcedureName);
 
-            return success;
-        }
+            DataSet dataSet = new DataSet();
 
-        /// <summary>
-        /// Executes basic ADO.NET DELETE statement with custom error
-        /// </summary>
-        /// <param name="deleteStatement">valid SQL DELETE statement</param>
-        /// <returns>true (if no exceptions)</returns>
-        public bool ExecuteDeleteStatement(string deleteStatement)
-        {
-            bool success = false;
-            try
-            {
-                success = ExecuteSQLStatement(deleteStatement);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("There was an error deleting from the database using: " + deleteStatement, ex);
-            }
-
-            return success;
-        }
-        #endregion
-
-        private bool ExecuteSQLStatement(string statement)
-        {
             SqlConnection connection = new SqlConnection(dbConnectionString);
-            int rowsEffected;
 
-            connection.Open();
-            SqlCommand command = new SqlCommand(statement, connection);
-            rowsEffected = command.ExecuteNonQuery();
-
-            if (connection.State == System.Data.ConnectionState.Open)
+            try
             {
+                connection.Open();
+
+                SqlCommand command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = storedProcedureName;
+                command.Connection = connection;
+
+                foreach (SqlParameter parameter in parameters)
+                {
+                    command.Parameters.AddWithValue(parameter.ParameterName, parameter.Value);
+                }
+
+                SqlDataAdapter dataAdapter = new SqlDataAdapter();
+                dataAdapter.SelectCommand = command;
+
+                dataAdapter.Fill(dataSet);
+
                 connection.Close();
             }
-
-            if (rowsEffected > 0)
+            catch (Exception ex)
             {
-                return true;
+                string error = string.Format("There was an error running stored procedure: {0} from method {1}"
+                    , storedProcedureName
+                    , "GetDatasetFromStoredProcedure with parameters");
+                _logger.LogError(error, ex);
             }
-            return false;
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
+
+            return dataSet;
+        }
+
+        /// <summary>
+        /// Calls the named stored procedure to retrieve an integer result
+        /// </summary>
+        /// <param name="storedProcedureName"></param>
+        /// <returns>integer result of the stored procedure</returns>
+        public int GetReturnValueFromStoredProcedure(string storedProcedureName)
+        {
+            CheckIfStoredProcedureExists(storedProcedureName);
+
+            int returnValue = 0;
+
+            SqlConnection connection = new SqlConnection(dbConnectionString);
+
+            try
+            {
+                connection.Open();
+
+                SqlCommand command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = storedProcedureName;
+                command.Connection = connection;
+
+                returnValue = Int32.Parse(command.ExecuteScalar().ToString());
+
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                string error = string.Format("There was an error running stored procedure: {0} from method {1}"
+                    , storedProcedureName
+                    , "GetReturnValueFromStoredProcedure without parameters");
+                _logger.LogError(error, ex);
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
+
+            return returnValue;
+        }
+
+        /// <summary>
+        /// Calls the named stored procedure using the passed in parameters to retrieve an integer result
+        /// </summary>
+        /// <param name="storedProcedureName"></param>
+        /// <param name="parameters"></param>
+        /// <returns>integer result of the stored procedure</returns>
+        public int GetReturnValueFromStoredProcedure(string storedProcedureName, SqlParameter[] parameters)
+        {
+            CheckIfStoredProcedureExists(storedProcedureName);
+
+            int returnValue = 0;
+
+            SqlConnection connection = new SqlConnection(dbConnectionString);
+
+            try
+            {
+                connection.Open();
+
+                SqlCommand command = connection.CreateCommand();
+                command.CommandType = CommandType.StoredProcedure;
+                command.CommandText = storedProcedureName;
+                command.Connection = connection;
+
+                foreach (SqlParameter parameter in parameters)
+                {
+                    command.Parameters.AddWithValue(parameter.ParameterName, parameter.Value);
+                }
+
+                returnValue = Int32.Parse(command.ExecuteScalar().ToString());
+
+                connection.Close();
+            }
+            catch (Exception ex)
+            {
+                string error = string.Format("There was an error running stored procedure: {0} from method {1}"
+                    , storedProcedureName
+                    , "GetReturnValueFromStoredProcedure with parameters");
+                _logger.LogError(error, ex);
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
+
+            return returnValue;
+        }
+
+        private void CheckIfStoredProcedureExists(string storedProcedureName)
+        {
+            SqlConnection connection = new SqlConnection(dbConnectionString);
+            try
+            {
+                string checkStatemnt = string.Format("SELECT * FROM sys.objects WHERE type = 'P' AND name = '{0}'", storedProcedureName);
+
+                connection.Open();
+                SqlCommand command = new SqlCommand(checkStatemnt, connection);
+
+
+                if (command.ExecuteScalar() == null)
+                {
+                    string error = string.Format("Stored Procedure \"{0}\" attempted execution but was not found", storedProcedureName);
+                    throw new NotImplementedException(error);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Stored Procedure Error", ex);
+            }
+            finally
+            {
+                if (connection.State == ConnectionState.Open)
+                {
+                    connection.Close();
+                }
+            }
         }
     }
 }
