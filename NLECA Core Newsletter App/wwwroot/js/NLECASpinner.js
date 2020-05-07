@@ -29,7 +29,6 @@ $(window).on('beforeunload', function () {
 });
 
 $(window).on('unload', function () {
-    console.log("unload");
     this.incrementSinceBeforeUnload = 0;
 });
 
