@@ -34,14 +34,15 @@ Date.prototype.ConvertToReadableLocalTime = function () {
     var yyyy = localDateTime.getFullYear();
 
     var HH = localDateTime.getHours();
-    var mm = localDateTime.getMinutes();
+    var mm = makeDoubleDigits(localDateTime.getMinutes());
+    var ss = makeDoubleDigits(localDateTime.getSeconds());
 
     if (HH > 12) {
         HH = HH - 12;
         meridiem = "PM";
     }
 
-    return ''.concat(HH, ':', mm, ' ', meridiem, ' on ', ddd, ' ', MM, '/', dd, '/', yyyy);
+    return ''.concat(HH, ':', mm, ' ', meridiem, ' on ', ddd, ' ', MM, '/', dd, '/', yyyy, ' (', ss + ')');
 }
 
 // Takes a Date object and turns it into a GMT string (does not adjust time of the Date object)
@@ -59,20 +60,6 @@ Date.prototype.getGMTString = function () {
     var ss = makeDoubleDigits(this.getSeconds());
 
     return ''.concat(ddd, ', ', dd, ' ', MMM, ' ', yyyy, ' ', HH, ':', mm, ':', ss, ' GMT');
-
-    function makeDoubleDigits(digit) {
-        var stringDigit = digit.toString();
-        var digitToReturn = '0';
-
-        if (stringDigit.length == 1) {
-            digitToReturn = digitToReturn.concat(stringDigit);
-        }
-        else {
-            digitToReturn = stringDigit;
-        }
-
-        return digitToReturn;
-    }
 }
 
 //Takes a Date object and converts the time (adds or subtracts offset) and then returns the string version
@@ -83,4 +70,18 @@ Date.prototype.ConvertToGMTString = function () {
     var gmtIndex = preGmtString.indexOf('GMT-') + 3;
     var gmtStringWithoutComma = preGmtString.substring(0, gmtIndex);
     return ''.concat(gmtStringWithoutComma.slice(0, 3), ',', gmtStringWithoutComma.slice(3));
+}
+
+function makeDoubleDigits(digit) {
+    var stringDigit = digit.toString();
+    var digitToReturn = '0';
+
+    if (stringDigit.length == 1) {
+        digitToReturn = digitToReturn.concat(stringDigit);
+    }
+    else {
+        digitToReturn = stringDigit;
+    }
+
+    return digitToReturn;
 }
