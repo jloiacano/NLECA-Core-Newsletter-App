@@ -35,6 +35,14 @@ namespace NLECA_Core_Newsletter_App
             services.AddDefaultIdentity<ApplicationIdentityUser>()
                 .AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(3600); // reset after an hour
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = false;
+            });
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddAuthentication()
@@ -86,6 +94,8 @@ namespace NLECA_Core_Newsletter_App
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
