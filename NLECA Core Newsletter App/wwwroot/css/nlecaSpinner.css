@@ -25,7 +25,7 @@
     margin-top: -19px;
     width: 100px;
     height: 38px;
-    font-size: 24px;
+    font-size: 36px;
     font-weight: 500;
     color: black;
 }
@@ -59,7 +59,7 @@
 -------------------------------------------------- */
 #nlecaSpinnerL {
     position: absolute;
-    margin: 0 0 0 23px;
+    margin: 0 0 0 30px;
     -webkit-animation: rotateL 4s linear infinite;
     -moz-animation: rotateL 4s linear infinite;
     animation: rotateL 5s linear infinite;
@@ -84,7 +84,7 @@
 -------------------------------------------------- */
 #nlecaSpinnerE {
     position: absolute;
-    margin: 0 0 0 42px;
+    margin: 0 0 0 50px;
     -webkit-animation: rotateE 4s linear infinite;
     -moz-animation: rotateE 4s linear infinite;
     animation: rotateE 5s linear infinite;
@@ -108,7 +108,7 @@
 -------------------------------------------------- */
 #nlecaSpinnerC {
     position: absolute;
-    margin: 0 0 0 59px;
+    margin: 0 0 0 70px;
     -webkit-animation: rotateC 4s linear infinite;
     -moz-animation: rotateC 4s linear infinite;
     animation: rotateC 5s linear infinite;
@@ -133,7 +133,7 @@
 -------------------------------------------------- */
 #nlecaSpinnerA {
     position: absolute;
-    margin: 0 0 0 80px;
+    margin: 0 0 0 95px;
     -webkit-animation: rotateA 4s linear infinite;
     -moz-animation: rotateA 4s linear infinite;
     animation: rotateA 5s linear infinite;
