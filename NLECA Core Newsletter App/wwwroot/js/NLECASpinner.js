@@ -1,43 +1,82 @@
-﻿var millisecondsSinceBeforeUnload = 0;
+﻿//Heres all the stuff to make the spinner spin (or not as the case may be)
+var nlecaSpinner = nlecaSpinner || {};
 
 $(document).ready(function () {
-
-    // Delay fade for site not having been seen in three hours
-    var expiration = new Date().addHours(3);
-    var cookieValue = encodeURIComponent('Expiration-' + expiration.ConvertToReadableLocalTime());
-    document.cookie = 'ExpiresInThreeHours=' + cookieValue + '; expires=' + expiration.toUTCString() + '; path=/;';
-    if ($('#NotSeenInThreeHours').val() == "true") {
-        setTimeout(function () {
-            $('#nlecaSpinnerWrapper').fadeOut();
-        }, 5000);
-    }
-    else {
-        setTimeout(function () {
-            $('#nlecaSpinnerWrapper').fadeOut();
-        }, 550);
-    }
+    nlecaSpinner.init();
 });
+
 
 $(window).on('beforeunload', function () {
-    setInterval(function () {
-        if (millisecondsSinceBeforeUnload > 150) {
-            $('#nlecaSpinnerWrapper').fadeIn();
+    nlecaSpinner.unloadSpinner();
+});
+
+
+nlecaSpinner = {
+    slowEnoughToDisplaySpinner: false,
+
+    init: function () {
+        this.testForSlowConnection();
+        this.setThreeHourDelayCookie();
+        this.handleSplashScreen();
+        this.setUpAjaxCallsFunctionality();
+    },
+
+    testForSlowConnection: function () {
+        var effectiveRoundTripTime = navigator.connection.rtt; //basically measures a ping in milliseconds
+        if (effectiveRoundTripTime > 500) {
+            this.setUseSpinnerCookie();
         }
         else {
-            millisecondsSinceBeforeUnload += 50;
+            this.removeUseSpinnerCookie();
         }
-    }, 50);
-});
+    },
 
-$(window).on('unload', function () {
-    this.incrementSinceBeforeUnload = 0;
-});
+    setUseSpinnerCookie: function () {
+        var fiveMinutesFromNow = new Date().addMinutes(5);
+        var fiveMinuteCookieValue = encodeURIComponent('Expiration-' + fiveMinutesFromNow.ConvertToReadableLocalTime());
+        document.cookie = 'UseSpinner=' + fiveMinuteCookieValue + '; expires=' + fiveMinutesFromNow.toUTCString() + '; path=/;';
 
-// Handles the nlecaSpinner when ajax calls occur
-$(document).ajaxSend(function (event, xhr, options) {
-    $('#nlecaSpinnerWrapper').fadeIn();
-}).ajaxComplete(function (event, xhr, options) {
-    $('#nlecaSpinnerWrapper').fadeOut();
-}).ajaxError(function (event, jqxhr, settings, exception) {
-    $('#nlecaSpinnerWrapper').fadeOut();
-});
+        this.slowEnoughToDisplaySpinner = true;
+    },
+
+    removeUseSpinnerCookie: function () {
+        document.cookie = 'UseSpinner=; expires=' + new Date().Zero().toUTCString() + '; path=/;';
+    },
+
+    setThreeHourDelayCookie: function () {
+        var threeHoursFromNow = new Date().addHours(3);
+        var threeHourCookieValue = encodeURIComponent('Expiration-' + threeHoursFromNow.ConvertToReadableLocalTime());
+        document.cookie = 'ExpiresInThreeHours=' + threeHourCookieValue + '; expires=' + threeHoursFromNow.toUTCString() + '; path=/;';
+    },
+
+    handleSplashScreen: function () {
+        if ($('#NotSeenInThreeHours').val() == 'true') {
+            setTimeout(function () {
+                $('#nlecaSpinnerWrapper').fadeOut();
+            }, 5000);
+        }
+        else {
+            if ($('#nlecaSpinnerWrapper').css('display') != 'none') {
+                setTimeout(function () {
+                    $('#nlecaSpinnerWrapper').fadeOut();
+                }, 750);
+            }
+        }
+    },
+
+    unloadSpinner: function () {
+        if (this.slowEnoughToDisplaySpinner) {
+            $('#nlecaSpinnerWrapper').fadeIn();
+        }
+    },
+
+    setUpAjaxCallsFunctionality: function () {
+        $(document).ajaxSend(function (event, xhr, options) {
+            $('#nlecaSpinnerWrapper').fadeIn();
+        }).ajaxComplete(function (event, xhr, options) {
+            $('#nlecaSpinnerWrapper').fadeOut();
+        }).ajaxError(function (event, jqxhr, settings, exception) {
+            $('#nlecaSpinnerWrapper').fadeOut();
+        });
+    }
+};

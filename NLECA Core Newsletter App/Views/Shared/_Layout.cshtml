@@ -17,7 +17,8 @@
 
     @{
         string threeHourCookie = Context.Request.Cookies["ExpiresInThreeHours"];
-        string spinnerDisplay = "display: block;"; //TODO - J - update for speed dependencies (fast enough: don't bother showing)
+        bool shouldDisplaySpinner = threeHourCookie == null || Context.Request.Cookies["UseSpinner"] != null;
+        string spinnerDisplay = shouldDisplaySpinner ? "display: block;" : "display: none;";
     }
 
     <input type="hidden" id="NotSeenInThreeHours" value="@(threeHourCookie == null ? "true" : "false")">

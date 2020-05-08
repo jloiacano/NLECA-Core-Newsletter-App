@@ -17,6 +17,10 @@ Date.prototype.Min = function () {
     return new Date(-8640000000000000);
 }
 
+Date.prototype.Zero = function () {
+    return new Date(+0);
+}
+
 Date.prototype.Max = function () {
     return new Date(8640000000000000);
 }
