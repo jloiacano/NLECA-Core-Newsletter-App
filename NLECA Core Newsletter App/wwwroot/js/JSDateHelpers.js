@@ -42,7 +42,7 @@ Date.prototype.ConvertToReadableLocalTime = function () {
         meridiem = "PM";
     }
 
-    return ''.concat(HH, ':', mm, ' ', meridiem, ' on ', ddd, ' ', MM, '/', dd, '/', yyyy, ' (', ss + ')');
+    return ''.concat(HH, '-', mm, '-', meridiem, '-on-', ddd, '-', MM, '-', dd, '-', yyyy, '-(', ss + ')');
 }
 
 // Takes a Date object and turns it into a GMT string (does not adjust time of the Date object)

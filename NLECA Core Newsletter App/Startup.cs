@@ -40,7 +40,7 @@ namespace NLECA_Core_Newsletter_App
             services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromSeconds(3600); // reset after an hour
-                options.Cookie.HttpOnly = true;
+                options.Cookie.HttpOnly = false;
                 options.Cookie.IsEssential = false;
             });
             services.AddControllersWithViews();

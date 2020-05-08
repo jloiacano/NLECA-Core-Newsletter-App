@@ -3,9 +3,10 @@
 $(document).ready(function () {
 
     // Delay fade for site not having been seen in three hours
+    var expiration = new Date().addHours(3);
+    var cookieValue = encodeURIComponent('Expiration-' + expiration.ConvertToReadableLocalTime());
+    document.cookie = 'ExpiresInThreeHours=' + cookieValue + '; expires=' + expiration.toUTCString() + '; path=/;';
     if ($('#NotSeenInThreeHours').val() == "true") {
-        var expiration = new Date().addHours(3);
-        document.cookie = 'ExpiresInThreeHours=Expires: ' + expiration.ConvertToReadableLocalTime() + '; expires=' + expiration.toUTCString() + '; path=/';;
         setTimeout(function () {
             $('#nlecaSpinnerWrapper').fadeOut();
         }, 5000);
