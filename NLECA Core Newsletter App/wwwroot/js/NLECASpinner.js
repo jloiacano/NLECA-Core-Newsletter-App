@@ -13,10 +13,11 @@ $(window).on('beforeunload', function () {
 
 nlecaSpinner = {
     slowEnoughToDisplaySpinner: false,
+    splashScreenDuration: 5000,
 
     init: function () {
         this.testForSlowConnection();
-        this.setThreeHourDelayCookie();
+        this.setHideSplashScreenCookie();
         this.handleSplashScreen();
         this.setUpAjaxCallsFunctionality();
     },
@@ -43,17 +44,17 @@ nlecaSpinner = {
         document.cookie = 'UseSpinner=; expires=' + new Date().Zero().toUTCString() + '; path=/;';
     },
 
-    setThreeHourDelayCookie: function () {
-        var threeHoursFromNow = new Date().addHours(3);
-        var threeHourCookieValue = encodeURIComponent('Expiration-' + threeHoursFromNow.ConvertToReadableLocalTime());
-        document.cookie = 'ExpiresInThreeHours=' + threeHourCookieValue + '; expires=' + threeHoursFromNow.toUTCString() + '; path=/;';
+    setHideSplashScreenCookie: function () {
+        var hideSplashScreenExpiration = new Date().addHours(3);
+        var hideSplashScreenCookieValue = encodeURIComponent('Expiration-' + hideSplashScreenExpiration.ConvertToReadableLocalTime());
+        document.cookie = 'HideSplashScreen=' + hideSplashScreenCookieValue + '; expires=' + hideSplashScreenExpiration.toUTCString() + '; path=/;';
     },
 
     handleSplashScreen: function () {
-        if ($('#NotSeenInThreeHours').val() == 'true') {
+        if ($('#SplashScreenCurrentlyVisible').val() == 'true') {
             setTimeout(function () {
                 $('#nlecaSpinnerWrapper').fadeOut();
-            }, 5000);
+            }, this.splashScreenDuration);
         }
         else {
             if ($('#nlecaSpinnerWrapper').css('display') != 'none') {

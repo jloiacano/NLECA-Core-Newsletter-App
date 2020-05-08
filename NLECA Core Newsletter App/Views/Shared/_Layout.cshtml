@@ -16,12 +16,12 @@
     </header>
 
     @{
-        string threeHourCookie = Context.Request.Cookies["ExpiresInThreeHours"];
-        bool shouldDisplaySpinner = threeHourCookie == null || Context.Request.Cookies["UseSpinner"] != null;
+        string hideSplashScreenCookie = Context.Request.Cookies["HideSplashScreen"];
+        bool shouldDisplaySpinner = hideSplashScreenCookie == null || Context.Request.Cookies["UseSpinner"] != null;
         string spinnerDisplay = shouldDisplaySpinner ? "display: block;" : "display: none;";
     }
 
-    <input type="hidden" id="NotSeenInThreeHours" value="@(threeHourCookie == null ? "true" : "false")">
+    <input type="hidden" id="SplashScreenCurrentlyVisible" value="@(hideSplashScreenCookie == null ? "true" : "false")">
 
     <div id="nlecaSpinnerWrapper" style="@spinnerDisplay">
         <div id="nlecaSpinnerOverlay"></div>
