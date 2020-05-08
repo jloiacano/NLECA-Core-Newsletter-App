@@ -13,7 +13,7 @@ $(window).on('beforeunload', function () {
 
 nlecaSpinner = {
     slowEnoughToDisplaySpinner: false,
-    splashScreenDuration: 5000,
+    splashScreenDuration: 2500,
 
     init: function () {
         this.testForSlowConnection();

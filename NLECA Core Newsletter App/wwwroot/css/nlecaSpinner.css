@@ -35,9 +35,9 @@
 #nlecaSpinnerN {
     position: absolute;
     margin: 0 0 0 0;
-    -webkit-animation: rotateN 4s linear infinite;
-    -moz-animation: rotateN 4s linear infinite;
-    animation: rotateN 5s linear infinite;
+    -webkit-animation: rotateN 2.5S linear infinite;
+    -moz-animation: rotateN 2.5S linear infinite;
+    animation: rotateN 2.5S linear infinite;
 }
 @-moz-keyframes rotateN {
     0% { -moz-transform: rotateY(0deg); }
@@ -60,9 +60,9 @@
 #nlecaSpinnerL {
     position: absolute;
     margin: 0 0 0 30px;
-    -webkit-animation: rotateL 4s linear infinite;
-    -moz-animation: rotateL 4s linear infinite;
-    animation: rotateL 5s linear infinite;
+    -webkit-animation: rotateL 2.5S linear infinite;
+    -moz-animation: rotateL 2.5S linear infinite;
+    animation: rotateL 2.5S linear infinite;
 }
 @-moz-keyframes rotateL {
     20% { -moz-transform: rotateX(0deg); }
@@ -85,9 +85,9 @@
 #nlecaSpinnerE {
     position: absolute;
     margin: 0 0 0 50px;
-    -webkit-animation: rotateE 4s linear infinite;
-    -moz-animation: rotateE 4s linear infinite;
-    animation: rotateE 5s linear infinite;
+    -webkit-animation: rotateE 2.5S linear infinite;
+    -moz-animation: rotateE 2.5S linear infinite;
+    animation: rotateE 2.5S linear infinite;
 }
 @-moz-keyframes rotateE {
     40% { -moz-transform: rotateY(0deg); }
@@ -109,9 +109,9 @@
 #nlecaSpinnerC {
     position: absolute;
     margin: 0 0 0 70px;
-    -webkit-animation: rotateC 4s linear infinite;
-    -moz-animation: rotateC 4s linear infinite;
-    animation: rotateC 5s linear infinite;
+    -webkit-animation: rotateC 2.5S linear infinite;
+    -moz-animation: rotateC 2.5S linear infinite;
+    animation: rotateC 2.5S linear infinite;
 }
 @-moz-keyframes rotateC {
     60% { -moz-transform: rotateX(0deg); }
@@ -134,9 +134,9 @@
 #nlecaSpinnerA {
     position: absolute;
     margin: 0 0 0 95px;
-    -webkit-animation: rotateA 4s linear infinite;
-    -moz-animation: rotateA 4s linear infinite;
-    animation: rotateA 5s linear infinite;
+    -webkit-animation: rotateA 2.5S linear infinite;
+    -moz-animation: rotateA 2.5S linear infinite;
+    animation: rotateA 2.5S linear infinite;
 }
 @-moz-keyframes rotateA {
     80% { -moz-transform: rotateY(0deg); }
