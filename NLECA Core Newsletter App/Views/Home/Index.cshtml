@@ -19,6 +19,6 @@ else
 {
     @foreach (ArticleModel article in Model.Articles)
     {
-        <h2>@article.ArticleText</h2>
+        <h2>@Html.Raw(article.ArticleText)</h2>
     }
 }

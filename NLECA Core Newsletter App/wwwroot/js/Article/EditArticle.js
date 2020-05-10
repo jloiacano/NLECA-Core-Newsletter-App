@@ -7,6 +7,16 @@ $(document).ready(function () {
 EditArticle = {
 
     init: function () {
-        
+        var articleEditor = ClassicEditor
+            .create(document.querySelector('#articleEditor'))
+            .then(editor => {
+                console.log(editor);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+        articleEditor.destroy();
+        alert(text);
     }
 }

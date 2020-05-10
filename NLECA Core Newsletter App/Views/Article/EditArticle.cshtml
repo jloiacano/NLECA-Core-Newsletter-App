@@ -15,7 +15,9 @@
     <input type="hidden" name="newsletterId" value="@Model.NewsletterId" />
     <input type="hidden" name="articleId" value="@Model.ArticleId" />
     <input type="hidden" name="oldArticleText" value="@Model.ArticleText" />
-    <input type="text" name="articleText" value="@Model.ArticleText" />
+    @*<input type="text" name="articleText" value="@Model.ArticleText" />*@
+    <textarea id="articleEditor" name="articleText">@Model.ArticleText</textarea>
+
     <button type="submit">Save Changes</button>
     @*<a href="/Newsletter/EditNewsletter/?newsletterId=@Model.NewsletterId" class="btn btn-primary">Cancel</a>*@
 </form>
@@ -25,14 +27,7 @@
     <button type="submit">Cancel</button>
 </form>
 
-<div style="width: 80%; margin-left: 10%;">
-    <div id="editor">editor example</div>
-</div>
 
-<script>
-    ClassicEditor
-        .create(document.querySelector('#editor'))
-        .catch(error => {
-            console.error(error);
-        });
-</script>
+@section Scripts {
+    <script src="~/js/Article/EditArticle.js"></script>
+}
