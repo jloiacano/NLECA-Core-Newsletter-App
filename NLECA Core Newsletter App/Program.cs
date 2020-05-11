@@ -28,11 +28,9 @@ namespace NLECA_Core_Newsletter_App
 
         public static void MigrateDatabase(IHost host)
         {
-            using (IServiceScope scope = host.Services.CreateScope())
-            {
-                ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                context.Database.Migrate();
-            }
+            using IServiceScope scope = host.Services.CreateScope();
+            ApplicationDbContext context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            context.Database.Migrate();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

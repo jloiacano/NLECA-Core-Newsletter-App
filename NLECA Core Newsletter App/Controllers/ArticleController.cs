@@ -9,15 +9,10 @@ namespace NLECA_Core_Newsletter_App.Controllers
 {
     public class ArticleController : Controller
     {
-
-        private readonly ILogger<ArticleController> _logger;
-        private readonly IConfiguration _config;
         private readonly IArticleService _articleService;
 
-        public ArticleController(ILogger<ArticleController> logger, IConfiguration config, IArticleService articleService)
+        public ArticleController(IArticleService articleService)
         {
-            _logger = logger;
-            _config = config;
             _articleService = articleService;
         }
 
@@ -31,9 +26,9 @@ namespace NLECA_Core_Newsletter_App.Controllers
         [Authorize(Roles = "SuperAdmin,Admin,ReadOnlyUser")]
         public IActionResult AddArticle(int newsletterId)
         {
-            int newArticleId = _articleService.AddArticleToNewsletter(newsletterId);
+            _articleService.AddArticleToNewsletter(newsletterId);
 
-            return RedirectToAction("EditNewsletter", "Newsletter", new { newsletterId = newsletterId });
+            return RedirectToAction("EditNewsletter", "Newsletter", new { newsletterId });
         }
 
         [Authorize(Roles = "SuperAdmin,Admin,ReadOnlyUser")]
@@ -52,23 +47,23 @@ namespace NLECA_Core_Newsletter_App.Controllers
                 ArticleModel article = _articleService.GetArticleByArticleId(articleId);
                 article.ArticleText = articleText.Trim();
 
-                var test = _articleService.UpdateArticle(article);
+                _articleService.UpdateArticle(article);
             }
-            return RedirectToAction("EditNewsletter", "Newsletter", new { newsletterId = newsletterId });
+            return RedirectToAction("EditNewsletter", "Newsletter", new { newsletterId });
         }
 
         [Authorize(Roles = "SuperAdmin,Admin,ReadOnlyUser")]
         public IActionResult RemoveArticle(int newsletterId, int articleId)
         {
-            bool success = _articleService.DeleteArticle(articleId);
-            return RedirectToAction("EditNewsletter", "Newsletter", new { newsletterId = newsletterId });
+            _articleService.DeleteArticle(articleId);
+            return RedirectToAction("EditNewsletter", "Newsletter", new { newsletterId });
         }
 
         [Authorize(Roles = "SuperAdmin,Admin,ReadOnlyUser")]
         public IActionResult SaveArticle(ArticleModel article)
         {
-            bool success = _articleService.UpdateArticle(article);
-            return RedirectToAction("EditNewsletter", "Newsletter", new {newsletterId = article.NewsletterId });
+            _articleService.UpdateArticle(article);
+            return RedirectToAction("EditNewsletter", "Newsletter", new { article.NewsletterId });
         }
     }
 }

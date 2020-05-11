@@ -106,20 +106,18 @@ namespace NLECA_Core_Newsletter_App
             });
 
             // Seeding database roles and essential users here to have access to Azure configured App Settings
-            using (IServiceScope scope = host.Services.CreateScope())
+            using IServiceScope scope = host.Services.CreateScope();
+            IServiceProvider serviceProvider = scope.ServiceProvider;
+            try
             {
-                IServiceProvider serviceProvider = scope.ServiceProvider;
-                try
-                {
-                    var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationIdentityUser>>();
-                    var roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
-                    RoleAndAdminInitializer initializer = new RoleAndAdminInitializer(Configuration);
-                    initializer.SeedData(userManager, roleManager);
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex, "Seeding of the database failed in Startup.cs Configure()");
-                }
+                var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationIdentityUser>>();
+                var roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
+                RoleAndAdminInitializer initializer = new RoleAndAdminInitializer(Configuration);
+                initializer.SeedData(userManager, roleManager);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Seeding of the database failed in Startup.cs Configure()");
             }
         }
     }
