@@ -3,6 +3,10 @@
     ViewData["Title"] = "EditArticle";
 }
 
+@section HeaderScripts {
+    <script src="https://cdn.ckeditor.com/ckeditor5/19.0.0/classic/ckeditor.js"></script>
+}
+
 <h1>EditArticle</h1>
 
 <h2>Added: @Model.DateAdded by UserId: @Model.AddedBy</h2>
@@ -11,11 +15,19 @@
     <input type="hidden" name="newsletterId" value="@Model.NewsletterId" />
     <input type="hidden" name="articleId" value="@Model.ArticleId" />
     <input type="hidden" name="oldArticleText" value="@Model.ArticleText" />
-    <input type="text" name="articleText" value="@Model.ArticleText" />
+    @*<input type="text" name="articleText" value="@Model.ArticleText" />*@
+    <textarea id="articleEditor" name="articleText">@Model.ArticleText</textarea>
+
     <button type="submit">Save Changes</button>
     @*<a href="/Newsletter/EditNewsletter/?newsletterId=@Model.NewsletterId" class="btn btn-primary">Cancel</a>*@
 </form>
+
 <form action="/Newsletter/EditNewsletter" method="post">
     <input type="hidden" name="newsletterId" value="@Model.NewsletterId" />
     <button type="submit">Cancel</button>
 </form>
+
+
+@section Scripts {
+    <script src="~/js/Article/EditArticle.js"></script>
+}
