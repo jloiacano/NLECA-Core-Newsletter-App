@@ -5,20 +5,26 @@
 @{
     ViewData["Title"] = "Newsletter";
 }
+<div id="Newsletter">
+    <span class="developmentNotice">NLECA Site currently in development.</span>
+    <span class="developmentInstruction">Check back later for progress.</span>
+    <div class="banner">
+        <div class="bannerImage"></div>
+        <div class="bannerDate"><h2>@DateTime.Parse(Model.DisplayDate).ToString("MMMM yyyy")</h2></div>
+        <div class="bannerTitle"><h1>NLECA Newsletter</h1></div>
+    </div>
+    
+    
 
-<span style="color: red; font-size: larger;">NLECA Site currently in development.</span>
-<span style="font-size: larger;">Check back later for progress.</span>
-<h1>Mock Newsletter Added: @Model.CreatedDate</h1>
-<h2>Display Date: @DateTime.Parse(Model.DisplayDate).ToString("MMMM yyyy")</h2>
-
-@if (Model.Articles.Count() == 0)
-{
-    <h1>This newsletter does not have any articles yet...</h1>
-}
-else
-{
-    @foreach (ArticleModel article in Model.Articles)
+    @if (Model.Articles.Count() == 0)
     {
-        <h2>@Html.Raw(article.ArticleText)</h2>
+        <h1>This newsletter does not have any articles yet...</h1>
     }
-}
+    else
+    {
+        @foreach (ArticleModel article in Model.Articles)
+        {
+            <h2>@Html.Raw(article.ArticleText)</h2>
+        }
+    }
+</div>

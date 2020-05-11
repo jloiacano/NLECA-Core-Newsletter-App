@@ -69,3 +69,42 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+/* Newsletter styles
+-------------------------------------------------- */
+
+#Newsletter .developmentNotice {
+    color: red;
+    font-size: larger;
+}
+
+#Newsletter .developmentInstruction {
+    font-size: larger;
+}
+
+#Newsletter .banner {
+    width: 100%;
+    padding: 0 5% 0 5%;
+    height: 160px;
+}
+
+    #Newsletter .banner .bannerImage {
+        width: 25%;
+        float: left;
+        text-align: left;
+    }
+
+    #Newsletter .banner .bannerDate {
+        width: 25%;
+        float: right;
+        text-align: right;
+    }
+
+    #Newsletter .banner .bannerTitle {
+        width: 50%;
+        margin-left: 25%;
+        padding-top: 51px;
+        text-align: center;
+        font-size: 50px;
+    }
+
