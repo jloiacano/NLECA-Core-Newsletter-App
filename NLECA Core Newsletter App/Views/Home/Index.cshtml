@@ -22,9 +22,12 @@
     }
     else
     {
+        @section Scripts {
+            <script src="~/js/Article/NewsletterArticle.js"></script>
+        }
         @foreach (ArticleModel article in Model.Articles)
         {
-            <h2>@Html.Raw(article.ArticleText)</h2>
+            <partial name="/Views/Article/Partials/_ArticleInNewsletter.cshtml" model="article" />
         }
     }
 </div>
