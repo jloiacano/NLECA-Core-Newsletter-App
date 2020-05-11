@@ -29,45 +29,102 @@ namespace NLECA_Core_Newsletter_App
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<ApplicationIdentityUser>()
-                .AddRoles<ApplicationRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddDistributedMemoryCache();
-
-            services.AddSession(options =>
+            try
             {
-                options.IdleTimeout = TimeSpan.FromSeconds(3600); // reset after an hour
-                options.Cookie.HttpOnly = false;
-                options.Cookie.IsEssential = false;
-            });
-            services.AddControllersWithViews();
-            services.AddRazorPages();
-            services.AddAuthentication()
-                .AddFacebook(facebookOptions =>
-                {
-                    facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
-                    facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
-                })
-                .AddGoogle(options =>
-                {
-                    IConfigurationSection googleAuthNSection =
-                        Configuration.GetSection("Authentication:Google");
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseSqlServer(
+                        Configuration.GetConnectionString("DefaultConnection")));
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error adding database context in Startup.cs", ex);
+            }
 
-                    options.ClientId = googleAuthNSection["ClientId"];
-                    options.ClientSecret = googleAuthNSection["ClientSecret"];
-                })
-                .AddTwitter(twitterOptions =>
+            try
+            {
+                services.AddDefaultIdentity<ApplicationIdentityUser>()
+                    .AddRoles<ApplicationRole>()
+                    .AddEntityFrameworkStores<ApplicationDbContext>();
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error initializing IdentityFramework in Startup.cs", ex);
+            }
+
+            try
+            {
+                services.AddDistributedMemoryCache();
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error adding distributed memory cache in Startup.cs", ex);
+            }
+
+
+            try
+            {
+                services.AddSession(options =>
                 {
-                    twitterOptions.ConsumerKey = Configuration["Authentication:Twitter:ConsumerAPIKey"];
-                    twitterOptions.ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"];
-                    twitterOptions.RetrieveUserDetails = true;
+                    options.IdleTimeout = TimeSpan.FromSeconds(3600); // reset after an hour
+                    options.Cookie.HttpOnly = false;
+                    options.Cookie.IsEssential = false;
                 });
-            services.AddScoped<INewsletterService, NewsletterService>();
-            services.AddScoped<IArticleService, ArticleService>();
-            services.AddScoped<ISQLHelperService, SQLHelperService>();
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error adding sesion options in Startup.cs", ex);
+            }
+
+            try
+            {
+                services.AddControllersWithViews();
+                services.AddRazorPages();
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error adding Core services in Startup.cs", ex);
+            }
+
+
+            try
+            {
+                services.AddAuthentication()
+                    .AddFacebook(facebookOptions =>
+                    {
+                        facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
+                        facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+                    })
+                    .AddGoogle(options =>
+                    {
+                        IConfigurationSection googleAuthNSection =
+                            Configuration.GetSection("Authentication:Google");
+
+                        options.ClientId = googleAuthNSection["ClientId"];
+                        options.ClientSecret = googleAuthNSection["ClientSecret"];
+                    })
+                    .AddTwitter(twitterOptions =>
+                    {
+                        twitterOptions.ConsumerKey = Configuration["Authentication:Twitter:ConsumerAPIKey"];
+                        twitterOptions.ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"];
+                        twitterOptions.RetrieveUserDetails = true;
+                    });
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error adding authentications in Startup.cs", ex);
+            }
+
+
+            try
+            {
+                services.AddScoped<INewsletterService, NewsletterService>();
+                services.AddScoped<IArticleService, ArticleService>();
+                services.AddScoped<ISQLHelperService, SQLHelperService>();
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error injecting service interfaces in Startup.cs", ex);
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
