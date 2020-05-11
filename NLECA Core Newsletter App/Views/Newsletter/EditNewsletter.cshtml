@@ -50,7 +50,8 @@
 
 @foreach (ArticleModel article in Model.Articles)
 {
-    <div>@Html.Raw(article.ArticleText)</div>
+    <div>@article.ArticleText</div>
+    @*<div>@Html.Raw(article.ArticleText)</div>*@
     <div>
         <form action="/Article/EditArticle" method="post">
             <input type="hidden" name="articleId" value="@article.ArticleId" />
