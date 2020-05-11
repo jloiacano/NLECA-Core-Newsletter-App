@@ -17,6 +17,5 @@ EditArticle = {
             });
 
         articleEditor.destroy();
-        alert(text);
     }
 }
