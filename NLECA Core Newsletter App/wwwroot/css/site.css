@@ -75,62 +75,30 @@ body {
 
 #Newsletter .developmentNotice {
     color: red;
-    /*font-size: larger;*/
 }
 
 #Newsletter .developmentInstruction {
-    /*font-size: larger;*/
 }
 
 #Newsletter .banner {
-    width: 100%;
-    padding: 0 5% 0 5%;
-    height: 70px;
+    padding-top: 1rem;
 }
-
-    #Newsletter .banner .bannerImage {
-        width: 25%;
-        float: left;
+    #Newsletter .banner .image {
         text-align: left;
     }
-
-    #Newsletter .banner .bannerDate {
-        width: 25%;
-        float: right;
-        text-align: right;
-    }
-
-        #Newsletter .banner .bannerDate h2 {
-            font-size: large;
-            font-weight: 700;
-        }
-
-    #Newsletter .banner .bannerTitle {
-        width: 50%;
-        margin-left: 25%;
+    #Newsletter .banner .title {
         text-align: center;
+        margin: auto 0;
     }
-
-        #Newsletter .banner .bannerTitle h1 {
+        #Newsletter .banner .title h1 {
             font-size: 2.5rem;
         }
-
-#Newsletter .bs4banner {
-    background-color: yellow;
-}
-    #Newsletter .bs4banner .image {
-        text-align: left;
-    }
-    #Newsletter .bs4banner .title {
-        text-align: center;
-    }
-        #Newsletter .bs4banner .title h1 {
-            font-size: 2.5rem;
-        }
-    #Newsletter .bs4banner .date {
+    #Newsletter .banner .date {
         text-align: right;
+        margin: auto 0;
+        padding-bottom: 2.5rem;
     }
-        #Newsletter .bs4banner .date h2 {
+        #Newsletter .banner .date h2 {
             font-size: large;
             font-weight: 700;
         }
