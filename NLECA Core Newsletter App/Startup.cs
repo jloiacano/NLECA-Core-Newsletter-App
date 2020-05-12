@@ -117,6 +117,7 @@ namespace NLECA_Core_Newsletter_App
 
             try
             {
+                services.AddScoped<ISplashScreenService, SplashScreenService>();
                 services.AddScoped<INewsletterService, NewsletterService>();
                 services.AddScoped<IArticleService, ArticleService>();
                 services.AddScoped<ISQLHelperService, SQLHelperService>();

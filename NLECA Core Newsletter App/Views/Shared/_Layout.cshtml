@@ -1,6 +1,4 @@
-﻿@using Microsoft.AspNetCore.Http
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -23,7 +21,12 @@
         string spinnerDisplay = shouldDisplaySpinner ? "display: block;" : "display: none;";
     }
 
-    <input type="hidden" id="SplashScreenCurrentlyVisible" value="@(hideSplashScreenCookie == null ? "true" : "false")">
+    <input type="hidden" id="SplashScreenData"
+           data-showscreen="@(hideSplashScreenCookie == null ? "true" : "false")"
+           @*customize the duration here*@
+           data-splashscreenduration="2500"
+           @*for testing purposes set to true which makes it always show for 15 minutes*@
+           data-testing="true">
 
     <div id="nlecaSpinnerWrapper" style="@spinnerDisplay">
         <div id="nlecaSpinnerOverlay"></div>

@@ -13,13 +13,28 @@ $(window).on('beforeunload', function () {
 
 nlecaSpinner = {
     slowEnoughToDisplaySpinner: false,
-    splashScreenDuration: 2500,
+    splashScreenDuration: null,
 
     init: function () {
         this.testForSlowConnection();
         this.setHideSplashScreenCookie();
+        this.setSplashScreenDuration();
         this.handleSplashScreen();
         this.setUpAjaxCallsFunctionality();
+    },
+
+    setSplashScreenDuration: function () {
+        if ($('#SplashScreenData').data('splashscreenduration')) {
+            this.splashScreenDuration = $('#SplashScreenData').data('splashscreenduration');
+        }
+        else {
+            this.splashScreenDuration = 0;
+        }
+
+        //when testing set to 15 minutes
+        if ($('#SplashScreenData').data('testing')) {
+            this.splashScreenDuration = 900000;
+        }
     },
 
     testForSlowConnection: function () {
@@ -45,13 +60,19 @@ nlecaSpinner = {
     },
 
     setHideSplashScreenCookie: function () {
-        var hideSplashScreenExpiration = new Date().addHours(3);
-        var hideSplashScreenCookieValue = encodeURIComponent('Expiration-' + hideSplashScreenExpiration.ConvertToReadableLocalTime());
-        document.cookie = 'HideSplashScreen=' + hideSplashScreenCookieValue + '; expires=' + hideSplashScreenExpiration.toUTCString() + '; path=/;';
+        // if we aren't testing the splash screen set the HideSplashScreen cookie
+        if ($('#SplashScreenData').data('testing') != true) {
+            var hideSplashScreenExpiration = new Date().addHours(3);
+            var hideSplashScreenCookieValue = encodeURIComponent('Expiration-' + hideSplashScreenExpiration.ConvertToReadableLocalTime());
+            document.cookie = 'HideSplashScreen=' + hideSplashScreenCookieValue + '; expires=' + hideSplashScreenExpiration.toUTCString() + '; path=/;';
+        }
+        else {
+            document.cookie = 'HideSplashScreen=; expires=' + new Date().Zero().toUTCString() + '; path=/;';
+        }
     },
 
     handleSplashScreen: function () {
-        if ($('#SplashScreenCurrentlyVisible').val() == 'true') {
+        if ($('#SplashScreenData').data('showscreen') == true) {
             setTimeout(function () {
                 $('#nlecaSpinnerWrapper').fadeOut();
             }, this.splashScreenDuration);
