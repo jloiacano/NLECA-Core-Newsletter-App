@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -15,30 +17,7 @@
         @await Component.InvokeAsync("HeaderMenu")
     </header>
 
-    @{
-        string hideSplashScreenCookie = Context.Request.Cookies["HideSplashScreen"];
-        bool shouldDisplaySpinner = hideSplashScreenCookie == null || Context.Request.Cookies["UseSpinner"] != null;
-        string spinnerDisplay = shouldDisplaySpinner ? "display: block;" : "display: none;";
-    }
-
-    <input type="hidden" id="SplashScreenData"
-           data-showscreen="@(hideSplashScreenCookie == null ? "true" : "false")"
-           @*customize the duration here*@
-           data-splashscreenduration="2500"
-           @*for testing purposes set to true which makes it always show for 15 minutes*@
-           data-testing="true">
-
-    <div id="nlecaSpinnerWrapper" style="@spinnerDisplay">
-        <div id="nlecaSpinnerOverlay"></div>
-        <div id="nlecaSpinner" role="status">
-            <span id="nlecaSpinnerN" aria-hidden="true">N</span>
-            <span id="nlecaSpinnerL" aria-hidden="true">L</span>
-            <span id="nlecaSpinnerE" aria-hidden="true">E</span>
-            <span id="nlecaSpinnerC" aria-hidden="true">C</span>
-            <span id="nlecaSpinnerA" aria-hidden="true">A</span>
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
+    <partial name="~/Views/Shared/SplashScreen/_SplashScreenSelector.cshtml" />
 
     <div class="container">
         <main role="main" class="pb-3">

@@ -11,17 +11,17 @@ namespace NLECA_Core_Newsletter_App.Service.Services
 
         public string GetBirthdayLayout()
         {
-            return "";
+            return "~/Views/Shared/SplashScreen/_BirthdaySplashScreenPartial.cshtml";
         }
 
         public bool IsAHoliday()
         {
-            return true;
+            return false;
         }
 
         public string GetHolidayLayout()
         {
-            return " ";
+            return "~/Views/Shared/SplashScreen/_HolidaySplashScreenPartial.cshtml";
         }
     }
 }

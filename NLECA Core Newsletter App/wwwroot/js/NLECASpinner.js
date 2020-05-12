@@ -3,6 +3,7 @@ var nlecaSpinner = nlecaSpinner || {};
 
 $(document).ready(function () {
     nlecaSpinner.init();
+    console.log('nlecaSpinner initialized')
 });
 
 

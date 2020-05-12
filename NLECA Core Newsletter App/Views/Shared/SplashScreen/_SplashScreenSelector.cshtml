@@ -1,0 +1,16 @@
+﻿@inject NLECA_Core_Newsletter_App.Service.Interfaces.ISplashScreenService splashScreen
+<script type="text/javascript" src="~/js/JSDateHelpers.js"></script>
+<script type="text/javascript" src="~/js/NLECASpinner.js"></script>
+
+@if (splashScreen.IsABirthday())
+{
+    <partial name=@splashScreen.GetBirthdayLayout() />
+}
+else if (splashScreen.IsAHoliday())
+{
+    <partial name=@splashScreen.GetHolidayLayout() />
+}
+else
+{
+    <partial name="~/Views/Shared/SplashScreen/_RegularSplashScreenPartial.cshtml" />
+}
