@@ -145,7 +145,7 @@
 }
 @-webkit-keyframes rotateA {
     80% { -webkit-transform: rotateY(0deg); }
-    50% { -webkit-transform: rotateY(180deg); }
+    90% { -webkit-transform: rotateY(180deg); }
     100% { -webkit-transform: rotateY(0deg); }
 }
 @keyframes rotateA {

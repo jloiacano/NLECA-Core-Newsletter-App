@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", function () {
 SplashScreen = {
 
     splashScreenDuration: 0,
-    testing: false,
 
 
     init: function () {
@@ -44,7 +43,6 @@ SplashScreen = {
     setClickOnOff: function () {
         $('#splashScreenTester').click(function () {
             $('#splashScreenWrapper').fadeIn();
-            SplashScreen.testing = true;
         });
 
         $('#splashScreenOverlay').click(function () {
