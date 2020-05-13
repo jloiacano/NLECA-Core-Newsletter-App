@@ -17,7 +17,8 @@
         @await Component.InvokeAsync("HeaderMenu")
     </header>
 
-    <partial name="~/Views/Shared/SplashScreen/_SplashScreenSelector.cshtml" />
+    @await Component.InvokeAsync("SplashScreen")
+    @await Component.InvokeAsync("Spinner")
 
     <div class="container">
         <main role="main" class="pb-3">
@@ -33,7 +34,6 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/JSDateHelpers.js" asp-append-version="true"></script>
-    <script src="~/js/NLECASpinner.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

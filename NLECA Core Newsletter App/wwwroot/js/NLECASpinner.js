@@ -1,41 +1,26 @@
 ﻿//Heres all the stuff to make the spinner spin (or not as the case may be)
 var nlecaSpinner = nlecaSpinner || {};
 
-$(document).ready(function () {
+document.addEventListener('DOMContentLoaded', function () {
     nlecaSpinner.init();
-    console.log('nlecaSpinner initialized')
 });
 
 
-$(window).on('beforeunload', function () {
+window.addEventListener('beforeunload', function () {
     nlecaSpinner.unloadSpinner();
 });
 
 
 nlecaSpinner = {
     slowEnoughToDisplaySpinner: false,
-    splashScreenDuration: null,
+    testing: false,
 
     init: function () {
         this.testForSlowConnection();
-        this.setHideSplashScreenCookie();
-        this.setSplashScreenDuration();
-        this.handleSplashScreen();
+        this.handleSpinner();
         this.setUpAjaxCallsFunctionality();
-    },
-
-    setSplashScreenDuration: function () {
-        if ($('#SplashScreenData').data('splashscreenduration')) {
-            this.splashScreenDuration = $('#SplashScreenData').data('splashscreenduration');
-        }
-        else {
-            this.splashScreenDuration = 0;
-        }
-
-        //when testing set to 15 minutes
-        if ($('#SplashScreenData').data('testing')) {
-            this.splashScreenDuration = 900000;
-        }
+        this.setClickOnOff();
+        console.log('nlecaSpinner initialized');
     },
 
     testForSlowConnection: function () {
@@ -45,6 +30,14 @@ nlecaSpinner = {
         }
         else {
             this.removeUseSpinnerCookie();
+        }
+    },
+
+    handleSpinner: function () {
+        if ($('#SpinnerData').data('showspinner') == 'True') {
+            setTimeout(function () {
+                $('#nlecaSpinnerWrapper').fadeOut();
+            }, 500);
         }
     },
 
@@ -58,33 +51,6 @@ nlecaSpinner = {
 
     removeUseSpinnerCookie: function () {
         document.cookie = 'UseSpinner=; expires=' + new Date().Zero().toUTCString() + '; path=/;';
-    },
-
-    setHideSplashScreenCookie: function () {
-        // if we aren't testing the splash screen set the HideSplashScreen cookie
-        if ($('#SplashScreenData').data('testing') != true) {
-            var hideSplashScreenExpiration = new Date().addHours(3);
-            var hideSplashScreenCookieValue = encodeURIComponent('Expiration-' + hideSplashScreenExpiration.ConvertToReadableLocalTime());
-            document.cookie = 'HideSplashScreen=' + hideSplashScreenCookieValue + '; expires=' + hideSplashScreenExpiration.toUTCString() + '; path=/;';
-        }
-        else {
-            document.cookie = 'HideSplashScreen=; expires=' + new Date().Zero().toUTCString() + '; path=/;';
-        }
-    },
-
-    handleSplashScreen: function () {
-        if ($('#SplashScreenData').data('showscreen') == true) {
-            setTimeout(function () {
-                $('#nlecaSpinnerWrapper').fadeOut();
-            }, this.splashScreenDuration);
-        }
-        else {
-            if ($('#nlecaSpinnerWrapper').css('display') != 'none') {
-                setTimeout(function () {
-                    $('#nlecaSpinnerWrapper').fadeOut();
-                }, 750);
-            }
-        }
     },
 
     unloadSpinner: function () {
@@ -101,5 +67,18 @@ nlecaSpinner = {
         }).ajaxError(function (event, jqxhr, settings, exception) {
             $('#nlecaSpinnerWrapper').fadeOut();
         });
-    }
+    },
+
+    setClickOnOff: function () {
+        $('#spinnerTester').click(function () {
+            $('#nlecaSpinnerWrapper').fadeIn();
+            nlecaSpinner.testing = true;
+        });
+
+        $('#nlecaSpinnerOverlay').click(function () {
+            if (nlecaSpinner.testing) {
+                $('#nlecaSpinnerWrapper').fadeOut();
+            }
+        });
+    },
 };
