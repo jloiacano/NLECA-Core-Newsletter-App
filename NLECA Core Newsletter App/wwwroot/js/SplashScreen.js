@@ -8,7 +8,6 @@ SplashScreen = {
 
     splashScreenDuration: 0,
 
-
     init: function () {
         this.setSplashScreenDuration();
         this.setHideSplashScreenCookie();

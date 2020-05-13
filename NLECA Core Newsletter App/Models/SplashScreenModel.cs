@@ -10,7 +10,7 @@
         {
             ShowScreen = showSplashScreen;
             Style = "display: block;";
-            Duration = 2500;
+            Duration = 3000;
         }
     }
 }
