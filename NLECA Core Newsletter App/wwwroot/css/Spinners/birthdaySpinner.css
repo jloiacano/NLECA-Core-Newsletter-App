@@ -1,0 +1,59 @@
+﻿
+
+/* Spinner Style
+-------------------------------------------------- */
+#nlecaSpinnerWrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+
+#nlecaSpinnerOverlay {
+    width: 100%;
+    height: 100%;
+    background-color: blue;
+    opacity: 0.8;
+}
+
+#nlecaSpinner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -60px;
+    margin-top: -28px;
+    width: 120px;
+    height: 56px;
+    font-size: 36px;
+    font-weight: 500;
+    color: black;
+}
+
+/* Spinner Text
+-------------------------------------------------- */
+#nlecaSpinnerText {
+    position: absolute;
+    margin: 0 0 0 0;
+    -webkit-animation: rotateNlecaSpinnerText 2S linear infinite;
+    -moz-animation: rotateNlecaSpinnerText 2S linear infinite;
+    animation: rotateNlecaSpinnerText 2S linear infinite;
+}
+@-moz-keyframes rotateNlecaSpinnerText {
+    0% { -moz-transform: rotate(0deg); }
+    39% { -moz-transform: rotate(360deg); }
+    50% { -moz-transform: rotate(360deg); }
+    89% { -moz-transform: rotate(0deg); }
+}
+@-webkit-keyframes rotateNlecaSpinnerText {
+    0% { -webkit-transform: rotate(0deg); }
+    39% { -webkit-transform: rotate(360deg); }
+    50% { -webkit-transform: rotate(360deg); }
+    89% { -webkit-transform: rotate(0deg); }
+}
+@keyframes rotateNlecaSpinnerText {
+    0% { transform: rotate(0deg); }
+    39% { transform: rotate(360deg); }
+    50% { transform: rotate(360deg); }
+    89% { transform: rotate(0deg); }
+}

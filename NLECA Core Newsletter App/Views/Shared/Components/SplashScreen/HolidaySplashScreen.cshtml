@@ -1,0 +1,19 @@
+﻿@model SplashScreenModel
+
+
+<input type="hidden" id="SplashScreenData"
+       data-showscreen=@Model.ShowScreen
+       @*customize the duration here*@
+       data-splashscreenduration=@Model.Duration />
+
+<link rel="stylesheet" href="~/css/SplashScreens/holidaySplashScreen.css" />
+
+<div id="splashScreenWrapper" style="display: @(Model.ShowScreen == true ? "block" : "none")">
+    <div id="splashScreenOverlay"></div>
+    <div id="holidaySplashScreen" role="status">
+        <span id="holidaySplash" aria-hidden="true">Example Holiday Screen</span>
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
+<script src="~/js/SplashScreens/SplashScreen.js" asp-append-version="true"></script>
