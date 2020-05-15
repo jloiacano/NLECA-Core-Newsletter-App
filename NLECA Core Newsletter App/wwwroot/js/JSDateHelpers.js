@@ -1,15 +1,44 @@
-﻿Date.prototype.addHours = function (h) {
-    this.setTime(this.getTime() + (h * 3600000));
+﻿const dateSecond = 1000;
+const dateMinute = 60 * dateSecond;
+const dateHour = 60 * dateMinute;
+const dateDay = 24 * dateHour;
+const dateWeek = 7 * dateDay;
+const dateMonth = 30 * dateDay;
+const dateYear = 365 * dateDay;
+
+
+Date.prototype.addYears = function (y) {
+    this.setTime(this.getTime() + (y * dateYear));
+    return this;
+}
+
+Date.prototype.addMonths = function (M) {
+    this.setTime(this.getTime() + (M * dateMonth));
+    return this;
+}
+
+Date.prototype.addWeeks = function (w) {
+    this.setTime(this.getTime() + (w * dateWeek));
+    return this;
+}
+
+Date.prototype.addDays = function (d) {
+    this.setTime(this.getTime() + (d * dateDay));
+    return this;
+}
+
+Date.prototype.addHours = function (h) {
+    this.setTime(this.getTime() + (h * dateHour));
     return this;
 }
 
 Date.prototype.addMinutes = function (m) {
-    this.setTime(this.getTime() + (m * 60000));
+    this.setTime(this.getTime() + (m * dateMinute));
     return this;
 }
 
 Date.prototype.addSeconds = function (s) {
-    this.setTime(this.getTime() + (s * 1000));
+    this.setTime(this.getTime() + (s * dateSecond));
     return this;
 }
 

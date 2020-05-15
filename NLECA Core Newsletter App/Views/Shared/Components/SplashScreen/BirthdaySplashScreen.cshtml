@@ -1,4 +1,4 @@
-﻿@model SplashScreenModel
+﻿@model BirthdaySplashScreenModel
 
 
 <input type="hidden" id="SplashScreenData"
@@ -10,15 +10,31 @@
 
 <div id="splashScreenWrapper" style="display: @(Model.ShowScreen == true ? "block" : "none")">
     <div id="splashScreenOverlay"></div>
-    <div id="nlecaSplashScreen" role="status">
-        <span id="nlecaSplashScreenN" aria-hidden="true">N</span>
-        <span id="nlecaSplashScreenL" aria-hidden="true">L</span>
-        <span id="nlecaSplashScreenE" aria-hidden="true">E</span>
-        <span id="nlecaSplashScreenC" aria-hidden="true">C</span>
-        <span id="nlecaSplashScreenA" aria-hidden="true">A</span>
+
+    <div id="birthdaySplashScreen" role="status">
+        <div>
+            <span id="birthdaySplashScreenGreeting">HAPPY BIRTHDAY!!!</span>
+        </div>
+
+        <div>
+            <span id="birthdaySplashScreenName">@Model.Name</span>
+        </div>
+
         <span class="sr-only">Loading...</span>
     </div>
+
+    <div id="splashScreenClosingInstructions">
+        <div>
+            <span class="closingInstructions">Click anywhere on screen to close</span>
+        </div>
+
+        <div>
+            <span class="closingForDay" aria-hidden="true">or Click <span id="closeBirthdaySplashScreenForDay">HERE</span> to close for the day</span>
+        </div>
+    </div>
+
 </div>
 
 <script src="~/js/SplashScreens/SplashScreen.js" asp-append-version="true"></script>
+<script src="~/js/SplashScreens/BirthdaySplashScreen.js" asp-append-version="true"></script>
 

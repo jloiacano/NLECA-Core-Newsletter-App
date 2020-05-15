@@ -18,139 +18,47 @@
     opacity: 0.8;
 }
 
-#nlecaSplashScreen {
+#birthdaySplashScreen {
     position: fixed;
     top: 50%;
     left: 50%;
-    margin-left: -60px;
-    margin-top: -28px;
-    width: 120px;
-    height: 56px;
+    margin-left: -200px;
+    margin-top: -55px;
+    width: 400px;
+    height: 110px;
     font-size: 36px;
     font-weight: 500;
     color: black;
+    text-align: center;
 }
 
-/* SplashScreen N
+/* Birthday Stuff
 -------------------------------------------------- */
-#nlecaSplashScreenN {
-    position: absolute;
-    margin: 0 0 0 0;
-    -webkit-animation: rotateSplashScreenN 3S linear infinite;
-    -moz-animation: rotateSplashScreenN 3S linear infinite;
-    animation: rotateSplashScreenN 3S linear infinite;
+#birthdaySplashScreenGreeting {
+    /*background-color: blue;*/
 }
-@-moz-keyframes rotateSplashScreenN {
-    10% { -moz-transform: rotateY(0deg); }
-    18% { -moz-transform: rotateY(180deg); }
-    26% { -moz-transform: rotateY(0deg); }
-}
-@-webkit-keyframes rotateSplashScreenN {
-    10% { -webkit-transform: rotateY(0deg); }
-    18% { -webkit-transform: rotateY(180deg); }
-    26% { -webkit-transform: rotateY(0deg); }
-}
-@keyframes rotateSplashScreenN {
-    10% { transform: rotateY(0deg); }
-    18% { transform: rotateY(180deg); }
-    26% { transform: rotateY(0deg); }
+#birthdaySplashScreenName {
+    /*background-color: blue;*/
 }
 
-/* SplashScreen L
--------------------------------------------------- */
-#nlecaSplashScreenL {
-    position: absolute;
-    margin: 0 0 0 30px;
-    -webkit-animation: rotateSplashScreenL 3S linear infinite;
-    -moz-animation: rotateSplashScreenL 3S linear infinite;
-    animation: rotateSplashScreenL 3S linear infinite;
+#splashScreenClosingInstructions {
+    position: fixed;
+    bottom: 7%;
+    right: 5%;
+    font-weight: 500;
+    color: black;
+    text-align: right;
 }
-@-moz-keyframes rotateSplashScreenL {
-    26% { -moz-transform: rotateX(0deg); }
-    34% { -moz-transform: rotateX(180deg); }
-    42% { -moz-transform: rotateX(0deg); }
-}
-@-webkit-keyframes rotateSplashScreenL {
-    26% { -webkit-transform: rotateX(0deg); }
-    34% { -webkit-transform: rotateX(180deg); }
-    42% { -webkit-transform: rotateX(0deg); }
-}
-@keyframes rotateSplashScreenL {
-    26% { transform: rotateX(0deg); }
-    34% { transform: rotateX(180deg); }
-    42% { transform: rotateX(0deg); }
+.closingInstructions {
 }
 
-/* SplashScreen E
--------------------------------------------------- */
-#nlecaSplashScreenE {
-    position: absolute;
-    margin: 0 0 0 50px;
-    -webkit-animation: rotateSplashScreenE 3S linear infinite;
-    -moz-animation: rotateSplashScreenE 3S linear infinite;
-    animation: rotateSplashScreenE 3S linear infinite;
-}
-@-moz-keyframes rotateSplashScreenE {
-    42% { -moz-transform: rotateY(0deg); }
-    50% { -moz-transform: rotateY(180deg); }
-    58% { -moz-transform: rotateY(0deg); }
-}
-@-webkit-keyframes rotateSplashScreenE {
-    42% { -webkit-transform: rotateY(0deg); }
-    50% { -webkit-transform: rotateY(180deg); }
-    58% { -webkit-transform: rotateY(0deg); }
-}@keyframes rotateSplashScreenE {
-    42% { transform: rotateY(0deg); }
-    50% { transform: rotateY(180deg); }
-    58% { transform: rotateY(0deg); }
+.closingForDay {
 }
 
-/* SplashScreen C
--------------------------------------------------- */
-#nlecaSplashScreenC {
-    position: absolute;
-    margin: 0 0 0 70px;
-    -webkit-animation: rotateSplashScreenC 3S linear infinite;
-    -moz-animation: rotateSplashScreenC 3S linear infinite;
-    animation: rotateSplashScreenC 3S linear infinite;
+#closeBirthdaySplashScreenForDay {
+    color: blue;
 }
-@-moz-keyframes rotateSplashScreenC {
-    58% { -moz-transform: rotateX(0deg); }
-    66% { -moz-transform: rotateX(180deg); }
-    74% { -moz-transform: rotateX(0deg); }
-}
-@-webkit-keyframes rotateSplashScreenC {
-    58% { -webkit-transform: rotateX(0deg); }
-    66% { -webkit-transform: rotateX(180deg); }
-    74% { -webkit-transform: rotateX(0deg); }
-}
-@keyframes rotateSplashScreenC {
-    58% { transform: rotateX(0deg); }
-    66% { transform: rotateX(180deg); }
-    74% { transform: rotateX(0deg); }
-}
-
-/* SplashScreen A
--------------------------------------------------- */
-#nlecaSplashScreenA {
-    position: absolute;
-    margin: 0 0 0 95px;
-    -webkit-animation: rotateSplashScreenA 3S linear infinite;
-    -moz-animation: rotateSplashScreenA 3S linear infinite;
-    animation: rotateSplashScreenA 3S linear infinite;
-}
-@-moz-keyframes rotateSplashScreenA {
-    74% { -moz-transform: rotateY(0deg); }
-    82% { -moz-transform: rotateY(180deg); }
-    90% { -moz-transform: rotateY(0deg); }
-}
-@-webkit-keyframes rotateSplashScreenA {
-    74% { -webkit-transform: rotateY(0deg); }
-    82% { -webkit-transform: rotateY(180deg); }
-    90% { -webkit-transform: rotateY(0deg); }
-}
-@keyframes rotateSplashScreenA {
-    74% { transform: rotateY(0deg); }
-    82% { transform: rotateY(180deg); }
-    90% { transform: rotateY(0deg); }
+#closeBirthdaySplashScreenForDay:hover {
+    color: red;
+    cursor: pointer;
 }
