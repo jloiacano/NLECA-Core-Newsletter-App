@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +13,11 @@ namespace NLECA_Core_Newsletter_App.Areas.Identity.Pages.Account.Manage
 {
     public partial class IndexModel : PageModel
     {
-        private readonly UserManager<ApplicationIdentityUser> _userManager;
+        private readonly ApplicationIdentityUserManager _userManager;
         private readonly SignInManager<ApplicationIdentityUser> _signInManager;
 
         public IndexModel(
-            UserManager<ApplicationIdentityUser> userManager,
+            ApplicationIdentityUserManager userManager,
             SignInManager<ApplicationIdentityUser> signInManager)
         {
             _userManager = userManager;
@@ -93,9 +94,16 @@ namespace NLECA_Core_Newsletter_App.Areas.Identity.Pages.Account.Manage
                 }
             }
 
-            if (!string.IsNullOrEmpty(Input.ContactName))
+            var contactName = await _userManager.GetContactNameAsync(user);
+            if (Input.ContactName != contactName)
             {
-                user.ContactName = Input.ContactName;
+                var setContactNameResult = await _userManager.SetContactNameAsync(user, Input.ContactName);
+
+                if (!setContactNameResult.Succeeded)
+                {
+                    var userId = await _userManager.GetUserIdAsync(user);
+                    throw new InvalidOperationException($"Unexpected error occurred setting Contact Name for user with ID '{userId}'.");
+                }
             }
 
             await _signInManager.RefreshSignInAsync(user);
