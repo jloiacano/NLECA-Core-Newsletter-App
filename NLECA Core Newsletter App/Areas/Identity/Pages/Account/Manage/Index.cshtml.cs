@@ -33,6 +33,10 @@ namespace NLECA_Core_Newsletter_App.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
+            [Required]
+            [Display(Name = "Name")]
+            public string ContactName { get; set; }
+
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
@@ -47,7 +51,8 @@ namespace NLECA_Core_Newsletter_App.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                ContactName = user.ContactName
             };
         }
 
@@ -86,6 +91,11 @@ namespace NLECA_Core_Newsletter_App.Areas.Identity.Pages.Account.Manage
                     var userId = await _userManager.GetUserIdAsync(user);
                     throw new InvalidOperationException($"Unexpected error occurred setting phone number for user with ID '{userId}'.");
                 }
+            }
+
+            if (!string.IsNullOrEmpty(Input.ContactName))
+            {
+                user.ContactName = Input.ContactName;
             }
 
             await _signInManager.RefreshSignInAsync(user);

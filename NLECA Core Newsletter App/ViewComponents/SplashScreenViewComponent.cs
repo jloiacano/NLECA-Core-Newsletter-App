@@ -6,6 +6,7 @@ using NLECA_Core_Newsletter_App.Service.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 
 namespace NLECA_Core_Newsletter_App.ViewComponents
 {
@@ -46,7 +47,10 @@ namespace NLECA_Core_Newsletter_App.ViewComponents
                 && HttpContext.Request.Cookies["HideBirthdaySplashScreen"] == null
                 && HttpContext.Request.Cookies["HideBirthdaySplashScreenForSession"] != "true")
             {
-                string name = User.Identity.Name; // TODO - J - Claims names etc.
+                var identity = (ClaimsIdentity)User.Identity;
+                IEnumerable<Claim> claims = identity.Claims;
+
+                string name = claims.Where(x => x.Type == "ContactName").FirstOrDefault().Value;
                 
                 BirthdaySplashScreenModel birthdaySplashScreen = new BirthdaySplashScreenModel(true, name);
                 BirthdayView = View("BirthdaySplashScreen", birthdaySplashScreen);

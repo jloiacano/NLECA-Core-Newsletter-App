@@ -45,6 +45,8 @@ namespace NLECA_Core_Newsletter_App
                 services.AddDefaultIdentity<ApplicationIdentityUser>()
                     .AddRoles<ApplicationRole>()
                     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+                services.AddScoped<IUserClaimsPrincipalFactory<ApplicationIdentityUser>, NLECAUserClaimsPrincipalFactory>();
             }
             catch (Exception ex)
             {
