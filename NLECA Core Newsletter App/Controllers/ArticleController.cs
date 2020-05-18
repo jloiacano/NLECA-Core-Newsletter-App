@@ -26,9 +26,9 @@ namespace NLECA_Core_Newsletter_App.Controllers
         [Authorize(Roles = "SuperAdmin,Admin,ReadOnlyUser")]
         public IActionResult AddArticle(int newsletterId)
         {
-            _articleService.AddArticleToNewsletter(newsletterId);
+            int articleId = _articleService.AddArticleToNewsletter(newsletterId);
 
-            return RedirectToAction("EditNewsletter", "Newsletter", new { newsletterId });
+            return RedirectToAction("EditArticle", new { articleId });
         }
 
         [Authorize(Roles = "SuperAdmin,Admin,ReadOnlyUser")]
