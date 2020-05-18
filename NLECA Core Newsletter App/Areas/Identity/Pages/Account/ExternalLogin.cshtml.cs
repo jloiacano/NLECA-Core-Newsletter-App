@@ -52,6 +52,9 @@ namespace NLECA_Core_Newsletter_App.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
             public string Email { get; set; }
+
+            [Required]
+            public string ContactName { get; set; }
         }
 
         public IActionResult OnGetAsync()
@@ -98,13 +101,18 @@ namespace NLECA_Core_Newsletter_App.Areas.Identity.Pages.Account
                 // If the user does not have an account, then ask the user to create an account.
                 ReturnUrl = returnUrl;
                 LoginProvider = info.LoginProvider;
+                string providedName = info.Principal.FindFirstValue(ClaimTypes.Name) ??
+                    info.Principal.FindFirstValue(ClaimTypes.GivenName) ??
+                    "NotProvided";
                 if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
                 {
                     Input = new InputModel
                     {
-                        Email = info.Principal.FindFirstValue(ClaimTypes.Email)
+                        Email = info.Principal.FindFirstValue(ClaimTypes.Email),
+                        ContactName = providedName
                     };
                 }
+
                 return Page();
             }
         }
@@ -123,6 +131,12 @@ namespace NLECA_Core_Newsletter_App.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = new ApplicationIdentityUser { UserName = Input.Email, Email = Input.Email };
+
+                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Name))
+                {
+                    user.ContactName = info.Principal.FindFirstValue(ClaimTypes.Name);
+                }
+
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
