@@ -126,7 +126,8 @@ namespace NLECA_Core_Newsletter_App
                 Log.Error("Error adding Google Authentication in Startup.cs", ex);
             }
 
-
+            // TODO - J - once up and running and have TOS page etc, go to https://developer.twitter.com/
+            // and set up Permissions to get email and users name, and then re-enable below code.
             //try
             //{
             //    services.AddAuthentication()
