@@ -127,23 +127,23 @@ namespace NLECA_Core_Newsletter_App
             }
 
 
-            try
-            {
-                services.AddAuthentication()
-                    .AddTwitter(twitterOptions =>
-                    {
-                        IConfigurationSection twitterAuthSection =
-                            Configuration.GetSection("Authentication:Twitter");
+            //try
+            //{
+            //    services.AddAuthentication()
+            //        .AddTwitter(twitterOptions =>
+            //        {
+            //            IConfigurationSection twitterAuthSection =
+            //                Configuration.GetSection("Authentication:Twitter");
 
-                        twitterOptions.ConsumerKey = twitterAuthSection["ConsumerAPIKey"];
-                        twitterOptions.ConsumerSecret = twitterAuthSection["ConsumerSecret"];
-                        twitterOptions.RetrieveUserDetails = true;
-                    });
-            }
-            catch (Exception ex)
-            {
-                Log.Error("Error adding Twitter Authentication in Startup.cs", ex);
-            }
+            //            twitterOptions.ConsumerKey = twitterAuthSection["ConsumerAPIKey"];
+            //            twitterOptions.ConsumerSecret = twitterAuthSection["ConsumerSecret"];
+            //            twitterOptions.RetrieveUserDetails = true;
+            //        });
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.Error("Error adding Twitter Authentication in Startup.cs", ex);
+            //}
 
 
             try

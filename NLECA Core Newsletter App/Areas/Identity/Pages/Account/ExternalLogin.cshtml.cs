@@ -105,22 +105,12 @@ namespace NLECA_Core_Newsletter_App.Areas.Identity.Pages.Account
                     info.Principal.FindFirstValue(ClaimTypes.GivenName) ??
                     "NotProvided";
 
-                var test = info.Principal.Identity.Name ?? "No name";
-                var test2 = "just testing";
-                //if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
-                //{
-                //    Input = new InputModel
-                //    {
-                //        Email = info.Principal.FindFirstValue(ClaimTypes.Email),
-                //        ContactName = test
-                //    };
-                //}
-                if (true)
+                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
                 {
                     Input = new InputModel
                     {
-                        Email = test2,
-                        ContactName = test
+                        Email = info.Principal.FindFirstValue(ClaimTypes.Email),
+                        ContactName = providedName
                     };
                 }
 
