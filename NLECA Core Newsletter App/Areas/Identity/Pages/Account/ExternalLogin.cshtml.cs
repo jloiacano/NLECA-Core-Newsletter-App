@@ -104,12 +104,14 @@ namespace NLECA_Core_Newsletter_App.Areas.Identity.Pages.Account
                 string providedName = info.Principal.FindFirstValue(ClaimTypes.Name) ??
                     info.Principal.FindFirstValue(ClaimTypes.GivenName) ??
                     "NotProvided";
+
+                var test = info.Principal.Identity.Name;
                 if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
                 {
                     Input = new InputModel
                     {
                         Email = info.Principal.FindFirstValue(ClaimTypes.Email),
-                        ContactName = providedName
+                        ContactName = test
                     };
                 }
 
