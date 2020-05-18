@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -12,6 +13,7 @@ using NLECA_Core_Newsletter_App.Service.Interfaces;
 using NLECA_Core_Newsletter_App.Service.Services;
 using Serilog;
 using System;
+using System.Security.Claims;
 
 namespace NLECA_Core_Newsletter_App
 {
@@ -94,9 +96,22 @@ namespace NLECA_Core_Newsletter_App
                 services.AddAuthentication()
                     .AddFacebook(facebookOptions =>
                     {
-                        facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
-                        facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
-                    })
+                        IConfigurationSection facebookAuthSection =
+                            Configuration.GetSection("Authentication:Facebook");
+
+                        facebookOptions.AppId = facebookAuthSection["AppId"];
+                        facebookOptions.AppSecret = facebookAuthSection["AppSecret"];
+                    });
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error adding Facebook Authentication in Startup.cs", ex);
+            }
+
+
+            try
+            {
+                services.AddAuthentication()
                     .AddGoogle(options =>
                     {
                         IConfigurationSection googleAuthNSection =
@@ -104,17 +119,30 @@ namespace NLECA_Core_Newsletter_App
 
                         options.ClientId = googleAuthNSection["ClientId"];
                         options.ClientSecret = googleAuthNSection["ClientSecret"];
-                    })
+                    });
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error adding Google Authentication in Startup.cs", ex);
+            }
+
+
+            try
+            {
+                services.AddAuthentication()
                     .AddTwitter(twitterOptions =>
                     {
-                        twitterOptions.ConsumerKey = Configuration["Authentication:Twitter:ConsumerAPIKey"];
-                        twitterOptions.ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"];
+                        IConfigurationSection twitterAuthSection =
+                            Configuration.GetSection("Authentication:Twitter");
+
+                        twitterOptions.ConsumerKey = twitterAuthSection["ConsumerAPIKey"];
+                        twitterOptions.ConsumerSecret = twitterAuthSection["ConsumerSecret"];
                         twitterOptions.RetrieveUserDetails = true;
                     });
             }
             catch (Exception ex)
             {
-                Log.Error("Error adding authentications in Startup.cs", ex);
+                Log.Error("Error adding Twitter Authentication in Startup.cs", ex);
             }
 
 
