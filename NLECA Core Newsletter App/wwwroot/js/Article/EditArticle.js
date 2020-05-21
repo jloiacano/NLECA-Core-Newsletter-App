@@ -7,13 +7,15 @@ $(document).ready(function () {
 EditArticle = {
 
     init: function () {
-        var articleEditor = ClassicEditor
-            .create(document.querySelector('#articleEditor'))
-            .then(editor => {
-                console.log(editor);
-            })
-            .catch(error => {
-                console.error(error);
-            });
+        // This was for using CKEditor5, but it doesn't provide source edit..
+        //var articleEditor = ClassicEditor
+        //    .create(document.querySelector('#articleEditor'))
+        //    .then(editor => {
+        //        console.log(editor);
+        //    })
+        //    .catch(error => {
+        //        console.error(error);
+        //    });
+        CKEDITOR.replace('articleEditor');
     }
 }
