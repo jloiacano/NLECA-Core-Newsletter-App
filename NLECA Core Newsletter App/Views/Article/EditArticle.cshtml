@@ -14,12 +14,21 @@
 <form action="UpdateArticle" method="post">
     <input type="hidden" name="newsletterId" value="@Model.NewsletterId" />
     <input type="hidden" name="articleId" value="@Model.ArticleId" />
+
+    <input type="hidden" name="oldArticleTableOfContentsText" value="@Model.ArticleTableOfContentsText" />
+    <input type="hidden" name="oldArticleTitle" value="@Model.ArticleTitle" />
     <input type="hidden" name="oldArticleText" value="@Model.ArticleText" />
-    @*<input type="text" name="articleText" value="@Model.ArticleText" />*@
+    <div>
+        <label for="articleTableOfContentsText">Table of contents Text</label>
+        <input type="text" name="articleTableOfContentsText" value="@Model.ArticleTableOfContentsText" />
+    </div>
+    <div>
+        <label for="articleTitle">Article Title</label>
+        <input type="text" name="articleTitle" value="@Model.ArticleTitle" />
+    </div>
     <textarea id="articleEditor" name="articleText">@Model.ArticleText</textarea>
 
     <button type="submit">Save Changes</button>
-    @*<a href="/Newsletter/EditNewsletter/?newsletterId=@Model.NewsletterId" class="btn btn-primary">Cancel</a>*@
 </form>
 
 <form action="/Newsletter/EditNewsletter" method="post">

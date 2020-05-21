@@ -41,11 +41,30 @@ namespace NLECA_Core_Newsletter_App.Controllers
 
 
         [Authorize(Roles = "SuperAdmin,Admin")]
-        public IActionResult UpdateArticle(int newsletterId, int articleId, string oldArticleText, string articleText)
+        public IActionResult UpdateArticle(int newsletterId, int articleId
+            , string oldArticleTableOfContentsText, string articleTableOfContentsText
+            , string oldArticleTitle, string articleTitle
+            , string oldArticleText, string articleText)
         {
-            if (oldArticleText.Trim().Equals(articleText.Trim()) == false)
+            ArticleModel oldArticle = new ArticleModel()
+            {
+                ArticleTableOfContentsText = oldArticleTableOfContentsText,
+                ArticleTitle = oldArticleTitle,
+                ArticleText = oldArticleText
+            };
+
+            ArticleModel currentArticle = new ArticleModel()
+            {
+                ArticleTableOfContentsText = articleTableOfContentsText,
+                ArticleTitle = articleTitle,
+                ArticleText = articleText
+            };
+
+            if (oldArticle != currentArticle)
             {
                 ArticleModel article = _articleService.GetArticleByArticleId(articleId);
+                article.ArticleTableOfContentsText = articleTableOfContentsText.Trim();
+                article.ArticleTitle = articleTitle.Trim();
                 article.ArticleText = articleText.Trim();
 
                 _articleService.UpdateArticle(article);

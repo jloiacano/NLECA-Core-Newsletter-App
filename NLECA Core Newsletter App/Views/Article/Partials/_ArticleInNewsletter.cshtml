@@ -1,3 +1,5 @@
 ﻿@model NLECA_Core_Newsletter_App.Models.Newsletter.ArticleModel
 
+<a name="@string.Format("article{0}", Model.ArticleId)"></a>
+<h2>@Model.ArticleTitle</h2>
 @Html.Raw(Model.ArticleText)

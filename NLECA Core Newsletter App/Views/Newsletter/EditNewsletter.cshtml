@@ -51,25 +51,35 @@
 <span class="changeArticleOrderDirectionsSpan">Drag articles to reorder, then </span>
 <button class="saveArticleOrderButton">Save Article Order</button>
 <hr />
-<div id="sortableArticles">
+<div id="sortableTableOfContents" class="articleSorter" style="border: 2px solid gray;">
     @foreach (ArticleModel article in Model.Articles)
     {
-        <div id="@article.ArticleSequence" class="articleOrderEditor" data-articleid="@article.ArticleId">
-            <div>@Html.Raw(article.ArticleText)</div>
-            <div>
-                <form action="/Article/EditArticle" method="post">
-                    <input type="hidden" name="articleId" value="@article.ArticleId" />
-                    <button type="submit">Edit</button>
-                </form>
+    <div>
+        <a href="@string.Format("#article{0}", article.ArticleId)">@article.ArticleTableOfContentsText</a>
+    </div>
+    }
+</div>
+<div id="sortableArticles" class="articleSorter">
+    @foreach (ArticleModel article in Model.Articles)
+    {
+    <div id="@article.ArticleSequence" class="articleOrderEditor" data-articleid="@article.ArticleId">
+        <a name="@string.Format("article{0}", article.ArticleId)"></a>
+        <h2>@article.ArticleTitle</h2>
+        <div>@Html.Raw(article.ArticleText)</div>
+        <div>
+            <form action="/Article/EditArticle" method="post">
+                <input type="hidden" name="articleId" value="@article.ArticleId" />
+                <button class="@article.ArticleSequence" type="submit">Edit</button>
+            </form>
 
-                <form action="/Article/RemoveArticle" method="post">
-                    <input type="hidden" name="newsletterId" value="@article.NewsletterId" />
-                    <input type="hidden" name="articleId" value="@article.ArticleId" />
-                    <button type="submit">Delete</button>
-                </form>
-            </div>
-            <hr />
+            <form action="/Article/RemoveArticle" method="post">
+                <input type="hidden" name="newsletterId" value="@article.NewsletterId" />
+                <input type="hidden" name="articleId" value="@article.ArticleId" />
+                <button class="@article.ArticleSequence" type="submit">Delete</button>
+            </form>
         </div>
+        <hr />
+    </div>
     }
 </div>
 

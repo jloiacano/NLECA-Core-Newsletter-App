@@ -120,6 +120,8 @@ namespace NLECA_Core_Newsletter_App.Service.Services
                             ArticleSequence = Int32.Parse(row["ArticleSequence"].ToString()),
                             ImageFileLocation = row["ImageFileLocation"].ToString(),
                             ArticleType = Int32.Parse(row["ArticleType"].ToString()),
+                            ArticleTableOfContentsText = row["ArticleTableOfContentsText"].ToString(),
+                            ArticleTitle = row["ArticleTitle"].ToString(),
                             ArticleText = row["ArticleText"].ToString(),
                             AddedBy = Int32.Parse(row["AddedBy"].ToString()),
                             DateAdded = DateTime.Parse(row["DateAdded"].ToString())
@@ -229,6 +231,8 @@ namespace NLECA_Core_Newsletter_App.Service.Services
                         ArticleSequence = Int32.Parse(row["ArticleSequence"].ToString()),
                         ImageFileLocation = row["ImageFileLocation"].ToString(),
                         ArticleType = Int32.Parse(row["ArticleType"].ToString()),
+                        ArticleTableOfContentsText = row["ArticleTableOfContentsText"].ToString(),
+                        ArticleTitle = row["ArticleTitle"].ToString(),
                         ArticleText = row["ArticleText"].ToString(),
                         AddedBy = Int32.Parse(row["AddedBy"].ToString()),
                         DateAdded = DateTime.Parse(row["DateAdded"].ToString())

@@ -7,6 +7,8 @@ $(document).ready(function () {
 NewsletterEditor = {
 
     currentlySorting: false,
+    sortingPrechangeIndex: 0,
+    sortingPostchangeIndex: 0,
 
     init: function () {
         $('#memoEditButton').click(function () {
@@ -60,12 +62,32 @@ NewsletterEditor = {
         $('.changeArticleOrderButton').hide();
         $('.saveArticleOrderButton').show();
         $('.changeArticleOrderDirectionsSpan').show();
+
         $('#sortableArticles')
             .sortable({
                 axis: "y",
                 placeholder: "articlePlaceHolder",
-                opacity: 0.6
-            });
+                opacity: 0.6,
+                start: function (event, ui) {
+                    NewsletterEditor.sortingPrechangeIndex = ui.item.index();
+                },
+                stop: function (event, ui) {
+                    NewsletterEditor.sortingPostchangeIndex = ui.item.index();
+                    NewsletterEditor.changeOtherSortableArticleOrder('#sortableTableOfContents')
+                }
+            }).disableSelection();
+        $('#sortableTableOfContents')
+            .sortable({
+                axis: "y",
+                opacity: 0.6,
+                start: function (event, ui) {
+                    NewsletterEditor.sortingPrechangeIndex = ui.item.index();
+                },
+                stop: function (event, ui) {
+                    NewsletterEditor.sortingPostchangeIndex = ui.item.index();
+                    NewsletterEditor.changeOtherSortableArticleOrder('#sortableArticles')
+                }
+            }).disableSelection();
         NewsletterEditor.currentlySorting = true;
     },
 
@@ -116,6 +138,19 @@ NewsletterEditor = {
             newOrderOfArticleIds.push(articleId);
         }
         return newOrderOfArticleIds;
-    }
+    },
 
+    changeOtherSortableArticleOrder: function (listToChange) {
+        var pre = NewsletterEditor.sortingPrechangeIndex;
+        var post = NewsletterEditor.sortingPostchangeIndex;
+        var preitem = $(listToChange + ' div:eq(' + pre + ')')
+        var postitem = $(listToChange + ' div:eq(' + post + ')')
+        if (post > pre) {
+            $(listToChange + ' .ui-sortable-handle:eq(' + pre + ')').insertAfter(listToChange + ' .ui-sortable-handle:eq(' + post + ')');
+        } else {
+            $(listToChange + ' .ui-sortable-handle:eq(' + pre + ')').insertBefore(listToChange + ' .ui-sortable-handle:eq(' + post + ')');
+        }
+        NewsletterEditor.sortingPrechangeIndex = 0;
+        NewsletterEditor.sortingPostchangeIndex = 0;
+    }
 }

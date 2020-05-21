@@ -86,6 +86,8 @@ namespace NLECA_Core_Newsletter_App.Service.Services
                 article.ArticleSequence = Int32.Parse(articleResult["ArticleSequence"].ToString());
                 article.ImageFileLocation = articleResult["ImageFileLocation"].ToString();
                 article.ArticleType = Int32.Parse(articleResult["ArticleType"].ToString());
+                article.ArticleTableOfContentsText = articleResult["ArticleTableOfContentsText"].ToString();
+                article.ArticleTitle = articleResult["ArticleTitle"].ToString();
                 article.ArticleText = articleResult["ArticleText"].ToString();
                 article.AddedBy = Int32.Parse(articleResult["AddedBy"].ToString());
                 article.DateAdded = DateTime.Parse(articleResult["DateAdded"].ToString());
@@ -145,6 +147,8 @@ namespace NLECA_Core_Newsletter_App.Service.Services
                     new SqlParameter("@articleSequence", article.ArticleSequence),
                     new SqlParameter("@imageFileLocation", article.ImageFileLocation),
                     new SqlParameter("@articleType", article.ArticleType),
+                    new SqlParameter("@articleTableOfContentsText", article.ArticleTableOfContentsText),
+                    new SqlParameter("@articleTitle", article.ArticleTitle),
                     new SqlParameter("@articleText", article.ArticleText),
                     new SqlParameter("@addedBy", article.AddedBy),
                     new SqlParameter("@dateAdded", _sql.ConvertDateTimeForSQL(article.DateAdded))
