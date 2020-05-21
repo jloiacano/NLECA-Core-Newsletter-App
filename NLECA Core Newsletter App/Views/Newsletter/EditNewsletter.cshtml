@@ -48,38 +48,47 @@
 <hr />
 <button>Add Article Clipart</button>
 <button class="changeArticleOrderButton">Change Article Order</button>
-<span class="changeArticleOrderDirectionsSpan">Drag articles to reorder, then </span>
+<span class="changeArticleOrderDirectionsSpan">Drag articles or table of contents items to reorder, then </span>
 <button class="saveArticleOrderButton">Save Article Order</button>
 <hr />
-<div id="sortableTableOfContents" class="articleSorter" style="border: 2px solid gray;">
-    @foreach (ArticleModel article in Model.Articles)
-    {
-    <div>
-        <a href="@string.Format("#article{0}", article.ArticleId)">@article.ArticleTableOfContentsText</a>
+<div id="EditableTableOfContentsWrapper">
+    <div id="EditableTableOfContents">
+        <div class="title">
+            <span>Inside this Issue</span>
+        </div>
+        <div id="sortableTableOfContents" class="articleSorter">
+            @foreach (ArticleModel article in Model.Articles)
+            {
+                <div>
+                    <a href="@string.Format("#article{0}", article.ArticleId)">@article.ArticleTableOfContentsText</a>
+                </div>
+            }
+        </div>
     </div>
-    }
+    <button class="changeArticleOrderButton" style="margin: 16px auto;">Change Article Order</button>
+    <button class="saveArticleOrderButton" style="margin: 16px auto;">Save Article Order</button>
 </div>
 <div id="sortableArticles" class="articleSorter">
     @foreach (ArticleModel article in Model.Articles)
     {
-    <div id="@article.ArticleSequence" class="articleOrderEditor" data-articleid="@article.ArticleId">
-        <a name="@string.Format("article{0}", article.ArticleId)"></a>
-        <h2>@article.ArticleTitle</h2>
-        <div>@Html.Raw(article.ArticleText)</div>
-        <div>
-            <form action="/Article/EditArticle" method="post">
-                <input type="hidden" name="articleId" value="@article.ArticleId" />
-                <button class="@article.ArticleSequence" type="submit">Edit</button>
-            </form>
+        <div id="@article.ArticleSequence" class="articleOrderEditor" data-articleid="@article.ArticleId">
+            <a name="@string.Format("article{0}", article.ArticleId)"></a>
+            <h2>@article.ArticleTitle</h2>
+            <div>@Html.Raw(article.ArticleText)</div>
+            <div>
+                <form action="/Article/EditArticle" method="post">
+                    <input type="hidden" name="articleId" value="@article.ArticleId" />
+                    <button class="@article.ArticleSequence" type="submit">Edit</button>
+                </form>
 
-            <form action="/Article/RemoveArticle" method="post">
-                <input type="hidden" name="newsletterId" value="@article.NewsletterId" />
-                <input type="hidden" name="articleId" value="@article.ArticleId" />
-                <button class="@article.ArticleSequence" type="submit">Delete</button>
-            </form>
+                <form action="/Article/RemoveArticle" method="post">
+                    <input type="hidden" name="newsletterId" value="@article.NewsletterId" />
+                    <input type="hidden" name="articleId" value="@article.ArticleId" />
+                    <button class="@article.ArticleSequence" type="submit">Delete</button>
+                </form>
+            </div>
+            <hr />
         </div>
-        <hr />
-    </div>
     }
 </div>
 

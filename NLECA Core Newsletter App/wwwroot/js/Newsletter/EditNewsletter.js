@@ -62,6 +62,7 @@ NewsletterEditor = {
         $('.changeArticleOrderButton').hide();
         $('.saveArticleOrderButton').show();
         $('.changeArticleOrderDirectionsSpan').show();
+        $('#EditableTableOfContents').css('background-color', 'lightyellow');
 
         $('#sortableArticles')
             .sortable({
@@ -79,6 +80,7 @@ NewsletterEditor = {
         $('#sortableTableOfContents')
             .sortable({
                 axis: "y",
+                placeholder: "tableOfContentsPlaceHolder",
                 opacity: 0.6,
                 start: function (event, ui) {
                     NewsletterEditor.sortingPrechangeIndex = ui.item.index();
@@ -119,6 +121,7 @@ NewsletterEditor = {
         $('.changeArticleOrderButton').show();
         $('.saveArticleOrderButton').hide();
         $('.changeArticleOrderDirectionsSpan').hide();
+        $('#EditableTableOfContents').css('background-color', '#eee');
     },
 
     articleOrderChanged: function (newOrder) {
@@ -143,8 +146,6 @@ NewsletterEditor = {
     changeOtherSortableArticleOrder: function (listToChange) {
         var pre = NewsletterEditor.sortingPrechangeIndex;
         var post = NewsletterEditor.sortingPostchangeIndex;
-        var preitem = $(listToChange + ' div:eq(' + pre + ')')
-        var postitem = $(listToChange + ' div:eq(' + post + ')')
         if (post > pre) {
             $(listToChange + ' .ui-sortable-handle:eq(' + pre + ')').insertAfter(listToChange + ' .ui-sortable-handle:eq(' + post + ')');
         } else {

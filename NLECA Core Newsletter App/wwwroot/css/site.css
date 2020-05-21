@@ -102,3 +102,25 @@ body {
             font-size: large;
             font-weight: 700;
         }
+
+#tableOfContents {
+    position: fixed;
+    top: 80px;
+    left: 30px;
+    padding: 10px 30px;
+    border: 2px solid black;
+    background-color: #eee;
+}
+
+    #tableOfContents .title {
+        color: black;
+        font-weight: bold;
+        text-decoration: underline;
+        margin-bottom: 16px;
+    }
+
+    #tableOfContents a {
+        color: black;
+        font-weight: bold;
+        text-decoration: none;
+    }
