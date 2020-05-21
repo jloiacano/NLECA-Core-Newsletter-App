@@ -44,6 +44,7 @@ namespace NLECA_Core_Newsletter_App.ViewComponents
             IViewComponentResult BirthdayView = null;
 
             if (User.Identity.IsAuthenticated 
+                && false // TODO - J - Check for users birthday is today
                 && HttpContext.Request.Cookies["HideBirthdaySplashScreen"] == null
                 && HttpContext.Request.Cookies["HideBirthdaySplashScreenForSession"] != "true")
             {

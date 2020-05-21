@@ -99,6 +99,35 @@ namespace NLECA_Core_Newsletter_App.Service.Services
         }
 
         /// <summary>
+        /// Updates the sequence number for an article in a newsletter
+        /// </summary>
+        /// <param name="articleId">Id of the article to be updated</param>
+        /// <param name="updatedArticleSequence">the number to update the sequence number to</param>
+        /// <returns>true if the update is successful</returns>
+        public bool UpdateArticleSequence(int articleId, int updatedArticleSequence)
+        {
+            int rowsEffected = 0;
+
+            try
+            {
+                SqlParameter[] parameters = new SqlParameter[]
+                {
+                    new SqlParameter("@articleId", articleId),
+                    new SqlParameter("@updatedArticleSequence", updatedArticleSequence)
+                };
+
+                rowsEffected = _sql.GetReturnValueFromStoredProcedure("UpdateArticleSequence", parameters);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("There was an updating the article sequence in the Article Service", ex);
+            }
+
+
+            return rowsEffected > 0 ? true : false;
+        }
+
+        /// <summary>
         /// Updates an article
         /// </summary>
         /// <param name="article"></param>

@@ -6,8 +6,9 @@
     bool canEdit = User.IsInRole("SuperAdmin") || User.IsInRole("Admin");
     string editorEnabledDisabled = canEdit ? "" : "disabled";
 }
-
+<link href="~/css/EditNewsletter.css" rel="stylesheet" />
 @section Scripts{
+    <script src="~/lib/jquery-ui/jquery-ui.js"></script>
     <script type="text/javascript" src="~/js/Newsletter/EditNewsletter.js"></script>
 }
 
@@ -46,30 +47,38 @@
 
 <hr />
 <button>Add Article Clipart</button>
+<button class="changeArticleOrderButton">Change Article Order</button>
+<span class="changeArticleOrderDirectionsSpan">Drag articles to reorder, then </span>
+<button class="saveArticleOrderButton">Save Article Order</button>
 <hr />
+<div id="sortableArticles">
+    @foreach (ArticleModel article in Model.Articles)
+    {
+        <div id="@article.ArticleSequence" class="articleOrderEditor" data-articleid="@article.ArticleId">
+            <div>@Html.Raw(article.ArticleText)</div>
+            <div>
+                <form action="/Article/EditArticle" method="post">
+                    <input type="hidden" name="articleId" value="@article.ArticleId" />
+                    <button type="submit">Edit</button>
+                </form>
 
-@foreach (ArticleModel article in Model.Articles)
-{
-    <div>@Html.Raw(article.ArticleText)</div>
-    <div>
-        <form action="/Article/EditArticle" method="post">
-            <input type="hidden" name="articleId" value="@article.ArticleId" />
-            <button type="submit">Edit</button>
-        </form>
-
-        <form action="/Article/RemoveArticle" method="post">
-            <input type="hidden" name="newsletterId" value="@article.NewsletterId" />
-            <input type="hidden" name="articleId" value="@article.ArticleId" />
-            <button type="submit">Delete</button>
-        </form>
-    </div>
-    <hr />
-}
+                <form action="/Article/RemoveArticle" method="post">
+                    <input type="hidden" name="newsletterId" value="@article.NewsletterId" />
+                    <input type="hidden" name="articleId" value="@article.ArticleId" />
+                    <button type="submit">Delete</button>
+                </form>
+            </div>
+            <hr />
+        </div>
+    }
+</div>
 
 <div>
     <form action="/Article/AddArticle" method="post">
         <input type="hidden" name="newsletterId" value="@Model.NewsletterId" />
         <button type="submit" class="btn btn-primary">Add Article</button>
     </form>
-    <button>Change Article Order</button>
+    <button class="changeArticleOrderButton">Change Article Order</button>
+    <span class="changeArticleOrderDirectionsSpan">Drag articles to reorder, then </span>
+    <button class="saveArticleOrderButton">Save Article Order</button>
 </div>

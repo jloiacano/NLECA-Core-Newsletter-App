@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using NLECA_Core_Newsletter_App.Models.Newsletter;
 using NLECA_Core_Newsletter_App.Service.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace NLECA_Core_Newsletter_App.Controllers
 {
@@ -50,6 +51,32 @@ namespace NLECA_Core_Newsletter_App.Controllers
                 _articleService.UpdateArticle(article);
             }
             return RedirectToAction("EditNewsletter", "Newsletter", new { newsletterId });
+        }
+
+        [Authorize(Roles = "SuperAdmin,Admin")]
+        public IActionResult UpdateArticleOrder(IEnumerable<string> articleIds, IEnumerable<string> newArticleOrder)
+        {
+            bool success = true;
+            string[] newArticleOrderArray = newArticleOrder.ToArray();
+            string[] articleIdsArray = articleIds.ToArray();
+            for (int i = 0; i < newArticleOrderArray.Length; i++)
+            {
+                if (i + 1 != Int32.Parse(newArticleOrderArray[i]))
+                {
+                    int newArticleSequence = Int32.Parse(newArticleOrderArray[i]);
+                    int articleId = Int32.Parse(articleIdsArray[i]);
+                    if (!_articleService.UpdateArticleSequence(articleId, i + 1))
+                    {
+                        success = false;
+                    }
+                }
+            }
+
+            if (success)
+            {
+                return Json(new { success = true, responseText = "Sequences successfully updated" });
+            }
+            return Json(new { success = false, responseText = "There was an error updating sequences." });
         }
 
         [Authorize(Roles = "SuperAdmin,Admin,ReadOnlyUser")]

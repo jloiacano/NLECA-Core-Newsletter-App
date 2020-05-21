@@ -1,0 +1,31 @@
+﻿#memoAndDisplayDateSaveChanges {
+    display: none;
+}
+
+.saveArticleOrderButton {
+    display: none;
+}
+
+.changeArticleOrderButton {
+
+}
+
+.changeArticleOrderDirectionsSpan {
+    color: red;
+    display: none;
+}
+
+    .articleOrderEditor {
+        list-style-type: none;
+    }
+
+    .articleOrderEditor.ui-sortable-handle:hover {
+        background-color: lightyellow;
+        cursor: ns-resize;
+    }
+
+.articlePlaceHolder {
+    border: 3px dashed darkgray;
+    background-color: lightyellow;
+    height: 250px;
+}

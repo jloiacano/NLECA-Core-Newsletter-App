@@ -19,6 +19,14 @@ namespace NLECA_Core_Newsletter_App.Service.Interfaces
         ArticleModel GetArticleByArticleId(int articleId);
 
         /// <summary>
+        /// Updates the sequence number for an article in a newsletter
+        /// </summary>
+        /// <param name="articleId">Id of the article to be updated</param>
+        /// <param name="updatedArticleSequence">the number to update the sequence number to</param>
+        /// <returns>true if the update is successful</returns>
+        bool UpdateArticleSequence(int articleId, int updatedArticleSequence);
+
+        /// <summary>
         /// Updates an article
         /// </summary>
         /// <param name="article"></param>

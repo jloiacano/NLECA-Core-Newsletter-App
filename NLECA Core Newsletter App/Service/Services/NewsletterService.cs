@@ -128,7 +128,7 @@ namespace NLECA_Core_Newsletter_App.Service.Services
                         articles.Add(article);
                     }
 
-                    newsletter.Articles = articles;
+                    newsletter.Articles = articles.OrderBy(a => a.ArticleSequence);
                 }
                 catch (Exception ex)
                 {
@@ -237,7 +237,7 @@ namespace NLECA_Core_Newsletter_App.Service.Services
                     articles.Add(article);
                 }
 
-                newsletter.Articles = articles;
+                newsletter.Articles = articles.OrderBy(a => a.ArticleSequence);
             }
             catch (Exception ex)
             {
