@@ -35,7 +35,8 @@ namespace NLECA_Core_Newsletter_App.Controllers
         [Authorize(Roles = "SuperAdmin,Admin,ReadOnlyUser")]
         public IActionResult EditArticle(int articleId)
         {
-            ArticleModel model = _articleService.GetArticleByArticleId(articleId);
+            ArticleModel article = _articleService.GetArticleByArticleId(articleId);
+            EditArticleModel model = new EditArticleModel(article);
             return View(model);
         }
 
@@ -44,10 +45,12 @@ namespace NLECA_Core_Newsletter_App.Controllers
         public IActionResult UpdateArticle(int newsletterId, int articleId
             , string oldArticleTableOfContentsText, string articleTableOfContentsText
             , string oldArticleTitle, string articleTitle
-            , string oldArticleText, string articleText)
+            , string oldArticleText, string articleText
+            , int oldArticleType, int articleTypeSelector)
         {
             ArticleModel oldArticle = new ArticleModel()
             {
+                ArticleType = oldArticleType,
                 ArticleTableOfContentsText = oldArticleTableOfContentsText,
                 ArticleTitle = oldArticleTitle,
                 ArticleText = oldArticleText
@@ -55,6 +58,7 @@ namespace NLECA_Core_Newsletter_App.Controllers
 
             ArticleModel currentArticle = new ArticleModel()
             {
+                ArticleType = articleTypeSelector,
                 ArticleTableOfContentsText = articleTableOfContentsText,
                 ArticleTitle = articleTitle,
                 ArticleText = articleText
@@ -63,6 +67,7 @@ namespace NLECA_Core_Newsletter_App.Controllers
             if (oldArticle != currentArticle)
             {
                 ArticleModel article = _articleService.GetArticleByArticleId(articleId);
+                article.ArticleType = articleTypeSelector;
                 article.ArticleTableOfContentsText = articleTableOfContentsText.Trim();
                 article.ArticleTitle = articleTitle.Trim();
                 article.ArticleText = articleText.Trim();

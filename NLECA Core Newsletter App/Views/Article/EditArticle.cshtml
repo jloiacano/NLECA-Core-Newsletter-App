@@ -1,8 +1,9 @@
-﻿@model NLECA_Core_Newsletter_App.Models.Newsletter.ArticleModel
+﻿@model NLECA_Core_Newsletter_App.Models.Newsletter.EditArticleModel
 @{
     ViewData["Title"] = "EditArticle";
 }
 
+@using NLECA_Core_Newsletter_App.Data;
 @section HeaderScripts {
     <script src="https://cdn.ckeditor.com/4.14.0/standard/ckeditor.js"></script>
     @*<script src="https://cdn.ckeditor.com/ckeditor5/19.0.0/classic/ckeditor.js"></script>*@
@@ -10,30 +11,45 @@
 
 <h1>EditArticle</h1>
 
-<h2>Added: @Model.DateAdded by UserId: @Model.AddedBy</h2>
+<h2>Added: @Model.Article.DateAdded by UserId: @Model.Article.AddedBy</h2>
 
 <form action="UpdateArticle" method="post">
-    <input type="hidden" name="newsletterId" value="@Model.NewsletterId" />
-    <input type="hidden" name="articleId" value="@Model.ArticleId" />
+    <input type="hidden" name="newsletterId" value="@Model.Article.NewsletterId" />
+    <input type="hidden" name="articleId" value="@Model.Article.ArticleId" />
 
-    <input type="hidden" name="oldArticleTableOfContentsText" value="@Model.ArticleTableOfContentsText" />
-    <input type="hidden" name="oldArticleTitle" value="@Model.ArticleTitle" />
-    <input type="hidden" name="oldArticleText" value="@Model.ArticleText" />
+    <input type="hidden" name="oldArticleTableOfContentsText" value="@Model.Article.ArticleTableOfContentsText" />
+    <input type="hidden" name="oldArticleTitle" value="@Model.Article.ArticleTitle" />
+    <input type="hidden" name="oldArticleText" value="@Model.Article.ArticleText" />
+    <input type="hidden" name="oldArticleType" value="@Model.Article.ArticleType" />
+    <label for="articleTypeSelector">Article Type: </label>
+    <select name="articleTypeSelector">
+        @foreach (NewsletterArticleType articleType in Model.ArticleTypes)
+        {
+            if (articleType.IntValue == Model.Article.ArticleType)
+            {
+                <option value="@articleType.IntValue.ToString()" selected>@articleType.Text</option>
+            }
+            else
+            {
+                <option value="@articleType.IntValue.ToString()">@articleType.Text</option>
+            }
+        }
+    </select>
     <div>
-        <label for="articleTableOfContentsText">Table of contents Text</label>
-        <input type="text" name="articleTableOfContentsText" value="@Model.ArticleTableOfContentsText" />
+        <label for="articleTableOfContentsText">Table of contents Text: </label>
+        <input type="text" name="articleTableOfContentsText" value="@Model.Article.ArticleTableOfContentsText" />
     </div>
     <div>
-        <label for="articleTitle">Article Title</label>
-        <input type="text" name="articleTitle" value="@Model.ArticleTitle" />
+        <label for="articleTitle">Article Title: </label>
+        <input type="text" name="articleTitle" value="@Model.Article.ArticleTitle" />
     </div>
-    <textarea id="articleEditor" name="articleText">@Model.ArticleText</textarea>
+    <textarea id="articleEditor" name="articleText">@Model.Article.ArticleText</textarea>
 
     <button type="submit">Save Changes</button>
 </form>
 
 <form action="/Newsletter/EditNewsletter" method="post">
-    <input type="hidden" name="newsletterId" value="@Model.NewsletterId" />
+    <input type="hidden" name="newsletterId" value="@Model.Article.NewsletterId" />
     <button type="submit">Cancel</button>
 </form>
 
