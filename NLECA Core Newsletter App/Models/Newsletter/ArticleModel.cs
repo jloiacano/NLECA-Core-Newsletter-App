@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace NLECA_Core_Newsletter_App.Models.Newsletter
 {
@@ -7,6 +8,8 @@ namespace NLECA_Core_Newsletter_App.Models.Newsletter
         public int ArticleId { get; set; }
         public int NewsletterId { get; set; }
         public int ArticleSequence { get; set; }
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string ImageFileLocation { get; set; }
         public int ArticleType { get; set; }
         public string ArticleTableOfContentsText { get; set; }

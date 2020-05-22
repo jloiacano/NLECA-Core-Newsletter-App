@@ -42,39 +42,11 @@ namespace NLECA_Core_Newsletter_App.Controllers
 
 
         [Authorize(Roles = "SuperAdmin,Admin")]
-        public IActionResult UpdateArticle(int newsletterId, int articleId
-            , string oldArticleTableOfContentsText, string articleTableOfContentsText
-            , string oldArticleTitle, string articleTitle
-            , string oldArticleText, string articleText
-            , int oldArticleType, int articleTypeSelector)
+        public IActionResult UpdateArticle(ArticleModel article)
         {
-            ArticleModel oldArticle = new ArticleModel()
-            {
-                ArticleType = oldArticleType,
-                ArticleTableOfContentsText = oldArticleTableOfContentsText,
-                ArticleTitle = oldArticleTitle,
-                ArticleText = oldArticleText
-            };
+            _articleService.UpdateArticle(article);
 
-            ArticleModel currentArticle = new ArticleModel()
-            {
-                ArticleType = articleTypeSelector,
-                ArticleTableOfContentsText = articleTableOfContentsText,
-                ArticleTitle = articleTitle,
-                ArticleText = articleText
-            };
-
-            if (oldArticle != currentArticle)
-            {
-                ArticleModel article = _articleService.GetArticleByArticleId(articleId);
-                article.ArticleType = articleTypeSelector;
-                article.ArticleTableOfContentsText = articleTableOfContentsText.Trim();
-                article.ArticleTitle = articleTitle.Trim();
-                article.ArticleText = articleText.Trim();
-
-                _articleService.UpdateArticle(article);
-            }
-            return RedirectToAction("EditNewsletter", "Newsletter", new { newsletterId });
+            return RedirectToAction("EditNewsletter", "Newsletter", new { article.NewsletterId });
         }
 
         [Authorize(Roles = "SuperAdmin,Admin")]
