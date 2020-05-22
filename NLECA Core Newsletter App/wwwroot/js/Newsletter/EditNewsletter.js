@@ -62,7 +62,7 @@ NewsletterEditor = {
         $('.changeArticleOrderButton').hide();
         $('.saveArticleOrderButton').show();
         $('.changeArticleOrderDirectionsSpan').show();
-        $('#EditableTableOfContents').css('background-color', 'lightyellow');
+        $('#TableOfContents').addClass('sorting');
 
         $('#sortableArticles')
             .sortable({
@@ -121,7 +121,7 @@ NewsletterEditor = {
         $('.changeArticleOrderButton').show();
         $('.saveArticleOrderButton').hide();
         $('.changeArticleOrderDirectionsSpan').hide();
-        $('#EditableTableOfContents').css('background-color', '#eee');
+        $('#TableOfContents').removeClass('sorting');
     },
 
     articleOrderChanged: function (newOrder) {

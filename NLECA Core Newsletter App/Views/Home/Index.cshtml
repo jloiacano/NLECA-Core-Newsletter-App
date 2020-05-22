@@ -20,10 +20,7 @@
                     <h2>@DateTime.Parse(Model.DisplayDate).ToString("MMMM yyyy")</h2>
                 </div>
             </div>
-
         </div>
-
-
 
         @if (Model.Articles.Count() == 0)
         {
@@ -34,16 +31,18 @@
             @section Scripts {
                 <script src="~/js/Article/NewsletterArticle.js"></script>
             }
-            <div id="tableOfContents">
-                <div class="title">
-                    <span>Inside this Issue</span>
-                </div>
-                @foreach (ArticleModel article in Model.Articles)
-                {
-                    <div>
-                        <a href="@string.Format("#article{0}", article.ArticleId)">@article.ArticleTableOfContentsText</a>
+            <div id="TableOfContentsWrapper">
+                <div id="TableOfContents">
+                    <div class="title">
+                        <span>Inside this Issue</span>
                     </div>
-                }
+                    @foreach (ArticleModel article in Model.Articles)
+                    {
+                        <div>
+                            <a href="@string.Format("#article{0}", article.ArticleId)">@article.ArticleTableOfContentsText</a>
+                        </div>
+                    }
+                </div>
             </div>
             @foreach (ArticleModel article in Model.Articles)
             {
