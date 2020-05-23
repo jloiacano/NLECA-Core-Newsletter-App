@@ -1,5 +1,15 @@
 ﻿@model NLECA_Core_Newsletter_App.Models.Newsletter.ArticleModel
 
-<a name="@string.Format("article{0}", Model.ArticleId)"></a>
-<h2>@Model.ArticleTitle</h2>
-@Html.Raw(Model.ArticleText)
+<div id="@Model.ArticleSequence" class="articleContent" data-articleid="@Model.ArticleId">
+
+    <a name="@string.Format("article{0}", Model.ArticleId)"></a>
+
+    <h2>@Model.ArticleTitle</h2>
+
+    <img src="~/Images/ArticleImages/dontForgetToReplace.png" class="topArticleImage" />
+    <img src="~/Images/ArticleImages/dontForgetToReplace.png" class="leftArticleImage" />
+    <img src="~/Images/ArticleImages/dontForgetToReplace.png" class="rightArticleImage" />
+    @Html.Raw(Model.ArticleText)
+    <img src="~/Images/ArticleImages/dontForgetToReplace.png" class="bottomArticleImage" />
+
+</div>

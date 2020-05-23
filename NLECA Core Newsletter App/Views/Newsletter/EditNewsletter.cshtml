@@ -12,92 +12,26 @@
     <script type="text/javascript" src="~/js/Newsletter/EditNewsletter.js"></script>
 }
 
-<h1>EditNewsletter</h1>
+@{string changeMemoButtonText = "<- Change Memo"; }
 
-<form action="/Newsletter/UpdateNewsletter" method="post">
-    <input type="hidden" name="newsletterId" value="@Model.NewsletterId" />
-    <input type="hidden" name="oldMemo" value="@Model.Memo" />
-    <input type="hidden" name="oldDisplayDate" value="@Model.DisplayDate" />
+<div id="Newsletter">
+    <div id="NewsletterEditor">
+        <form action="/Newsletter/UpdateNewsletter" method="post">
+            <input type="hidden" name="newsletterId" value="@Model.NewsletterId" />
+            <input type="hidden" name="oldMemo" value="@Model.Memo" />
 
-    <div id="memoArea">
-        Memo: @Model.Memo
-        <button type="button" id="memoEditButton">Edit</button>
-    </div>
-
-    <div id="memoEditArea" style="display: none;">
-        <label for="memo">Updated Memo: </label>
-        <input type="text" name="memo" value="@Model.Memo" placeholder="@Model.Memo" />
-        <button type="button" id="memoEditCancel">Cancel</button>
-    </div>
-
-    <div id="displayDateArea">
-        Display Date: @DateTime.Parse(Model.DisplayDate).ToString("MMMM yyyy")
-        <button type="button" id="displayDateEditButton">Edit</button>
-    </div>
-
-    <div id="displayDateEditArea" style="display: none;">
-        <input type="hidden" name="newsletterId" value="@Model.NewsletterId" />
-        <label for="displayDate">Display Date: </label>
-        <input type="month" id="start" name="displayDate" min="2018-03" value="@Model.DisplayDate">
-        <button type="button" id="displayDateEditCancel">Cancel</button>
-
-    </div>
-    <button type="submit" id="memoAndDisplayDateSaveChanges">Save Changes</button>
-</form>
-
-<hr />
-<button>Add Article Clipart</button>
-<button class="changeArticleOrderButton">Change Article Order</button>
-<span class="changeArticleOrderDirectionsSpan">Drag articles or table of contents items to reorder, then </span>
-<button class="saveArticleOrderButton">Save Article Order</button>
-<hr />
-<div id="TableOfContentsWrapper">
-    <div id="TableOfContents">
-        <div class="title">
-            <span>Inside this Issue</span>
-        </div>
-        <div id="sortableTableOfContents" class="articleSorter">
-            @foreach (ArticleModel article in Model.Articles)
-            {
-                <div>
-                    <a href="@string.Format("#article{0}", article.ArticleId)">@article.ArticleTableOfContentsText</a>
-                </div>
-            }
-        </div>
-    </div>
-    <button class="changeArticleOrderButton" style="margin: 16px auto;">Change Article Order</button>
-    <button class="saveArticleOrderButton" style="margin: 16px auto;">Save Article Order</button>
-</div>
-<div id="sortableArticles" class="articleSorter">
-    @foreach (ArticleModel article in Model.Articles)
-    {
-        <div id="@article.ArticleSequence" class="articleOrderEditor" data-articleid="@article.ArticleId">
-            <a name="@string.Format("article{0}", article.ArticleId)"></a>
-            <h2>@article.ArticleTitle</h2>
-            <div>@Html.Raw(article.ArticleText)</div>
-            <div>
-                <form action="/Article/EditArticle" method="post">
-                    <input type="hidden" name="articleId" value="@article.ArticleId" />
-                    <button class="@article.ArticleSequence" type="submit">Edit</button>
-                </form>
-
-                <form action="/Article/RemoveArticle" method="post">
-                    <input type="hidden" name="newsletterId" value="@article.NewsletterId" />
-                    <input type="hidden" name="articleId" value="@article.ArticleId" />
-                    <button class="@article.ArticleSequence" type="submit">Delete</button>
-                </form>
+            <div id="memoArea">
+                <span style="font-size: larger; font-weight: 700; color: red;">EDITITNG:</span> @Model.Memo
+                <button type="button" id="memoEditButton">@changeMemoButtonText</button>
             </div>
-            <hr />
-        </div>
-    }
-</div>
 
-<div>
-    <form action="/Article/AddArticle" method="post">
-        <input type="hidden" name="newsletterId" value="@Model.NewsletterId" />
-        <button type="submit" class="btn btn-primary">Add Article</button>
-    </form>
-    <button class="changeArticleOrderButton">Change Article Order</button>
-    <span class="changeArticleOrderDirectionsSpan">Drag articles to reorder, then </span>
-    <button class="saveArticleOrderButton">Save Article Order</button>
+            <div id="memoEditArea" style="display: none;">
+                <label for="memo">Updated Memo: </label>
+                <input type="text" name="memo" value="@Model.Memo" placeholder="@Model.Memo" />
+                <button type="button" id="memoEditCancel">Cancel</button>
+            </div>
+            <button type="submit" id="memoAndDisplayDateSaveChanges">Save Changes</button>
+        </form>
+        <partial name="~/Views/Shared/_Newsletter.cshtml" model="@Model" />
+    </div>
 </div>

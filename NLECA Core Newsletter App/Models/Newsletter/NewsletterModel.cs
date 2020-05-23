@@ -15,6 +15,8 @@ namespace NLECA_Core_Newsletter_App.Models.Newsletter
         public DateTime PublishedDate { get; set; }
         public bool IsCurrent { get; set; }
 
+        public bool IsEdit { get; set; } = false;
+
         public IEnumerable<ArticleModel> Articles { get; set; }
 
         public NewsletterModel()

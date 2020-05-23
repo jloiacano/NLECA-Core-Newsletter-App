@@ -57,7 +57,7 @@ namespace NLECA_Core_Newsletter_App.Controllers
         public IActionResult EditNewsletter(int newsletterId)
         {
             NewsletterModel model = _newsletter.GetNewsletterById(newsletterId);
-
+            model.IsEdit = true;
             return View(model);
         }
 

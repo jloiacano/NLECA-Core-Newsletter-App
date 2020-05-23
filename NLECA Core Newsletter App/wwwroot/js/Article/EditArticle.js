@@ -7,15 +7,19 @@ $(document).ready(function () {
 EditArticle = {
 
     init: function () {
-        // This was for using CKEditor5, but it doesn't provide source edit..
-        //var articleEditor = ClassicEditor
-        //    .create(document.querySelector('#articleEditor'))
-        //    .then(editor => {
-        //        console.log(editor);
-        //    })
-        //    .catch(error => {
-        //        console.error(error);
-        //    });
         CKEDITOR.replace('articleEditor');
+
+        $('#ArticleEditCancelButton').click(function () {
+            // TODO - J - go back
+        });
+
+        $('#ArticleDeleteButton').click(function () {
+            EditArticle.DeleteArticle();
+        });
+    },
+
+    DeleteArticle: function () {
+        // TODO - J - Maybe add confirmation dialog.... ?
+        $('#DeleteArticleForm').submit();
     }
 }

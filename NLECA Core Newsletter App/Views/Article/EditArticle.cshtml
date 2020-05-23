@@ -37,11 +37,13 @@
     <textarea id="articleEditor" asp-for="Article.ArticleText"></textarea>
 
     <button type="submit">Save Changes</button>
+    <button id="ArticleEditCancelButton" type="button">Cancel</button>
+    <button id="ArticleDeleteButton" type="button">DELETE ARTICLE</button>
 </form>
 
-<form action="/Newsletter/EditNewsletter" method="post">
+<form id="DeleteArticleForm" action="/Article/RemoveArticle" method="post">
     <input type="hidden" name="newsletterId" value="@Model.Article.NewsletterId" />
-    <button type="submit">Cancel</button>
+    <input type="hidden" name="articleId" value="@Model.Article.ArticleId" />
 </form>
 
 

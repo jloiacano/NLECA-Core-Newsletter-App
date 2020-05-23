@@ -15,13 +15,17 @@
     display: none;
 }
 
-    .articleOrderEditor {
-        list-style-type: none;
+.articleContent {
+    list-style-type: none;
+}
+
+    .articleContent.ui-sortable-handle:hover {
+        background-color: lightyellow;
+        cursor: grab;
     }
 
-    .articleOrderEditor.ui-sortable-handle:hover {
-        background-color: lightyellow;
-        cursor: ns-resize;
+    .articleContent.ui-sortable-handle:active {
+        cursor: grabbing;
     }
 
 .articlePlaceHolder {
@@ -36,14 +40,26 @@
 }
 
     #TableOfContents.sorting .ui-sortable-handle a:hover {
-        cursor: ns-resize;
+        cursor: grab;
+    }
+
+    #TableOfContents.sorting .ui-sortable-handle a:active {
+        cursor: grabbing;
     }
 
 .tableOfContentsPlaceHolder {
     background-color: lightyellow;
     height: 24px;
 }
-
-.articleSorter.ui-sortable {
+#sortableTableOfContents.ui-sortable {
     background-color: #eee;
 }
+
+#NewsletterEditor .articleContent:hover {
+    cursor: url('../images/editcursor.png'), auto;
+}
+
+#NewsletterEditor .newsletterDate:hover {
+    cursor: url('../images/editcursor.png') 0 32, auto;
+}
+

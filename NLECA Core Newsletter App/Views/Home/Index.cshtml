@@ -5,48 +5,9 @@
 @{
     ViewData["Title"] = "Newsletter";
 }
-    <div id="Newsletter">
-        <span class="developmentNotice">NLECA Site currently in development.</span>
-        <span class="developmentInstruction">Check back later for progress.</span>
-        <div class="container">
-            <div class="row banner">
-                <div class="col-sm-3">
-                    <img class="d-none d-md-block d-lg-block d-xl-block" src="~/Images/NewsletterImages/newsicon.jpg" />
-                </div>
-                <div class="col-sm-6 title">
-                    <h1>NLECA Newsletter</h1>
-                </div>
-                <div class="col-sm-3 date">
-                    <h2>@DateTime.Parse(Model.DisplayDate).ToString("MMMM yyyy")</h2>
-                </div>
-            </div>
-        </div>
 
-        @if (Model.Articles.Count() == 0)
-        {
-            <h1>This newsletter does not have any articles yet...</h1>
-        }
-        else
-        {
-            @section Scripts {
-                <script src="~/js/Article/NewsletterArticle.js"></script>
-            }
-            <div id="TableOfContentsWrapper">
-                <div id="TableOfContents">
-                    <div class="title">
-                        <span>Inside this Issue</span>
-                    </div>
-                    @foreach (ArticleModel article in Model.Articles)
-                    {
-                        <div>
-                            <a href="@string.Format("#article{0}", article.ArticleId)">@article.ArticleTableOfContentsText</a>
-                        </div>
-                    }
-                </div>
-            </div>
-            @foreach (ArticleModel article in Model.Articles)
-            {
-                <partial name="/Views/Article/Partials/_ArticleInNewsletter.cshtml" model="article" />
-            }
-        }
-    </div>
+<div id="Newsletter">
+    <span class="developmentNotice">NLECA Site currently in development.</span>
+    <span class="developmentInstruction">Check back later for progress.</span>
+    <partial name="~/Views/Shared/_Newsletter.cshtml" model="@Model" />
+</div>

@@ -35,6 +35,11 @@ NewsletterEditor = {
             $('#displayDateArea').toggle();
         });
 
+        $('.newsletterDate').click(function () {
+            $('#displayDateEditArea').toggle();
+            $('#displayDateArea').toggle();
+        });
+
         $('input[name="displayDate"]').change(function () {
             if ($('input[name="displayDate"]').val() != $('input[name="oldDisplayDate"]').val()) {
                 $('#memoAndDisplayDateSaveChanges').show();
@@ -56,15 +61,18 @@ NewsletterEditor = {
         $('.saveArticleOrderButton').click(function () {
             NewsletterEditor.saveArticleOrder();
         });
+
+        $('.articleContent').click(function (x) {
+            NewsletterEditor.editArticle(this);
+        });
     },
 
     setupSortableArticles: function () {
         $('.changeArticleOrderButton').hide();
         $('.saveArticleOrderButton').show();
-        $('.changeArticleOrderDirectionsSpan').show();
         $('#TableOfContents').addClass('sorting');
 
-        $('#sortableArticles')
+        $('#Articles')
             .sortable({
                 axis: "y",
                 placeholder: "articlePlaceHolder",
@@ -87,16 +95,15 @@ NewsletterEditor = {
                 },
                 stop: function (event, ui) {
                     NewsletterEditor.sortingPostchangeIndex = ui.item.index();
-                    NewsletterEditor.changeOtherSortableArticleOrder('#sortableArticles')
+                    NewsletterEditor.changeOtherSortableArticleOrder('#Articles')
                 }
             }).disableSelection();
         NewsletterEditor.currentlySorting = true;
     },
 
     saveArticleOrder: function () {
-        var newsletterId = $('input[name="newsletterId"]').val();
         //get the new article order;
-        var newArticleOrder = $("#sortableArticles").sortable("toArray");
+        var newArticleOrder = $("#Articles").sortable("toArray");
         var articleIds = NewsletterEditor.getNewOrderOfArticleIds(newArticleOrder);
         if (NewsletterEditor.articleOrderChanged(newArticleOrder)) {
             $.ajax({
@@ -117,10 +124,9 @@ NewsletterEditor = {
                 }
             });
         }
-        $('#sortableArticles').sortable("destroy");
+        $('#Articles').sortable("destroy");
         $('.changeArticleOrderButton').show();
         $('.saveArticleOrderButton').hide();
-        $('.changeArticleOrderDirectionsSpan').hide();
         $('#TableOfContents').removeClass('sorting');
     },
 
@@ -153,5 +159,15 @@ NewsletterEditor = {
         }
         NewsletterEditor.sortingPrechangeIndex = 0;
         NewsletterEditor.sortingPostchangeIndex = 0;
+    },
+
+    editArticle: function (articleDiv) {
+        var articleId = $(articleDiv).data('articleid');
+        $('#EditArticleFormInput').val(articleId);
+        $('#EditArticleForm').submit();
+    },
+
+    addArticle: function () {
+
     }
 }
