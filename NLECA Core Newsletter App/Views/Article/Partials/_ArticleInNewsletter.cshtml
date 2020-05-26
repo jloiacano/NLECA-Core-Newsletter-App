@@ -1,15 +1,24 @@
 ﻿@model NLECA_Core_Newsletter_App.Models.Newsletter.ArticleModel
 
-<div id="@Model.ArticleSequence" class="articleContent" data-articleid="@Model.ArticleId">
+    <div id="@Model.ArticleSequence" class="articleContent" data-articleid="@Model.ArticleId">
 
-    <a name="@string.Format("article{0}", Model.ArticleId)"></a>
+        <a name="@string.Format("article{0}", Model.ArticleId)"></a>
 
-    <h2>@Model.ArticleTitle</h2>
+        <h2>@Model.ArticleTitle</h2>
 
-    <img src="~/Images/ArticleImages/dontForgetToReplace.png" class="topArticleImage" />
-    <img src="~/Images/ArticleImages/dontForgetToReplace.png" class="leftArticleImage" />
-    <img src="~/Images/ArticleImages/dontForgetToReplace.png" class="rightArticleImage" />
-    @Html.Raw(Model.ArticleText)
-    <img src="~/Images/ArticleImages/dontForgetToReplace.png" class="bottomArticleImage" />
-
-</div>
+        <div class="topArticleImage">
+            <img src="~/Images/ArticleImages/dontForgetToReplace.png" />
+        </div>
+        <div class="leftArticleImage">
+            <img src="~/Images/ArticleImages/dontForgetToReplace.png" />
+        </div>
+        <div class="rightArticleImage">
+            <img src="~/Images/ArticleImages/dontForgetToReplace.png" />
+        </div>
+        <div id="ArticleText">
+            @Html.Raw(Model.ArticleText)
+        </div>
+        <div class="bottomArticleImage">
+            <img src="~/Images/ArticleImages/dontForgetToReplace.png" />
+        </div>
+    </div>

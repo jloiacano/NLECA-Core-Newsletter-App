@@ -23,7 +23,7 @@
 
 
     <label for="articleTypeSelector">Article Type: </label>
-    <select asp-for="Article.ArticleType" asp-items="@(new SelectList(Model.ArticleTypes,"IntValue","Text"))">
+    <select id="ArticleTypeDropdown" asp-for="Article.ArticleType" asp-items="@(new SelectList(Model.ArticleTypes,"IntValue","Text"))">
     </select>
 
     <div>
@@ -34,7 +34,22 @@
         <label for="articleTitle">Article Title: </label>
         <input asp-for="Article.ArticleTitle" />
     </div>
-    <textarea id="articleEditor" asp-for="Article.ArticleText"></textarea>
+
+    <div class="articleContent">
+        <div class="topArticleImage">
+            <img src="~/Images/ArticleImages/dontForgetToReplace.png" />
+        </div>
+        <div class="leftArticleImage">
+            <img src="~/Images/ArticleImages/dontForgetToReplace.png" />
+        </div>
+        <div class="rightArticleImage">
+            <img src="~/Images/ArticleImages/dontForgetToReplace.png" />
+        </div>
+        <textarea id="ArticleText" asp-for="Article.ArticleText"></textarea>
+        <div class="bottomArticleImage">
+            <img src="~/Images/ArticleImages/dontForgetToReplace.png" />
+        </div>
+    </div>
 
     <button type="submit">Save Changes</button>
     <button id="ArticleEditCancelButton" type="button">Cancel</button>

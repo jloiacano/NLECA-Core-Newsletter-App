@@ -133,21 +133,34 @@ body {
 -------------------------------------------------- */
 
 .articleContent {
-
+    position: relative;
+    width: 100%;
 }
 
     .articleContent .topArticleImage {
         display: none;
+        width: 100%;
+        text-align: center;
+        margin-bottom: 24px;
     }
 
     .articleContent .leftArticleImage {
         display: none;
+        position: absolute;
+        left: -224px;
+        top: 48px;
     }
 
     .articleContent .rightArticleImage {
         display: none;
+        position: absolute;
+        right: -224px;
+        top: 48px;
     }
 
     .articleContent .bottomArticleImage {
         display: none;
+        width: 100%;
+        text-align: center;
+        margin-top: 24px; 
     }
