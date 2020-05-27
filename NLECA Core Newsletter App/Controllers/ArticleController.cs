@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NLECA_Core_Newsletter_App.Models.Newsletter;
 using NLECA_Core_Newsletter_App.Service.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 
 namespace NLECA_Core_Newsletter_App.Controllers
 {
@@ -73,6 +75,14 @@ namespace NLECA_Core_Newsletter_App.Controllers
                 return Json(new { success = true, responseText = "Sequences successfully updated" });
             }
             return Json(new { success = false, responseText = "There was an error updating sequences." });
+        }
+
+        [Authorize(Roles = "SuperAdmin,Admin")]
+        public IActionResult UpdateArticleImage(List<IFormFile> files, int articleId)
+        {
+            // TODO - J - Add service call to check image validity and upload
+
+            return RedirectToAction("EditArticle", new { articleId });
         }
 
         [Authorize(Roles = "SuperAdmin,Admin,ReadOnlyUser")]

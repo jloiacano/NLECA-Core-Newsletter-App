@@ -4,6 +4,9 @@
 }
 
 @using NLECA_Core_Newsletter_App.Data;
+
+<link href="~/css/EditArticle.css" rel="stylesheet" />
+
 @section HeaderScripts {
     <script src="https://cdn.ckeditor.com/4.14.0/standard/ckeditor.js"></script>
 }
@@ -35,25 +38,36 @@
         <input asp-for="Article.ArticleTitle" />
     </div>
 
+
     <div class="articleContent">
         <div class="topArticleImage">
-            <img src="~/Images/ArticleImages/dontForgetToReplace.png" />
+            <div class="dragAndDropImageArea"></div>
         </div>
         <div class="leftArticleImage">
-            <img src="~/Images/ArticleImages/dontForgetToReplace.png" />
+            <div class="dragAndDropImageArea"></div>
+
+
+
+
+
         </div>
         <div class="rightArticleImage">
-            <img src="~/Images/ArticleImages/dontForgetToReplace.png" />
+            <div class="dragAndDropImageArea"></div>
         </div>
         <textarea id="ArticleText" asp-for="Article.ArticleText"></textarea>
         <div class="bottomArticleImage">
-            <img src="~/Images/ArticleImages/dontForgetToReplace.png" />
+            <div class="dragAndDropImageArea"></div>
         </div>
     </div>
 
     <button type="submit">Save Changes</button>
     <button id="ArticleEditCancelButton" type="button">Cancel</button>
     <button id="ArticleDeleteButton" type="button">DELETE ARTICLE</button>
+</form>
+
+<form id="UpdateArticleImageForm" action="/Article/UpdateArticleImage" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="articleId" value="@Model.Article.ArticleId" />
+    <input type="file" name="files" id="ImageFileInput" multiple/>
 </form>
 
 <form id="DeleteArticleForm" action="/Article/RemoveArticle" method="post">
