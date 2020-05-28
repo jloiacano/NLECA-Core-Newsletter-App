@@ -20,7 +20,7 @@
     <input hidden asp-for="Article.ArticleId" />
     <input hidden asp-for="Article.NewsletterId" />
     <input hidden asp-for="Article.ArticleSequence" />
-    <input hidden asp-for="Article.ImageFileLocation" />
+    <input hidden asp-for="Article.ImageFileLocation" id="articleImageFileLocation" />
     <input hidden asp-for="Article.AddedBy" />
     <input hidden asp-for="Article.DateAdded" />
 
@@ -67,7 +67,7 @@
 
 <form id="UpdateArticleImageForm" action="/Article/UpdateArticleImage" method="post" enctype="multipart/form-data">
     <input type="hidden" name="articleId" value="@Model.Article.ArticleId" />
-    <input type="file" name="files" id="ImageFileInput" multiple/>
+    <input type="file" name="imageFile" id="ImageFileInput"/>
 </form>
 
 <form id="DeleteArticleForm" action="/Article/RemoveArticle" method="post">

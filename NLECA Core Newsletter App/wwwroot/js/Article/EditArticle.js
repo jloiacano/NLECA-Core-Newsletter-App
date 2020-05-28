@@ -6,8 +6,17 @@ $(document).ready(function () {
 
 EditArticle = {
 
+    currentArticleImageUrl: "",
+
     init: function () {
         CKEDITOR.replace('ArticleText');
+
+        if ($('#articleImageFileLocation').val() != '') {
+            currentArticleImageUrl = $('#articleImageFileLocation').val();
+        }
+        else {
+            currentArticleImageUrl = '../../Images/ArticleImages/draganddropimage.png';
+        }
 
         EditArticle.ShowCorrectArticleImageLocation($('#ArticleTypeDropdown').val());
 
@@ -26,7 +35,7 @@ EditArticle = {
             EditArticle.DeleteArticle();
         });
 
-        $('.articleImage').click(function () {
+        $('.dragAndDropImageArea').click(function () {
             // TODO - J - Set up Images Controller
             alert('clicked image');
         });
@@ -42,7 +51,6 @@ EditArticle = {
 
     SetUpImageUploader: function () {
 
-        var dragoverImageUrl = '../../Images/ArticleImages/draganddropimage.png';
         var dragoverImageAltUrl = '../../Images/ArticleImages/draganddropimagealt.png';
 
         $('.dragAndDropImageArea').on('dragover', function (e) {
@@ -51,12 +59,12 @@ EditArticle = {
         });
 
         $('.dragAndDropImageArea').on('dragleave', function () {
-            $('.dragAndDropImageArea').css("background-image", "url(" + dragoverImageUrl + ")");
+            $('.dragAndDropImageArea').css("background-image", "url(" + currentArticleImageUrl + ")");
         });
 
         $('.dragAndDropImageArea').on('drop', function (e) {
             e.preventDefault();
-            $('.dragAndDropImageArea').css("background-image", "url(" + dragoverImageUrl + ")");
+            $('.dragAndDropImageArea').css("background-image", "url(" + currentArticleImageUrl + ")");
 
             var imageToUpload = e.originalEvent.dataTransfer.files;
             document.querySelector('#ImageFileInput').files = imageToUpload;

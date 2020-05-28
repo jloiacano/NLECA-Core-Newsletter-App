@@ -3,20 +3,22 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NLECA_Core_Newsletter_App.Models.Newsletter;
 using NLECA_Core_Newsletter_App.Service.Interfaces;
+using NLECA_Core_Newsletter_App.Service.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 
 namespace NLECA_Core_Newsletter_App.Controllers
 {
     public class ArticleController : Controller
     {
         private readonly IArticleService _articleService;
+        private readonly IImageService _imageService;
 
-        public ArticleController(IArticleService articleService)
+        public ArticleController(IArticleService articleService, IImageService imageService)
         {
             _articleService = articleService;
+            _imageService = imageService;
         }
 
         [Authorize(Roles = "SuperAdmin,Admin,ReadOnlyUser")]
@@ -78,9 +80,16 @@ namespace NLECA_Core_Newsletter_App.Controllers
         }
 
         [Authorize(Roles = "SuperAdmin,Admin")]
-        public IActionResult UpdateArticleImage(List<IFormFile> files, int articleId)
+        public IActionResult UpdateArticleImage(IFormFile imageFile, int articleId)
         {
-            // TODO - J - Add service call to check image validity and upload
+            ArticleImage articleImage = new ArticleImage(imageFile, articleId);
+
+
+            if (articleImage.IsValidImageFormat
+                && _imageService.ExistsInAritcleImages(articleImage) == false)
+            {
+                bool uploaded = _imageService.UploadArticleImage(articleImage);
+            }
 
             return RedirectToAction("EditArticle", new { articleId });
         }
