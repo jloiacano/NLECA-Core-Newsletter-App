@@ -9,11 +9,11 @@ using System.Text;
 
 namespace NLECA_Core_Newsletter_App.Service.Services
 {
-    public class ImageService : IImageService
+    public class ArticleImageService : IArticleImageService
     {
-        private readonly ILogger<ImageService> _logger;
+        private readonly ILogger<ArticleImageService> _logger;
 
-        public ImageService(ILogger<ImageService> logger)
+        public ArticleImageService(ILogger<ArticleImageService> logger)
         {
             _logger = logger;
         }

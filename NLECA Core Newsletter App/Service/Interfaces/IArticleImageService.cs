@@ -2,7 +2,7 @@
 
 namespace NLECA_Core_Newsletter_App.Service.Interfaces
 {
-    public interface IImageService
+    public interface IArticleImageService
     {
         /// <summary>
         /// Checks database to see if image has already been uploaded (regardless of file name)

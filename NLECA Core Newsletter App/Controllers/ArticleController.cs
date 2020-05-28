@@ -13,9 +13,9 @@ namespace NLECA_Core_Newsletter_App.Controllers
     public class ArticleController : Controller
     {
         private readonly IArticleService _articleService;
-        private readonly IImageService _imageService;
+        private readonly IArticleImageService _imageService;
 
-        public ArticleController(IArticleService articleService, IImageService imageService)
+        public ArticleController(IArticleService articleService, IArticleImageService imageService)
         {
             _articleService = articleService;
             _imageService = imageService;
