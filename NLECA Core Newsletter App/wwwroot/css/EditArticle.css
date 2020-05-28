@@ -1,9 +1,12 @@
 ﻿.dragAndDropImageArea {
-    background-image: url("../../Images/ArticleImages/draganddropimage.png");
     width: 200px;
     height: 200px;
     cursor: pointer;
     margin: 0 auto;
+}
+
+.dragAndDropImage {
+    width: 100%;
 }
 
 

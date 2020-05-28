@@ -11,6 +11,8 @@ EditArticle = {
     init: function () {
         CKEDITOR.replace('ArticleText');
 
+        alert($('#articleImageFileLocation').val());
+
         if ($('#articleImageFileLocation').val() != '') {
             currentArticleImageUrl = $('#articleImageFileLocation').val();
         }
@@ -55,16 +57,19 @@ EditArticle = {
 
         $('.dragAndDropImageArea').on('dragover', function (e) {
             e.preventDefault();
-            $('.dragAndDropImageArea').css("background-image", "url(" + dragoverImageAltUrl + ")");
+            $('.dragAndDropImage').attr("src", dragoverImageAltUrl);
+            //$('.dragAndDropImageArea').css("background-image", "url(" + dragoverImageAltUrl + ")");
         });
 
         $('.dragAndDropImageArea').on('dragleave', function () {
-            $('.dragAndDropImageArea').css("background-image", "url(" + currentArticleImageUrl + ")");
+            $('.dragAndDropImage').attr("src", currentArticleImageUrl);
+            //$('.dragAndDropImageArea').css("background-image", "url(" + currentArticleImageUrl + ")");
         });
 
         $('.dragAndDropImageArea').on('drop', function (e) {
             e.preventDefault();
-            $('.dragAndDropImageArea').css("background-image", "url(" + currentArticleImageUrl + ")");
+            $('.dragAndDropImage').attr("src", currentArticleImageUrl);
+            //$('.dragAndDropImageArea').css("background-image", "url(" + currentArticleImageUrl + ")");
 
             var imageToUpload = e.originalEvent.dataTransfer.files;
             document.querySelector('#ImageFileInput').files = imageToUpload;
