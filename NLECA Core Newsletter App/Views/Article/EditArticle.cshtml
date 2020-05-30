@@ -4,11 +4,15 @@
 }
 
 @using NLECA_Core_Newsletter_App.Data;
+@{
+    string intValue = "IntValue";
+    string textValue = "Text";
+}
 
 <link href="~/css/EditArticle.css" rel="stylesheet" />
 
 @section HeaderScripts {
-    <script src="https://cdn.ckeditor.com/4.14.0/standard/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/4.14.0/standard/ckeditor.js"></script>
 }
 
 <h1>EditArticle</h1>
@@ -26,7 +30,7 @@
 
 
     <label for="articleTypeSelector">Article Type: </label>
-    <select id="ArticleTypeDropdown" asp-for="Article.ArticleType" asp-items="@(new SelectList(Model.ArticleTypes,"IntValue","Text"))">
+    <select id="ArticleTypeDropdown" asp-for="Article.ArticleType" asp-items="@(new SelectList(Model.ArticleTypes, intValue, textValue))">
     </select>
 
     <div>
@@ -72,7 +76,7 @@
 
 <form id="UpdateArticleImageForm" action="/Article/UpdateArticleImage" method="post" enctype="multipart/form-data">
     <input type="hidden" name="articleId" value="@Model.Article.ArticleId" />
-    <input type="file" name="imageFile" id="ImageFileInput"/>
+    <input type="file" name="imageFile" id="ImageFileInput" />
 </form>
 
 <form id="DeleteArticleForm" action="/Article/RemoveArticle" method="post">
@@ -82,5 +86,5 @@
 
 
 @section Scripts {
-    <script src="~/js/Article/EditArticle.js"></script>
+<script src="~/js/Article/EditArticle.js"></script>
 }

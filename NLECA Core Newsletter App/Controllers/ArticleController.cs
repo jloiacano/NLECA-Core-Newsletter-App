@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NLECA_Core_Newsletter_App.Data;
 using NLECA_Core_Newsletter_App.Models.Newsletter;
 using NLECA_Core_Newsletter_App.Service.Interfaces;
 using NLECA_Core_Newsletter_App.Service.Services;
@@ -14,11 +16,13 @@ namespace NLECA_Core_Newsletter_App.Controllers
     {
         private readonly IArticleService _articleService;
         private readonly IArticleImageService _imageService;
+        private readonly UserManager<ApplicationIdentityUser> _userManager;
 
-        public ArticleController(IArticleService articleService, IArticleImageService imageService)
+        public ArticleController(IArticleService articleService, IArticleImageService imageService, UserManager<ApplicationIdentityUser> userManager)
         {
             _articleService = articleService;
             _imageService = imageService;
+            _userManager = userManager;
         }
 
         [Authorize(Roles = "SuperAdmin,Admin,ReadOnlyUser")]
@@ -41,6 +45,7 @@ namespace NLECA_Core_Newsletter_App.Controllers
         {
             ArticleModel article = _articleService.GetArticleByArticleId(articleId);
             EditArticleModel model = new EditArticleModel(article);
+
             return View(model);
         }
 
@@ -80,15 +85,29 @@ namespace NLECA_Core_Newsletter_App.Controllers
         }
 
         [Authorize(Roles = "SuperAdmin,Admin")]
+        public IActionResult CheckForArticleImage(string simpleCheckSum)
+        {
+            if (true)
+            {
+                return Json(new { success = true, fileexists = false, responseText = "Image does not exist" });
+            }
+            else
+            {
+                return Json(new { success = false, fileexists = true, responseText = "Image already exist" });
+            }
+        }
+
+        [Authorize(Roles = "SuperAdmin,Admin")]
         public IActionResult UpdateArticleImage(IFormFile imageFile, int articleId)
         {
             ArticleImage articleImage = new ArticleImage(imageFile, articleId);
 
-
             if (articleImage.IsValidImageFormat
                 && _imageService.ExistsInAritcleImages(articleImage) == false)
             {
-                bool uploaded = _imageService.UploadArticleImage(articleImage);
+                articleImage.UploadedByUserId = _userManager.GetUserId(this.User);
+                articleImage.UploadedByUserName = this.User.Identity.Name;
+                //bool uploaded = _imageService.UploadArticleImage(articleImage);
             }
 
             return RedirectToAction("EditArticle", new { articleId });

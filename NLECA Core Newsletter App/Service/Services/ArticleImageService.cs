@@ -4,7 +4,6 @@ using NLECA_Core_Newsletter_App.Service.Interfaces;
 using System;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace NLECA_Core_Newsletter_App.Service.Services
@@ -20,7 +19,7 @@ namespace NLECA_Core_Newsletter_App.Service.Services
 
         public bool ExistsInAritcleImages(ArticleImage image)
         {
-            // TODO - J - Check Images table for md5
+            // TODO - J - Check Images table for checksum
             return false;
         }
 
@@ -29,7 +28,7 @@ namespace NLECA_Core_Newsletter_App.Service.Services
         {
             // Upload file to file structure
             string imageLocation = SaveFile(image);
-            // Add entry in database with file location and md5
+            // Add entry in database with file location and checksum
             bool success = EnterImageIntoDatabase(image);
             return success;
         }
@@ -82,8 +81,10 @@ namespace NLECA_Core_Newsletter_App.Service.Services
 
         public int ArticleId { get; private set; }
         public IFormFile ImageFile { get; private set; }
+        public string UploadedByUserId { get; set; }
+        public string UploadedByUserName { get; set; }
 
-        public string Md5Hash { get; private set; }
+        public string SimpleCheckSum { get; private set; }
         public string ImageFileExtension { get; private set; }
         public string ImageName { get; private set; }
         public string StoredImageName { get; private set; }
@@ -95,7 +96,7 @@ namespace NLECA_Core_Newsletter_App.Service.Services
             ImageFile = imageFile;
             ArticleId = articleId;
             FileBytes = ConvertFileToByteArray(imageFile);
-            Md5Hash = GetMD5HashFromFile();
+            SimpleCheckSum = GetSimpleCheckSumFromFile();
             ImageFileExtension = "." + imageFile.FileName.Split('.')[imageFile.FileName.Split('.').Length - 1];
             ImageName = imageFile.FileName.Remove(imageFile.FileName.IndexOf(ImageFileExtension));
             StoredImageName = string.Format("{0}{1}", Guid.NewGuid().ToString(), ImageFileExtension);
@@ -103,13 +104,15 @@ namespace NLECA_Core_Newsletter_App.Service.Services
             IsValidImageFormat = GetImageFormat(FileBytes) != ImageFormat.unknown;
         }
 
-        private string GetMD5HashFromFile()
+        private string GetSimpleCheckSumFromFile()
         {
             byte[] fileBytes = this.FileBytes;
-            using (var md5 = MD5.Create())
-            {
-                return BitConverter.ToString(md5.ComputeHash(fileBytes)).Replace("-", string.Empty);
-            }
+
+            string simpleCheckSum = GetImageByteArraySimpleCheckSum(fileBytes);
+
+            System.Diagnostics.Debug.WriteLine("C# checksum: " + simpleCheckSum);
+
+            return simpleCheckSum;
         }
 
         private enum ImageFormat
@@ -166,6 +169,51 @@ namespace NLECA_Core_Newsletter_App.Service.Services
                 return ImageFormat.tiff;
 
             return ImageFormat.unknown;
+        }
+
+        // DO NOT USE FOR HASHING ANYTHING IMPORTANT. THIS IS ONLY FOR CHECKSUMS!!
+        public string GetImageByteArraySimpleCheckSum(byte[] imageByteArray)
+        {
+            string hash = string.Empty;
+            int[] hashInts = new int[30];
+            int index = 0;
+            int lastRemainder = 0;
+            foreach (byte imagebyte in imageByteArray)
+            {
+                int dividend = imagebyte/7;
+                int remainder = imagebyte%7;
+                hashInts[index] = hashInts[index] + lastRemainder + dividend;
+                lastRemainder = remainder;
+                index++;
+                if (index == 30)
+                {
+                    index = 0;
+                }
+            }
+
+            for (int i = 0; i < hashInts.Length; i++)
+            {
+                int preAsciiConversionDigit = hashInts[i] % 62;
+                int asciiCharDigit;
+                if (preAsciiConversionDigit < 10)
+                {
+                    asciiCharDigit = preAsciiConversionDigit + 48;
+                }
+                else if (preAsciiConversionDigit < 36)
+                {
+                    asciiCharDigit = preAsciiConversionDigit + 55;
+                }
+                else
+                {
+                    asciiCharDigit = preAsciiConversionDigit + 61;
+                }
+
+                char charToAddToHash = (char)asciiCharDigit;
+
+                hash += charToAddToHash;
+            }
+
+            return hash;
         }
     }
 }

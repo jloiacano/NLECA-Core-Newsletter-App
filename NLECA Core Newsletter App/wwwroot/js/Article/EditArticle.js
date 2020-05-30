@@ -11,8 +11,6 @@ EditArticle = {
     init: function () {
         CKEDITOR.replace('ArticleText');
 
-        alert($('#articleImageFileLocation').val());
-
         if ($('#articleImageFileLocation').val() != '') {
             currentArticleImageUrl = $('#articleImageFileLocation').val();
         }
@@ -55,26 +53,22 @@ EditArticle = {
 
         var dragoverImageAltUrl = '../../Images/ArticleImages/draganddropimagealt.png';
 
-        $('.dragAndDropImageArea').on('dragover', function (e) {
-            e.preventDefault();
-            $('.dragAndDropImage').attr("src", dragoverImageAltUrl);
-            //$('.dragAndDropImageArea').css("background-image", "url(" + dragoverImageAltUrl + ")");
-        });
-
-        $('.dragAndDropImageArea').on('dragleave', function () {
-            $('.dragAndDropImage').attr("src", currentArticleImageUrl);
-            //$('.dragAndDropImageArea').css("background-image", "url(" + currentArticleImageUrl + ")");
-        });
-
-        $('.dragAndDropImageArea').on('drop', function (e) {
-            e.preventDefault();
-            $('.dragAndDropImage').attr("src", currentArticleImageUrl);
-            //$('.dragAndDropImageArea').css("background-image", "url(" + currentArticleImageUrl + ")");
-
-            var imageToUpload = e.originalEvent.dataTransfer.files;
-            document.querySelector('#ImageFileInput').files = imageToUpload;
-            $('#UpdateArticleImageForm').submit();
-        });
+        $('.dragAndDropImageArea').bind({
+            dragover: function (e) {
+                e.preventDefault();
+                $('.dragAndDropImage').attr("src", dragoverImageAltUrl);
+            },
+            dragleave: function () {
+                $('.dragAndDropImage').attr("src", currentArticleImageUrl);
+            },
+            drop: function (e) {
+                e.preventDefault();
+                $('.dragAndDropImage').attr("src", currentArticleImageUrl);
+                var imageToUpload = e.originalEvent.dataTransfer.files;
+                document.querySelector('#ImageFileInput').files = imageToUpload;
+                EditArticle.CheckIfFileExists(e);
+            },
+        })
     },
 
     ShowCorrectArticleImageLocation: function (articleTypeInt) {
@@ -108,5 +102,75 @@ EditArticle = {
     DeleteArticle: function () {
         // TODO - J - Maybe add confirmation dialog.... ?
         $('#DeleteArticleForm').submit();
+    },
+
+    CheckIfFileExists: function (e) {
+        var file = $('#ImageFileInput')[0].files[0];
+
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            var fileBytesArray = new Uint8Array(this.result),
+                simpleCheckSum = GetImageByteArraySimpleCheckSum(fileBytesArray);
+
+            $.ajax({
+                url: '/Article/CheckForArticleImage',
+                type: 'POST',
+                data: {
+                    'simpleCheckSum': simpleCheckSum
+                },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.fileexists == false) {
+                        $('#UpdateArticleImageForm').submit();
+                    }
+                    else {
+                        alert(response.responseText);
+                    }
+                },
+                error: function (request, error) {
+                    alert("Request: " + JSON.stringify(request));
+                }
+            });
+        }
+        reader.readAsArrayBuffer(file);
+
+        // DO NOT USE FOR HASHING ANYTHING IMPORTANT. THIS IS ONLY FOR CHECKSUMS!!
+        function GetImageByteArraySimpleCheckSum(filebytes) {
+            var hash = "",
+                hashInts = new Array(30).fill(0),
+                index = 0,
+                lastRemainder = 0;
+
+            for (var i = 0; i < filebytes.length; i++) {
+                var dividend = Math.floor(filebytes[i] / 7),
+                    remainder = filebytes[i] % 7;
+                hashInts[index] = hashInts[index] + lastRemainder + dividend;
+                lastRemainder = remainder;
+                index++;
+                if (index == 30) {
+                    index = 0;
+                }
+            }
+
+            for (var i = 0; i < hashInts.length; i++)
+            {
+                var preAsciiConversionDigit = hashInts[i] % 62,
+                    asciiCharDigit = 0;
+                if (preAsciiConversionDigit < 10) {
+                    asciiCharDigit = preAsciiConversionDigit + 48;
+                }
+                else if (preAsciiConversionDigit < 36) {
+                    asciiCharDigit = preAsciiConversionDigit + 55;
+                }
+                else {
+                    asciiCharDigit = preAsciiConversionDigit + 61;
+                }
+                var charToAddToHash = String.fromCharCode(asciiCharDigit);
+
+                hash += charToAddToHash;
+            }
+
+            return hash;
+        }
     }
 }
