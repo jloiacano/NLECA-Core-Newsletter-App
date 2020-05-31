@@ -3,8 +3,6 @@
 
 @{
     ViewData["Title"] = "Newsletter Editor";
-    bool canEdit = User.IsInRole("SuperAdmin") || User.IsInRole("Admin");
-    string editorEnabledDisabled = canEdit ? "" : "disabled";
 }
 <link href="~/css/EditNewsletter.css" rel="stylesheet" />
 @section Scripts{
@@ -30,8 +28,11 @@
                 <input type="text" name="memo" value="@Model.Memo" placeholder="@Model.Memo" />
                 <button type="button" id="memoEditCancel">Cancel</button>
             </div>
-            <button type="submit" id="memoAndDisplayDateSaveChanges">Save Changes</button>
+            <button type="submit" id="memoSaveChanges">Save Changes</button>
         </form>
         <partial name="~/Views/Shared/_Newsletter.cshtml" model="@Model" />
     </div>
+    <form id="AddArticleForm" action="/Article/AddArticle" method="post">
+        <input type="hidden" name="newsletterId" value="@Model.NewsletterId">
+    </form>
 </div>

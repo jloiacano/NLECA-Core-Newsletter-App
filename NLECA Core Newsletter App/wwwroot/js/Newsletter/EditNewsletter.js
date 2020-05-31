@@ -18,10 +18,10 @@ NewsletterEditor = {
 
         $('input[name="memo"]').keyup(function () {
             if ($('input[name="memo"]').val() != $('input[name="oldMemo"]').val()) {
-                $('#memoAndDisplayDateSaveChanges').show();
+                $('#memoSaveChanges').show();
             }
             else {
-                $('#memoAndDisplayDateSaveChanges').hide();
+                $('#memoSaveChanges').hide();
             }
         });
 
@@ -42,10 +42,10 @@ NewsletterEditor = {
 
         $('input[name="displayDate"]').change(function () {
             if ($('input[name="displayDate"]').val() != $('input[name="oldDisplayDate"]').val()) {
-                $('#memoAndDisplayDateSaveChanges').show();
+                $('#displayDateSaveChanges').show();
             }
             else {
-                $('#memoAndDisplayDateSaveChanges').hide();
+                $('#displayDateSaveChanges').hide();
             }
         });
 
@@ -65,6 +65,10 @@ NewsletterEditor = {
         $('.articleContent').click(function (x) {
             NewsletterEditor.editArticle(this);
         });
+
+        $('.addArticleButton').click(function () {
+            $('#AddArticleForm').submit();
+        })
     },
 
     setupSortableArticles: function () {

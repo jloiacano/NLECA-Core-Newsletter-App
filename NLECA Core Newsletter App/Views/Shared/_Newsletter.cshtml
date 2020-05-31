@@ -2,6 +2,11 @@
 
 @using NLECA_Core_Newsletter_App.Models.Newsletter;
 
+
+@section Scripts {
+    <script src="~/js/Article/NewsletterArticle.js"></script>
+}
+
 <div class="container">
     <div class="row banner">
         <div class="col-sm-3">
@@ -21,7 +26,7 @@
                     <div id="displayDateEditArea" style="display: none;">
                         <input type="hidden" name="newsletterId" value="@Model.NewsletterId" />
                         <input type="month" id="start" name="displayDate" min="2018-03" value="@Model.DisplayDate">
-                        <button type="submit" id="memoAndDisplayDateSaveChanges">Save Changes</button>
+                        <button type="submit" id="displayDateSaveChanges">Save Changes</button>
                         <button type="button" id="displayDateEditCancel">Cancel</button>
                     </div>
                 </form>
@@ -33,38 +38,40 @@
 
 @if (Model.Articles.Count() == 0)
 {
-    <h1>This newsletter does not have any articles yet...</h1>
+<h1>
+    This newsletter does not have any articles yet...
+    @if (Model.IsEdit)
+    {
+        <span class="btn btn-primary addArticleButton hoverPointer">Add One</span>
+    }
+</h1>
 }
 else
 {
-    @section Scripts {
-        <script src="~/js/Article/NewsletterArticle.js"></script>
-    }
-<div id="TableOfContentsWrapper">
-    <div id="TableOfContents">
-        <div class="title">
-            <span>Inside this Issue</span>
+    <div id="TableOfContentsWrapper">
+        <div id="TableOfContents">
+            <div class="title">
+                <span>Inside this Issue</span>
+            </div>
+            <div id="sortableTableOfContents" class="articleSorter">
+                @foreach (ArticleModel article in Model.Articles)
+                {
+                    <div>
+                        <a href="@string.Format("#article{0}", article.ArticleId)">@article.ArticleTableOfContentsText</a>
+                    </div>
+                }
+            </div>
         </div>
-        <div id="sortableTableOfContents" class="articleSorter">
-            @foreach (ArticleModel article in Model.Articles)
-            {
-                <div>
-                    <a href="@string.Format("#article{0}", article.ArticleId)">@article.ArticleTableOfContentsText</a>
-                </div>
-            }
-        </div>
-    </div>
-    @if (Model.IsEdit)
-    {
-        <button class="changeArticleOrderButton" style="margin: 16px auto;">Change Article Order</button>
-        <button class="saveArticleOrderButton" style="margin: 16px auto;">Save Article Order</button>
+        @if (Model.IsEdit)
+        {
+            <button class="changeArticleOrderButton" style="margin: 16px auto;">Change Article Order</button>
+            <button class="saveArticleOrderButton" style="margin: 16px auto;">Save Article Order</button>
+            <div>
+                <button type="button" class="btn btn-primary addArticleButton">Add Article</button>
+            </div>
 
-        <form action="/Article/AddArticle" method="post">
-            <input type="hidden" name="newsletterId" value="@Model.NewsletterId">
-            <button type="submit" class="btn btn-primary">Add Article</button>
-        </form>
-    }
-</div>
+        }
+    </div>
 
     @if (Model.IsEdit)
     {

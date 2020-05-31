@@ -93,7 +93,10 @@ namespace NLECA_Core_Newsletter_App.Service.Services
                     newsletter.CreatedBy = Int32.Parse(newsletterResult["CreatedBy"].ToString());
                     newsletter.Memo = newsletterResult["Memo"].ToString();
                     newsletter.DisplayDate = newsletterResult["DisplayDate"].ToString();
-                    newsletter.PublishedDate = DateTime.Parse(newsletterResult["PublishedDate"].ToString());
+                    if (newsletterResult.IsNull("PublishedDate") == false)
+                    {
+                        newsletter.PublishedDate = DateTime.Parse(newsletterResult["PublishedDate"].ToString());
+                    }
                     newsletter.IsCurrent = newsletterResult["IsCurrent"].ToString() == "0" ? false : true;
                 }
                 catch (Exception ex)
@@ -168,9 +171,12 @@ namespace NLECA_Core_Newsletter_App.Service.Services
                         CreatedBy = Int32.Parse(newsletterRow["CreatedBy"].ToString()),
                         Memo = newsletterRow["Memo"].ToString(),
                         DisplayDate = newsletterRow["DisplayDate"].ToString(),
-                        PublishedDate = DateTime.Parse(newsletterRow["PublishedDate"].ToString()),
                         IsCurrent = newsletterRow["IsCurrent"].ToString() == "0" ? false : true
                     };
+                    if (newsletterRow.IsNull("PublishedDate") == false)
+                    {
+                        newsletterToAdd.PublishedDate = DateTime.Parse(newsletterRow["PublishedDate"].ToString());
+                    }
 
                     newslettersToReturn.Add(newsletterToAdd);
                 }
@@ -204,7 +210,10 @@ namespace NLECA_Core_Newsletter_App.Service.Services
                 newsletter.CreatedBy = Int32.Parse(newsletterResult["CreatedBy"].ToString());
                 newsletter.Memo = newsletterResult["Memo"].ToString();
                 newsletter.DisplayDate = newsletterResult["DisplayDate"].ToString();
-                newsletter.PublishedDate = DateTime.Parse(newsletterResult["PublishedDate"].ToString());
+                if (newsletterResult.IsNull("PublishedDate") == false)
+                {
+                    newsletter.PublishedDate = DateTime.Parse(newsletterResult["PublishedDate"].ToString());
+                }
                 newsletter.IsCurrent = newsletterResult["IsCurrent"].ToString() == "0" ? false : true;
             }
             catch (Exception ex)
