@@ -211,7 +211,13 @@ namespace NLECA_Core_Newsletter_App.Service.Services
                     command.Parameters.AddWithValue(parameter.ParameterName, parameter.Value);
                 }
 
-                returnValue = Int32.Parse(command.ExecuteScalar().ToString());
+                var result = command.ExecuteScalar();
+                if (DBNull(result))
+                {
+                    return 0;
+                }
+
+                returnValue = Int32.Parse(result.ToString());
 
                 connection.Close();
             }
@@ -231,6 +237,11 @@ namespace NLECA_Core_Newsletter_App.Service.Services
             }
 
             return returnValue;
+        }
+
+        private bool DBNull(object result)
+        {
+            throw new NotImplementedException();
         }
 
         private void CheckIfStoredProcedureExists(string storedProcedureName)

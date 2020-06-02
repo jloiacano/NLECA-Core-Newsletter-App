@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using NLECA_Core_Newsletter_App.Models.Newsletter;
 using NLECA_Core_Newsletter_App.Service.Interfaces;
 using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,20 +15,101 @@ namespace NLECA_Core_Newsletter_App.Service.Services
     public class ArticleImageService : IArticleImageService
     {
         private readonly ILogger<ArticleImageService> _logger;
+        private readonly ISQLHelperService _sql;
 
-        public ArticleImageService(ILogger<ArticleImageService> logger)
+        public ArticleImageService(ILogger<ArticleImageService> logger, ISQLHelperService sql)
         {
             _logger = logger;
+            _sql = sql;
         }
 
-        public bool ExistsInAritcleImages(ArticleImage image)
+        public IEnumerable<ArticleImageInArticleModel> GetArticleImagesWithSameCheckSum(string simpleCheckSum)
         {
-            // TODO - J - Check Images table for checksum
-            return false;
+            SqlParameter[] parameters = { new SqlParameter("@simpleCheckSum", simpleCheckSum) };
+            DataSet MatchingArticleImages = _sql.GetDatasetFromStoredProcedure("GetArticleImagesWithSameCheckSum", parameters);
+
+            List<ArticleImageInArticleModel> images = new List<ArticleImageInArticleModel>();
+
+            try
+            {
+                IEnumerable<DataRow> articleImageResults = MatchingArticleImages.Tables[0].AsEnumerable();
+
+                foreach (var articleImageResult in articleImageResults)
+                {
+                    ArticleImageInArticleModel image = new ArticleImageInArticleModel(articleImageResult);
+                    images.Add(image);
+                }
+            }
+            catch (Exception ex)
+            {
+                string error = string.Format(
+                    "There was an error checking for CheckSum {0} in ArticleImageService/GetArticleImagesWithSameCheckSum"
+                    , simpleCheckSum);
+                _logger.LogError(error, ex);
+            }
+            return images.AsEnumerable();
         }
 
 
-        public bool UploadArticleImage(ArticleImage image)
+        public IEnumerable<ArticleImageInArticleModel> GetArticleImagesInArticles()
+        {
+            DataSet articleImagesDataSet = _sql.GetDatasetFromStoredProcedure("GetArticleImagesInArticles");
+
+            List<ArticleImageInArticleModel> images = new List<ArticleImageInArticleModel>();
+
+            try
+            {
+                IEnumerable<DataRow> articleImageResults = articleImagesDataSet.Tables[0].AsEnumerable();
+
+                foreach (var articleImageResult in articleImageResults)
+                {
+                    ArticleImageInArticleModel image = new ArticleImageInArticleModel(articleImageResult);
+                    images.Add(image);
+                }
+            }
+            catch (Exception ex)
+            {
+                string error = string.Format(
+                    "There was an error retrieving images in ArticleImageService/GetArticleImagesInArticles");
+                _logger.LogError(error, ex);
+            }
+            return images.AsEnumerable();
+        }
+        public IEnumerable<ArticleImageInArticleModel> GetAllArticleImages()
+        {
+            DataSet articleImagesDataSet = _sql.GetDatasetFromStoredProcedure("GetAllArticleImages");
+
+            List<ArticleImageInArticleModel> images = new List<ArticleImageInArticleModel>();
+
+            try
+            {
+                IEnumerable<DataRow> articleImageResults = articleImagesDataSet.Tables[0].AsEnumerable();
+
+                foreach (var articleImageResult in articleImageResults)
+                {
+                    ArticleImageInArticleModel image = new ArticleImageInArticleModel(articleImageResult);
+                    images.Add(image);
+                }
+            }
+            catch (Exception ex)
+            {
+                string error = string.Format(
+                    "There was an error retrieving images in ArticleImageService/GetArticleImagesInArticles");
+                _logger.LogError(error, ex);
+            }
+            return images.AsEnumerable();
+        }
+
+        public bool ExistsInAritcleImages(string simpleCheckSum)
+        {
+            SqlParameter[] parameters = { new SqlParameter("@simpleCheckSum", simpleCheckSum) };
+            int numberOfRows = _sql.GetReturnValueFromStoredProcedure("CheckIfArticleImageExists", parameters);
+
+            return numberOfRows > 0;
+        }
+
+
+        public bool UploadArticleImage(ArticleImageModel image)
         {
             // Upload file to file structure
             string imageLocation = SaveFile(image);
@@ -34,14 +119,14 @@ namespace NLECA_Core_Newsletter_App.Service.Services
         }
 
 
-        private string SaveFile(ArticleImage image)
+        private string SaveFile(ArticleImageModel image)
         {
             string path = "";
             try
             {
                 path = Path.Combine(
-                    Directory.GetCurrentDirectory(), 
-                    "wwwroot\\Images\\ArticleImages", 
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot\\Images\\ArticleImages",
                     image.StoredImageName);
 
                 using (FileStream fileStream = new FileStream(path, FileMode.Create))
@@ -51,169 +136,38 @@ namespace NLECA_Core_Newsletter_App.Service.Services
             }
             catch (Exception ex)
             {
-                string error = string.Format("There was an error Saving {0} in ImageServices/SaveFile", image.ImageName);
+                string error = string.Format("There was an error Saving {0} in ArticleImageService/SaveFile", image.ImageName);
                 _logger.LogError(error, ex);
             }
 
             return path;
         }
 
-        private bool EnterImageIntoDatabase(ArticleImage image)
+        private bool EnterImageIntoDatabase(ArticleImageModel image)
         {
+            int rowseffected = 0;
             try
             {
-                // TODO - J - Update database and make call to upload image properties
+                SqlParameter[] parameters = new SqlParameter[]
+{
+                    new SqlParameter("@uploadedByUserId", image.UploadedByUserId),
+                    new SqlParameter("@uploadedByUserName", image.UploadedByUserName),
+                    new SqlParameter("@uploadedDate", _sql.ConvertDateTimeForSQL(DateTime.Now)),
+                    new SqlParameter("@simpleCheckSum", image.SimpleCheckSum),
+                    new SqlParameter("@imageName", image.ImageName),
+                    new SqlParameter("@imageLocation", image.ImageLocation)
+};
+
+                rowseffected = _sql.GetReturnValueFromStoredProcedure("AddImageToArticleImages", parameters);
             }
             catch (Exception ex)
             {
                 string error = string.Format(
-                    "There was an error entering {0} into database ImageServices/EnterImageIntoDatabase", 
+                    "There was an error entering {0} into database ArticleImageService/EnterImageIntoDatabase",
                     image.ImageName);
                 _logger.LogError(error, ex);
             }
-            return true;
-        }
-    }
-
-    public class ArticleImage
-    {
-        private byte[] FileBytes;
-
-        public int ArticleId { get; private set; }
-        public IFormFile ImageFile { get; private set; }
-        public string UploadedByUserId { get; set; }
-        public string UploadedByUserName { get; set; }
-
-        public string SimpleCheckSum { get; private set; }
-        public string ImageFileExtension { get; private set; }
-        public string ImageName { get; private set; }
-        public string StoredImageName { get; private set; }
-        public string ImageLocation { get; private set; }
-        public bool IsValidImageFormat { get; private set; }
-
-        public ArticleImage(IFormFile imageFile, int articleId)
-        {
-            ImageFile = imageFile;
-            ArticleId = articleId;
-            FileBytes = ConvertFileToByteArray(imageFile);
-            SimpleCheckSum = GetSimpleCheckSumFromFile();
-            ImageFileExtension = "." + imageFile.FileName.Split('.')[imageFile.FileName.Split('.').Length - 1];
-            ImageName = imageFile.FileName.Remove(imageFile.FileName.IndexOf(ImageFileExtension));
-            StoredImageName = string.Format("{0}{1}", Guid.NewGuid().ToString(), ImageFileExtension);
-            ImageLocation = string.Format("../../Images/ArticleImages/{0}", StoredImageName);
-            IsValidImageFormat = GetImageFormat(FileBytes) != ImageFormat.unknown;
-        }
-
-        private string GetSimpleCheckSumFromFile()
-        {
-            byte[] fileBytes = this.FileBytes;
-
-            string simpleCheckSum = GetImageByteArraySimpleCheckSum(fileBytes);
-
-            System.Diagnostics.Debug.WriteLine("C# checksum: " + simpleCheckSum);
-
-            return simpleCheckSum;
-        }
-
-        private enum ImageFormat
-        {
-            jpeg,
-            png,
-            gif,
-            bmp,
-            tiff,
-            unknown
-        }
-
-        private byte[] ConvertFileToByteArray(IFormFile file)
-        {
-            byte[] fileBytes;
-
-            using (var memoryStream = new MemoryStream())
-            {
-                file.CopyTo(memoryStream);
-                fileBytes = memoryStream.ToArray();
-                return fileBytes;
-            }
-        }
-
-        private static ImageFormat GetImageFormat(byte[] bytes)
-        {
-            var jpeg = new byte[] { 255, 216, 255, 224 };   // jpeg
-            var jpeg2 = new byte[] { 255, 216, 255, 225 };  // jpeg canon
-            var png = new byte[] { 137, 80, 78, 71 };       // PNG
-            var gif = Encoding.ASCII.GetBytes("GIF");       // GIF
-            var bmp = Encoding.ASCII.GetBytes("BM");        // BMP
-            var tiff = new byte[] { 73, 73, 42 };           // TIFF
-            var tiff2 = new byte[] { 77, 77, 42 };          // TIFF
-
-            if (jpeg.SequenceEqual(bytes.Take(jpeg.Length)))
-                return ImageFormat.jpeg;
-
-            if (jpeg2.SequenceEqual(bytes.Take(jpeg2.Length)))
-                return ImageFormat.jpeg;
-
-            if (png.SequenceEqual(bytes.Take(png.Length)))
-                return ImageFormat.png;
-
-            if (gif.SequenceEqual(bytes.Take(gif.Length)))
-                return ImageFormat.gif;
-
-            if (bmp.SequenceEqual(bytes.Take(bmp.Length)))
-                return ImageFormat.bmp;
-
-            if (tiff.SequenceEqual(bytes.Take(tiff.Length)))
-                return ImageFormat.tiff;
-
-            if (tiff2.SequenceEqual(bytes.Take(tiff2.Length)))
-                return ImageFormat.tiff;
-
-            return ImageFormat.unknown;
-        }
-
-        // DO NOT USE FOR HASHING ANYTHING IMPORTANT. THIS IS ONLY FOR CHECKSUMS!!
-        public string GetImageByteArraySimpleCheckSum(byte[] imageByteArray)
-        {
-            string hash = string.Empty;
-            int[] hashInts = new int[30];
-            int index = 0;
-            int lastRemainder = 0;
-            foreach (byte imagebyte in imageByteArray)
-            {
-                int dividend = imagebyte/7;
-                int remainder = imagebyte%7;
-                hashInts[index] = hashInts[index] + lastRemainder + dividend;
-                lastRemainder = remainder;
-                index++;
-                if (index == 30)
-                {
-                    index = 0;
-                }
-            }
-
-            for (int i = 0; i < hashInts.Length; i++)
-            {
-                int preAsciiConversionDigit = hashInts[i] % 62;
-                int asciiCharDigit;
-                if (preAsciiConversionDigit < 10)
-                {
-                    asciiCharDigit = preAsciiConversionDigit + 48;
-                }
-                else if (preAsciiConversionDigit < 36)
-                {
-                    asciiCharDigit = preAsciiConversionDigit + 55;
-                }
-                else
-                {
-                    asciiCharDigit = preAsciiConversionDigit + 61;
-                }
-
-                char charToAddToHash = (char)asciiCharDigit;
-
-                hash += charToAddToHash;
-            }
-
-            return hash;
+            return rowseffected > 0;
         }
     }
 }

@@ -1,0 +1,20 @@
+﻿@using NLECA_Core_Newsletter_App.Models.Newsletter;
+@model IEnumerable<ArticleImageInArticleModel>
+@{
+    ViewData["Title"] = "SuperAdminManageArticleImages";
+}
+
+
+@section Scripts{
+    <script type="text/javascript" src="~/js/Article/ArticleImageManager.js"></script>
+}
+
+<h1>SuperAdminManageArticleImages</h1>
+
+
+@foreach (var image in Model)
+{
+    <div>
+        <img src="@image.ImageLocation" alt="image name: @image.ImageName" />
+    </div>
+}

@@ -113,19 +113,23 @@ EditArticle = {
                 simpleCheckSum = GetImageByteArraySimpleCheckSum(fileBytesArray);
 
             $.ajax({
-                url: '/Article/CheckForArticleImage',
+                url: '/ArticleImage/CheckForArticleImage',
                 type: 'POST',
                 data: {
                     'simpleCheckSum': simpleCheckSum
                 },
                 dataType: 'json',
                 success: function (response) {
-                    if (response.fileexists == false) {
-                        $('#UpdateArticleImageForm').submit();
+                    if (response.success == true) {
+                        if (response.fileexists == false) {
+                            $('#UploadArticleImageForm').submit();
+                        }
+                        else if (response.fileexists == true) {
+                            // show the file that exist and what articles it is in.
+                            alert("TODO #72e943n9");
+                        }
                     }
-                    else {
-                        alert(response.responseText);
-                    }
+
                 },
                 error: function (request, error) {
                     alert("Request: " + JSON.stringify(request));

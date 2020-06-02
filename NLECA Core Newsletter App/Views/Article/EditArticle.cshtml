@@ -46,17 +46,38 @@
     <div class="articleContent">
         <div class="topArticleImage">
             <div class="dragAndDropImageArea">
-                <img class="dragAndDropImage" src="../../Images/ArticleImages/draganddropimage.png" />
+                @if (string.IsNullOrEmpty(Model.Article.ImageFileLocation))
+                {
+                    <img class="dragAndDropImage" src="../../Images/ArticleImages/draganddropimage.png" />
+                }
+                else
+                {
+                    <img class="dragAndDropImage" src="@Model.Article.ImageFileLocation" />
+                }
             </div>
         </div>
         <div class="leftArticleImage">
             <div class="dragAndDropImageArea">
-                <img class="dragAndDropImage" src="../../Images/ArticleImages/draganddropimage.png" />
+                @if (string.IsNullOrEmpty(Model.Article.ImageFileLocation))
+                {
+                    <img class="dragAndDropImage" src="../../Images/ArticleImages/draganddropimage.png" />
+                }
+                else
+                {
+                    <img class="dragAndDropImage" src="@Model.Article.ImageFileLocation" />
+                }
             </div>
         </div>
         <div class="rightArticleImage">
             <div class="dragAndDropImageArea">
-                <img class="dragAndDropImage" src="../../Images/ArticleImages/draganddropimage.png" />
+                @if (string.IsNullOrEmpty(Model.Article.ImageFileLocation))
+                {
+                    <img class="dragAndDropImage" src="../../Images/ArticleImages/draganddropimage.png" />
+                }
+                else
+                {
+                    <img class="dragAndDropImage" src="@Model.Article.ImageFileLocation" />
+                }
             </div>
         </div>
 
@@ -64,7 +85,14 @@
 
         <div class="bottomArticleImage">
             <div class="dragAndDropImageArea">
-                <img class="dragAndDropImage" src="../../Images/ArticleImages/draganddropimage.png" />
+                @if (string.IsNullOrEmpty(Model.Article.ImageFileLocation))
+                {
+                    <img class="dragAndDropImage" src="../../Images/ArticleImages/draganddropimage.png" />
+                }
+                else
+                {
+                    <img class="dragAndDropImage" src="@Model.Article.ImageFileLocation" />
+                }
             </div>
         </div>
     </div>
@@ -74,9 +102,9 @@
     <button id="ArticleDeleteButton" type="button">DELETE ARTICLE</button>
 </form>
 
-<form id="UpdateArticleImageForm" action="/Article/UpdateArticleImage" method="post" enctype="multipart/form-data">
+<form id="UploadArticleImageForm" action="/ArticleImage/UploadArticleImage" method="post" enctype="multipart/form-data">
     <input type="hidden" name="articleId" value="@Model.Article.ArticleId" />
-    <input type="file" name="imageFile" id="ImageFileInput" />
+    <input type="file" name="imageFile" id="ImageFileInput" accept="image/*" />
 </form>
 
 <form id="DeleteArticleForm" action="/Article/RemoveArticle" method="post">

@@ -58,6 +58,14 @@ namespace NLECA_Core_Newsletter_App.Controllers
             return RedirectToAction("EditNewsletter", "Newsletter", new { article.NewsletterId });
         }
 
+        // TODO - J - Remove if nothing comes up
+        //[Authorize(Roles = "SuperAdmin,Admin,ReadOnlyUser")]
+        //public IActionResult SaveArticle(ArticleModel article)
+        //{
+        //    _articleService.UpdateArticle(article);
+        //    return RedirectToAction("EditNewsletter", "Newsletter", new { article.NewsletterId });
+        //}
+
         [Authorize(Roles = "SuperAdmin,Admin")]
         public IActionResult UpdateArticleOrder(IEnumerable<string> articleIds, IEnumerable<string> newArticleOrder)
         {
@@ -85,46 +93,10 @@ namespace NLECA_Core_Newsletter_App.Controllers
         }
 
         [Authorize(Roles = "SuperAdmin,Admin")]
-        public IActionResult CheckForArticleImage(string simpleCheckSum)
-        {
-            if (true)
-            {
-                return Json(new { success = true, fileexists = false, responseText = "Image does not exist" });
-            }
-            else
-            {
-                return Json(new { success = false, fileexists = true, responseText = "Image already exist" });
-            }
-        }
-
-        [Authorize(Roles = "SuperAdmin,Admin")]
-        public IActionResult UpdateArticleImage(IFormFile imageFile, int articleId)
-        {
-            ArticleImage articleImage = new ArticleImage(imageFile, articleId);
-
-            if (articleImage.IsValidImageFormat
-                && _imageService.ExistsInAritcleImages(articleImage) == false)
-            {
-                articleImage.UploadedByUserId = _userManager.GetUserId(this.User);
-                articleImage.UploadedByUserName = this.User.Identity.Name;
-                //bool uploaded = _imageService.UploadArticleImage(articleImage);
-            }
-
-            return RedirectToAction("EditArticle", new { articleId });
-        }
-
-        [Authorize(Roles = "SuperAdmin,Admin,ReadOnlyUser")]
         public IActionResult RemoveArticle(int newsletterId, int articleId)
         {
             _articleService.DeleteArticle(articleId);
             return RedirectToAction("EditNewsletter", "Newsletter", new { newsletterId });
-        }
-
-        [Authorize(Roles = "SuperAdmin,Admin,ReadOnlyUser")]
-        public IActionResult SaveArticle(ArticleModel article)
-        {
-            _articleService.UpdateArticle(article);
-            return RedirectToAction("EditNewsletter", "Newsletter", new { article.NewsletterId });
         }
     }
 }
