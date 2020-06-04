@@ -25,6 +25,7 @@ EditArticle = {
         $('#ArticleTypeDropdown').change(function () {
             console.log($('#ArticleTypeDropdown option:selected').text());
             EditArticle.ShowCorrectArticleImageLocation($(this).val());
+            $('input[name="articleImageType"]').val($('#ArticleTypeDropdown option:selected').val())
         });
 
         $('#ArticleEditCancelButton').click(function () {

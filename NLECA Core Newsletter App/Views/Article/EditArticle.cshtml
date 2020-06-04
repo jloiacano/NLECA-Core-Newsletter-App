@@ -106,6 +106,7 @@
 
 <form id="UploadArticleImageForm" action="/ArticleImage/UploadArticleImage" method="post" enctype="multipart/form-data">
     <input type="hidden" name="articleId" value="@Model.Article.ArticleId" />
+    <input type="hidden" name="articleImageType" value="@Model.Article.ArticleType" />
     <input type="file" name="imageFile" id="ImageFileInput" accept="image/*" />
 </form>
 

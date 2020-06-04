@@ -62,7 +62,7 @@ namespace NLECA_Core_Newsletter_App.Controllers
         }
 
         [Authorize(Roles = "SuperAdmin,Admin")]
-        public IActionResult UploadArticleImage(IFormFile imageFile, int articleId)
+        public IActionResult UploadArticleImage(IFormFile imageFile, int articleId, int articleImageType)
         {
             ArticleImageModel articleImage = new ArticleImageModel(imageFile, articleId);
 
@@ -84,6 +84,7 @@ namespace NLECA_Core_Newsletter_App.Controllers
 
                 ArticleModel article = _articleService.GetArticleByArticleId(articleId);
                 article.ImageFileLocation = articleImage.ImageLocation;
+                article.ArticleType = articleImageType;
                 bool articleUpdated = _articleService.UpdateArticle(article);
 
                 if (articleUpdated == false)
