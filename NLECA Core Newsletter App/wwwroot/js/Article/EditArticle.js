@@ -5,11 +5,22 @@ $(document).ready(function () {
 });
 
 EditArticle = {
-
     currentArticleImageUrl: "",
+
+    originalRedirect: "",
+    originalArticleType: -1,
+    originalArticleTableOfContentsText: "",
+    originalArticleTitle: "",
+    originalArticleText: "",
 
     init: function () {
         CKEDITOR.replace('ArticleText');
+
+        EditArticle.originalRedirect = $('#redirect').val();
+        EditArticle.originalArticleType = $('#ArticleTypeDropdown').val();
+        EditArticle.originalArticleTableOfContentsText = $('.articleTableOfContentsText').val();
+        EditArticle.originalArticleTitle = $('.articleTitle').val();
+        EditArticle.originalArticleText = $('.articleText').val();
 
         if ($('#articleImageFileLocation').val() != '') {
             currentArticleImageUrl = $('#articleImageFileLocation').val();
@@ -37,7 +48,13 @@ EditArticle = {
 
         $('.dragAndDropImageArea').click(function () {
             var articleId = $('#ModelArticleId').val();
-            window.location.href = '/ArticleImage/ArticleImageManager/?articleId=' + articleId;
+            if (EditArticle.CheckForUnsavedChanges()) {
+                $('#ArticleUpdater').submit();
+            }
+            else {
+                window.location.href = '/ArticleImage/ArticleImageManager/?articleId=' + articleId;
+            }
+            
         });
     },
 
@@ -96,6 +113,28 @@ EditArticle = {
             default:
                 //do no image;
                 EditArticle.HideAllImages();
+        }
+    },
+
+    CheckForUnsavedChanges: function () {
+        var changes = false;
+
+        //CHECK THESE FOR DIFFERENT.
+        if ($('#ArticleTypeDropdown').val() != EditArticle.originalArticleType
+            || $('#ArticleTableOfContentsText').val() != EditArticle.originalArticleTableOfContentsText
+            || $('#ArticleTitle').val() != EditArticle.originalArticleTitle
+            || CKEDITOR.instances.ArticleText.getData() != EditArticle.originalArticleText)
+        {
+            changes = true;
+        }
+
+        if (changes) {
+            $('#redirect').val("ArticleImageManager");
+            return true;
+        }
+        else {
+            $('#redirect').val(EditArticle.originalRedirect);
+            return false;
         }
     },
 

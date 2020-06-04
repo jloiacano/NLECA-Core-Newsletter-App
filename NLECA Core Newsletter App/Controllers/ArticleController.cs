@@ -51,7 +51,7 @@ namespace NLECA_Core_Newsletter_App.Controllers
 
 
         [Authorize(Roles = "SuperAdmin,Admin")]
-        public IActionResult UpdateArticle(ArticleModel article, IFormFile imageFile)
+        public IActionResult UpdateArticle(ArticleModel article, IFormFile imageFile, string redirect)
         {
             if (imageFile != null)
             {
@@ -65,6 +65,11 @@ namespace NLECA_Core_Newsletter_App.Controllers
                 return RedirectToAction("EditArticle", new { articleId = article.ArticleId });
             }
             _articleService.UpdateArticle(article);
+
+            if (redirect.Equals("ArticleImageManager"))
+            {
+                return RedirectToAction("ArticleImageManager", "ArticleImage", new { articleId = article.ArticleId });
+            }
 
             return RedirectToAction("EditNewsletter", "Newsletter", new { article.NewsletterId });
         }

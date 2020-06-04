@@ -26,22 +26,24 @@
     <input hidden asp-for="Article.ArticleId" />
     <input hidden asp-for="Article.NewsletterId" />
     <input hidden asp-for="Article.ArticleSequence" />
-    <input hidden asp-for="Article.ImageFileLocation" id="articleImageFileLocation" />
+    <input hidden asp-for="Article.ImageFileLocation" id="articleImageFileLocation"/>
     <input hidden asp-for="Article.AddedBy" />
     <input hidden asp-for="Article.DateAdded" />
 
 
     <label for="articleTypeSelector">Article Type: </label>
-    <select id="ArticleTypeDropdown" asp-for="Article.ArticleType" asp-items="@(new SelectList(Model.ArticleTypes, intValue, textValue))">
+    <select id="ArticleTypeDropdown"
+            asp-for="Article.ArticleType" 
+            asp-items="@(new SelectList(Model.ArticleTypes, intValue, textValue))">
     </select>
 
     <div>
         <label for="articleTableOfContentsText">Table of contents Text: </label>
-        <input asp-for="Article.ArticleTableOfContentsText" />
+        <input id="ArticleTableOfContentsText" asp-for="Article.ArticleTableOfContentsText" />
     </div>
     <div>
         <label for="articleTitle">Article Title: </label>
-        <input asp-for="Article.ArticleTitle" />
+        <input id="ArticleTitle" asp-for="Article.ArticleTitle" />
     </div>
 
 
@@ -99,6 +101,7 @@
         </div>
     </div>
     <input hidden type="file" name="imageFile" id="ImageFileInput" accept="image/*" />
+    <input hidden name="redirect" id="redirect" value="EditNewsletter"/>
 
     <button type="submit">Save Changes</button>
     <button id="ArticleEditCancelButton" type="button">Cancel</button>
