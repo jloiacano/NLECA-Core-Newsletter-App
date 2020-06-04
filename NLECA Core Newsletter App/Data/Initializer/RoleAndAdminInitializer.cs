@@ -9,6 +9,8 @@ namespace NLECA_Core_Newsletter_App.Data.Initializer
         private readonly IConfiguration Configuration;
         private readonly string SuperAdminUserName;
         private readonly string SuperAdminPassword;
+        private readonly string AdminUserName;
+        private readonly string AdminPassword;
         private readonly string ReadOnlyUserName;
         private readonly string ReadOnlyPassword;
 
@@ -17,6 +19,8 @@ namespace NLECA_Core_Newsletter_App.Data.Initializer
             Configuration = config;
             SuperAdminUserName = Configuration["SuperAdminUser:UserName"];
             SuperAdminPassword = Configuration["SuperAdminUser:Password"];
+            AdminUserName = Configuration["AdminUser:UserName"];
+            AdminPassword = Configuration["AdminUser:Password"];
             ReadOnlyUserName = Configuration["ReadOnlyUser:UserName"];
             ReadOnlyPassword = Configuration["ReadOnlyUser:Password"];
         }
@@ -56,6 +60,22 @@ namespace NLECA_Core_Newsletter_App.Data.Initializer
                 user.EmailConfirmed = true;
 
                 IdentityResult result = userManager.CreateAsync(user, SuperAdminPassword).Result;
+
+                if (result.Succeeded)
+                {
+                    userManager.AddToRoleAsync(user, RoleType.SuperAdmin.ToString()).Wait();
+                }
+            }
+
+            // ADD ADMINUSER
+            if (userManager.FindByEmailAsync(SuperAdminUserName).Result == null)
+            {
+                ApplicationIdentityUser user = new ApplicationIdentityUser();
+                user.UserName = AdminUserName;
+                user.Email = AdminUserName;
+                user.EmailConfirmed = true;
+
+                IdentityResult result = userManager.CreateAsync(user, AdminPassword).Result;
 
                 if (result.Succeeded)
                 {
