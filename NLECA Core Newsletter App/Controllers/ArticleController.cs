@@ -51,20 +51,23 @@ namespace NLECA_Core_Newsletter_App.Controllers
 
 
         [Authorize(Roles = "SuperAdmin,Admin")]
-        public IActionResult UpdateArticle(ArticleModel article)
+        public IActionResult UpdateArticle(ArticleModel article, IFormFile imageFile)
         {
+            if (imageFile != null)
+            {
+                ArticleImageModel articleImage = new ArticleImageModel(imageFile);
+                articleImage.UploadedByUserId = _userManager.GetUserId(this.User);
+                articleImage.UploadedByUserName = this.User.Identity.Name;
+                _imageService.UploadArticleImage(articleImage);
+
+                article.ImageFileLocation = articleImage.ImageLocation;
+                _articleService.UpdateArticle(article);
+                return RedirectToAction("EditArticle", new { articleId = article.ArticleId });
+            }
             _articleService.UpdateArticle(article);
 
             return RedirectToAction("EditNewsletter", "Newsletter", new { article.NewsletterId });
         }
-
-        // TODO - J - Remove if nothing comes up
-        //[Authorize(Roles = "SuperAdmin,Admin,ReadOnlyUser")]
-        //public IActionResult SaveArticle(ArticleModel article)
-        //{
-        //    _articleService.UpdateArticle(article);
-        //    return RedirectToAction("EditNewsletter", "Newsletter", new { article.NewsletterId });
-        //}
 
         [Authorize(Roles = "SuperAdmin,Admin")]
         public IActionResult UpdateArticleOrder(IEnumerable<string> articleIds, IEnumerable<string> newArticleOrder)

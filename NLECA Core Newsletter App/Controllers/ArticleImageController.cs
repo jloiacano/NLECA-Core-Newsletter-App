@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -59,44 +58,6 @@ namespace NLECA_Core_Newsletter_App.Controllers
                 images = System.Text.Json.JsonSerializer.Serialize(imagesWithSameCheckSum);
                 return Json(new { success = true, fileexists = true, images = images });
             }
-        }
-
-        [Authorize(Roles = "SuperAdmin,Admin")]
-        public IActionResult UploadArticleImage(IFormFile imageFile, int articleId, int articleImageType)
-        {
-            ArticleImageModel articleImage = new ArticleImageModel(imageFile, articleId);
-
-            if (articleImage.IsValidImageFormat
-                && _imageService.ExistsInAritcleImages(articleImage.SimpleCheckSum) == false)
-            {
-                articleImage.UploadedByUserId = _userManager.GetUserId(this.User);
-                articleImage.UploadedByUserName = this.User.Identity.Name;
-                bool imageUploaded = _imageService.UploadArticleImage(articleImage);
-
-                if (imageUploaded == false)
-                {
-                    string error = string.Format("There was an error uploading image: {0} to {1} for article {2}"
-                        , articleImage.ImageName
-                        , articleImage.ImageLocation
-                        , articleId);
-                    _logger.LogError(error);
-                }
-
-                ArticleModel article = _articleService.GetArticleByArticleId(articleId);
-                article.ImageFileLocation = articleImage.ImageLocation;
-                article.ArticleType = articleImageType;
-                bool articleUpdated = _articleService.UpdateArticle(article);
-
-                if (articleUpdated == false)
-                {
-                    string error = string.Format("There was an error updating article {0} with image: {1} at {2}"
-                        , articleId
-                        , articleImage.ImageName
-                        , articleImage.ImageLocation);
-                    _logger.LogError(error);
-                }
-            }
-            return RedirectToAction("EditArticle", "Article", new { articleId });
         }
 
         [Authorize(Roles = "SuperAdmin,Admin")]

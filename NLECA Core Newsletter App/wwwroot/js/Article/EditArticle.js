@@ -25,7 +25,6 @@ EditArticle = {
         $('#ArticleTypeDropdown').change(function () {
             console.log($('#ArticleTypeDropdown option:selected').text());
             EditArticle.ShowCorrectArticleImageLocation($(this).val());
-            $('input[name="articleImageType"]').val($('#ArticleTypeDropdown option:selected').val())
         });
 
         $('#ArticleEditCancelButton').click(function () {
@@ -123,7 +122,7 @@ EditArticle = {
                 success: function (response) {
                     if (response.success == true) {
                         if (response.fileexists == false) {
-                            $('#UploadArticleImageForm').submit();
+                            $('#ArticleUpdater').submit();
                         }
                         else if (response.fileexists == true) {
                             // TODO - J - Add this response in the view instead of an alert

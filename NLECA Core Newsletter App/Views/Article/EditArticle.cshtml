@@ -21,7 +21,7 @@
 
 <input hidden id="ModelArticleId" value="@Model.Article.ArticleId" />
 
-<form asp-controller="Article" asp-action="UpdateArticle" data-ajax="true" data-ajax-method="POST">
+<form id="ArticleUpdater" asp-controller="Article" asp-action="UpdateArticle" data-ajax="true" data-ajax-method="POST" enctype="multipart/form-data">
 
     <input hidden asp-for="Article.ArticleId" />
     <input hidden asp-for="Article.NewsletterId" />
@@ -98,16 +98,11 @@
             </div>
         </div>
     </div>
+    <input hidden type="file" name="imageFile" id="ImageFileInput" accept="image/*" />
 
     <button type="submit">Save Changes</button>
     <button id="ArticleEditCancelButton" type="button">Cancel</button>
     <button id="ArticleDeleteButton" type="button">DELETE ARTICLE</button>
-</form>
-
-<form id="UploadArticleImageForm" action="/ArticleImage/UploadArticleImage" method="post" enctype="multipart/form-data">
-    <input type="hidden" name="articleId" value="@Model.Article.ArticleId" />
-    <input type="hidden" name="articleImageType" value="@Model.Article.ArticleType" />
-    <input type="file" name="imageFile" id="ImageFileInput" accept="image/*" />
 </form>
 
 <form id="DeleteArticleForm" action="/Article/RemoveArticle" method="post">

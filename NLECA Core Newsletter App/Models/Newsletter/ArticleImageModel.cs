@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace NLECA_Core_Newsletter_App.Models.Newsletter
 {
@@ -13,7 +10,6 @@ namespace NLECA_Core_Newsletter_App.Models.Newsletter
     {
         private byte[] FileBytes;
 
-        public int ArticleId { get; private set; }
         public IFormFile ImageFile { get; private set; }
         public string UploadedByUserId { get; set; }
         public string UploadedByUserName { get; set; }
@@ -25,10 +21,9 @@ namespace NLECA_Core_Newsletter_App.Models.Newsletter
         public string ImageLocation { get; private set; }
         public bool IsValidImageFormat { get; private set; }
 
-        public ArticleImageModel(IFormFile imageFile, int articleId)
+        public ArticleImageModel(IFormFile imageFile)
         {
             ImageFile = imageFile;
-            ArticleId = articleId;
             FileBytes = ConvertFileToByteArray(imageFile);
             SimpleCheckSum = GetSimpleCheckSumFromFile();
             ImageFileExtension = "." + imageFile.FileName.Split('.')[imageFile.FileName.Split('.').Length - 1];

@@ -63,10 +63,12 @@
 }
 
 #NewsletterEditor .articleContent:hover {
-    cursor: url('../images/editcursor.png'), auto;
+    background-color: lightyellow;
+    cursor: url('../images/editcursor.png') 0 32, auto;
 }
 
 #NewsletterEditor .newsletterDate:hover {
+    background-color: lightyellow;
     cursor: url('../images/editcursor.png') 0 32, auto;
 }
 

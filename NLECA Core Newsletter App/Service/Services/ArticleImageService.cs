@@ -113,20 +113,21 @@ namespace NLECA_Core_Newsletter_App.Service.Services
 
         public bool UploadArticleImage(ArticleImageModel image)
         {
-            // Upload file to file structure
-            string imageLocation = SaveFile(image);
-            // Add entry in database with file location and checksum
-            bool success = EnterImageIntoDatabase(image);
+            bool success = false;
+            if (SaveFile(image))
+            {
+                success = EnterImageIntoDatabase(image);
+            }
             return success;
         }
 
 
-        private string SaveFile(ArticleImageModel image)
+        private bool SaveFile(ArticleImageModel image)
         {
-            string path = "";
+            bool success = false;
             try
             {
-                path = Path.Combine(
+                string path = Path.Combine(
                     Directory.GetCurrentDirectory(),
                     "wwwroot\\Images\\ArticleImages",
                     image.StoredImageName);
@@ -134,6 +135,7 @@ namespace NLECA_Core_Newsletter_App.Service.Services
                 using (FileStream fileStream = new FileStream(path, FileMode.Create))
                 {
                     image.ImageFile.CopyTo(fileStream);
+                    success = true;
                 }
             }
             catch (Exception ex)
@@ -141,8 +143,7 @@ namespace NLECA_Core_Newsletter_App.Service.Services
                 string error = string.Format("There was an error Saving {0} in ArticleImageService/SaveFile", image.ImageName);
                 _logger.LogError(error, ex);
             }
-
-            return path;
+            return success;
         }
 
         private bool EnterImageIntoDatabase(ArticleImageModel image)
