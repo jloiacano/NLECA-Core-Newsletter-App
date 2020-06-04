@@ -7,85 +7,92 @@
     <script src="~/js/Article/NewsletterArticle.js"></script>
 }
 
-<div class="container">
-    <div class="row banner">
-        <div class="col-sm-3">
-            <img class="d-none d-md-block d-lg-block d-xl-block" src="~/Images/NewsletterImages/newsicon.jpg" />
-        </div>
-        <div class="col-sm-6 title">
-            <h1>NLECA Newsletter</h1>
-        </div>
-        <div class="col-sm-3 date">
-            <h2 class="newsletterDate">@DateTime.Parse(Model.DisplayDate).ToString("MMMM yyyy")</h2>
-            @if (Model.IsEdit)
-            {
-                <form action="/Newsletter/UpdateNewsletter" method="post">
-                    <input type="hidden" name="newsletterId" value="@Model.NewsletterId" />
-                    <input type="hidden" name="oldDisplayDate" value="@Model.DisplayDate" />
-
-                    <div id="displayDateEditArea" style="display: none;">
-                        <input type="hidden" name="newsletterId" value="@Model.NewsletterId" />
-                        <input type="month" id="start" name="displayDate" min="2018-03" value="@Model.DisplayDate">
-                        <button type="submit" id="displayDateSaveChanges">Save Changes</button>
-                        <button type="button" id="displayDateEditCancel">Cancel</button>
-                    </div>
-                </form>
-            }
-        </div>
-    </div>
-</div>
-
-
-@if (Model.Articles.Count() == 0)
+@if (Model.CreatedDate != DateTime.MinValue)
 {
-<h1>
-    This newsletter does not have any articles yet...
-    @if (Model.IsEdit)
-    {
-        <span class="btn btn-primary addArticleButton hoverPointer">Add One</span>
-    }
-</h1>
-}
-else
-{
-    <div id="TableOfContentsWrapper">
-        <div id="TableOfContents">
-            <div class="title">
-                <span>Inside this Issue</span>
+    <div class="container">
+        <div class="row banner">
+            <div class="col-sm-3">
+                <img class="d-none d-md-block d-lg-block d-xl-block" src="~/Images/NewsletterImages/newsicon.jpg" />
             </div>
-            <div id="sortableTableOfContents" class="articleSorter">
-                @foreach (ArticleModel article in Model.Articles)
+            <div class="col-sm-6 title">
+                <h1>NLECA Newsletter</h1>
+            </div>
+            <div class="col-sm-3 date">
+                <h2 class="newsletterDate">@DateTime.Parse(Model.DisplayDate).ToString("MMMM yyyy")</h2>
+                @if (Model.IsEdit)
                 {
-                    <div>
-                        <a href="@string.Format("#article{0}", article.ArticleId)">@article.ArticleTableOfContentsText</a>
-                    </div>
+                    <form action="/Newsletter/UpdateNewsletter" method="post">
+                        <input type="hidden" name="newsletterId" value="@Model.NewsletterId" />
+                        <input type="hidden" name="oldDisplayDate" value="@Model.DisplayDate" />
+
+                        <div id="displayDateEditArea" style="display: none;">
+                            <input type="hidden" name="newsletterId" value="@Model.NewsletterId" />
+                            <input type="month" id="start" name="displayDate" min="2018-03" value="@Model.DisplayDate">
+                            <button type="submit" id="displayDateSaveChanges">Save Changes</button>
+                            <button type="button" id="displayDateEditCancel">Cancel</button>
+                        </div>
+                    </form>
                 }
             </div>
         </div>
+    </div>
+
+
+    @if (Model.Articles.Count() == 0)
+    {
+        <h1>
+            This newsletter does not have any articles yet...
+            @if (Model.IsEdit)
+            {
+                <span class="btn btn-primary addArticleButton hoverPointer">Add One</span>
+            }
+        </h1>
+    }
+    else
+    {
+        <div id="TableOfContentsWrapper">
+            <div id="TableOfContents">
+                <div class="title">
+                    <span>Inside this Issue</span>
+                </div>
+                <div id="sortableTableOfContents" class="articleSorter">
+                    @foreach (ArticleModel article in Model.Articles)
+                    {
+                        <div>
+                            <a href="@string.Format("#article{0}", article.ArticleId)">@article.ArticleTableOfContentsText</a>
+                        </div>
+                    }
+                </div>
+            </div>
+            @if (Model.IsEdit)
+            {
+                <button class="changeArticleOrderButton" style="margin: 16px auto;">Change Article Order</button>
+                <button class="saveArticleOrderButton" style="margin: 16px auto;">Save Article Order</button>
+                <div>
+                    <button type="button" class="btn btn-primary addArticleButton">Add Article</button>
+                </div>
+
+            }
+        </div>
+
         @if (Model.IsEdit)
         {
-            <button class="changeArticleOrderButton" style="margin: 16px auto;">Change Article Order</button>
-            <button class="saveArticleOrderButton" style="margin: 16px auto;">Save Article Order</button>
-            <div>
-                <button type="button" class="btn btn-primary addArticleButton">Add Article</button>
-            </div>
-
+            <form id="EditArticleForm" action="/Article/EditArticle" method="post">
+                <input id="EditArticleFormInput" type="hidden" name="articleId" value="" />
+            </form>
         }
-    </div>
 
-    @if (Model.IsEdit)
-    {
-        <form id="EditArticleForm" action="/Article/EditArticle" method="post">
-            <input id="EditArticleFormInput" type="hidden" name="articleId" value="" />
-        </form>
+        <div id="Articles">
+            @foreach (ArticleModel article in Model.Articles)
+            {
+                <partial name="/Views/Article/Partials/_ArticleInNewsletter.cshtml" model="article" />
+
+
+            }
+        </div>
     }
-
-    <div id="Articles">
-        @foreach (ArticleModel article in Model.Articles)
-        {
-            <partial name="/Views/Article/Partials/_ArticleInNewsletter.cshtml" model="article" />
-
-
-        }
-    </div>
 }
+else
+	{
+	         <h2>There is no newsletter to display.</h2>
+	}

@@ -64,7 +64,10 @@ namespace NLECA_Core_Newsletter_App.Service.Services
                 SqlDataAdapter dataAdapter = new SqlDataAdapter();
                 dataAdapter.SelectCommand = command;
 
-                dataAdapter.Fill(dataSet);
+                if (dataSet.Tables.Count != 0)
+                {
+                    dataAdapter.Fill(dataSet);
+                }
 
                 connection.Close();
             }
@@ -117,7 +120,10 @@ namespace NLECA_Core_Newsletter_App.Service.Services
                 SqlDataAdapter dataAdapter = new SqlDataAdapter();
                 dataAdapter.SelectCommand = command;
 
-                dataAdapter.Fill(dataSet);
+                if (dataSet.Tables.Count != 0)
+                {
+                    dataAdapter.Fill(dataSet);
+                }
 
                 connection.Close();
             }
