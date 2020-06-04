@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
 using NLECA_Core_Newsletter_App.Models.Newsletter;
 using NLECA_Core_Newsletter_App.Service.Interfaces;
@@ -8,7 +9,6 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace NLECA_Core_Newsletter_App.Service.Services
 {
@@ -16,11 +16,13 @@ namespace NLECA_Core_Newsletter_App.Service.Services
     {
         private readonly ILogger<ArticleImageService> _logger;
         private readonly ISQLHelperService _sql;
+        private readonly string _wwwRoot;
 
-        public ArticleImageService(ILogger<ArticleImageService> logger, ISQLHelperService sql)
+        public ArticleImageService(ILogger<ArticleImageService> logger, ISQLHelperService sql, IWebHostEnvironment env)
         {
             _logger = logger;
             _sql = sql;
+            _wwwRoot = env.ContentRootPath;
         }
 
         public IEnumerable<ArticleImageInArticleModel> GetArticleImagesWithSameCheckSum(string simpleCheckSum)
@@ -168,6 +170,77 @@ namespace NLECA_Core_Newsletter_App.Service.Services
                 _logger.LogError(error, ex);
             }
             return rowseffected > 0;
+        }
+
+        public bool RemoveArticleImage(string imageLocation)
+        {
+            int rowseffected = 0;
+            try
+            {
+                SqlParameter[] parameters = new SqlParameter[]
+                {
+                    new SqlParameter("@imageLocation", imageLocation)
+                };
+
+                rowseffected = _sql.GetReturnValueFromStoredProcedure("RemoveArticleImage", parameters);
+            }
+            catch (Exception ex)
+            {
+                string error = string.Format(
+                    "There was an error removing the image at {0} in ArticleImageService/RemoveArticleImage",
+                    imageLocation);
+                _logger.LogError(error, ex);
+            }
+            return rowseffected > 0;
+        }
+
+        public bool DeleteArticleImage(string imageLocation)
+        {
+            bool imageDeletedFromSystem = false;
+            try
+            {
+                IEnumerable<string> directories = imageLocation.Split('/').Where(item => string.Compare(item, "..", true) != 0);
+                string fullImagePath = _wwwRoot + "\\wwwroot";
+
+                foreach (var directory in directories)
+                {
+                    fullImagePath += "\\" + directory;
+                }
+
+               
+                if (File.Exists(fullImagePath))
+                {
+                    File.Delete(fullImagePath);
+                    imageDeletedFromSystem = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                string error = string.Format(
+                    "There was an error deleting the image at {0} from the SYSTEM in ArticleImageService/DeleteArticleImage",
+                    imageLocation);
+                _logger.LogError(error, ex);
+            }
+
+            int rowseffected = 0;
+            try
+            {
+                SqlParameter[] parameters = new SqlParameter[]
+                {
+                    new SqlParameter("@imageLocation", imageLocation)
+                };
+
+                rowseffected = _sql.GetReturnValueFromStoredProcedure("DeleteArticleImage", parameters);
+            }
+            catch (Exception ex)
+            {
+                string error = string.Format(
+                    "There was an error deleting the image at {0} from the DATABASE in ArticleImageService/DeleteArticleImage",
+                    imageLocation);
+                _logger.LogError(error, ex);
+            }
+            bool success = imageDeletedFromSystem && rowseffected > 0;
+            return success;
         }
     }
 }

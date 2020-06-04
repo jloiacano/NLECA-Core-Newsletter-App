@@ -1,10 +1,10 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLECA_Core_Newsletter_App.Data;
@@ -13,15 +13,15 @@ using NLECA_Core_Newsletter_App.Service.Interfaces;
 using NLECA_Core_Newsletter_App.Service.Services;
 using Serilog;
 using System;
-using System.Security.Claims;
 
 namespace NLECA_Core_Newsletter_App
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment hostingEnvironment)
         {
             Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(configuration).CreateLogger();
+            IFileProvider contentWWWRoot = hostingEnvironment.ContentRootFileProvider;
             
             Configuration = configuration;
         }

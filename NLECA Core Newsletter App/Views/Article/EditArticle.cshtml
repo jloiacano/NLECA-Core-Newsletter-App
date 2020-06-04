@@ -19,6 +19,8 @@
 
 <h2>Added: @Model.Article.DateAdded by UserId: @Model.Article.AddedBy</h2>
 
+<input hidden id="ModelArticleId" value="@Model.Article.ArticleId" />
+
 <form asp-controller="Article" asp-action="UpdateArticle" data-ajax="true" data-ajax-method="POST">
 
     <input hidden asp-for="Article.ArticleId" />

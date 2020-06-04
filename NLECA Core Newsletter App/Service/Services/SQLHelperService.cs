@@ -212,7 +212,7 @@ namespace NLECA_Core_Newsletter_App.Service.Services
                 }
 
                 var result = command.ExecuteScalar();
-                if (DBNull(result))
+                if (result == null || result == DBNull.Value)
                 {
                     return 0;
                 }
@@ -237,11 +237,6 @@ namespace NLECA_Core_Newsletter_App.Service.Services
             }
 
             return returnValue;
-        }
-
-        private bool DBNull(object result)
-        {
-            throw new NotImplementedException();
         }
 
         private void CheckIfStoredProcedureExists(string storedProcedureName)

@@ -3,11 +3,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using NLECA_Core_Newsletter_App.Data;
+using NLECA_Core_Newsletter_App.Models.ArticleImage;
 using NLECA_Core_Newsletter_App.Models.Newsletter;
 using NLECA_Core_Newsletter_App.Service.Interfaces;
-using NLECA_Core_Newsletter_App.Service.Services;
 using System.Linq;
 
 namespace NLECA_Core_Newsletter_App.Controllers
@@ -29,15 +28,21 @@ namespace NLECA_Core_Newsletter_App.Controllers
 
         public IActionResult Index()
         {
-            return RedirectToAction("ManageArticleImages");
+            return RedirectToAction("ArticleImageManager");
         }
 
         [Authorize(Roles = "SuperAdmin,Admin")]
-        public IActionResult ManageArticleImages(int articleId = -1)
+        public IActionResult ArticleImageManager(int articleId = -1)
         {
-            // TODO - J add articleId to model so that if can be returned to.
-            var images = _imageService.GetArticleImagesInArticles();
-            return View(images);
+            ArticleImageManagerModel model = new ArticleImageManagerModel()
+            {
+                ArticleId = articleId,
+                IsSuperAdmin = User.IsInRole("SuperAdmin"),
+                ArticleImages = User.IsInRole("SuperAdmin") ? 
+                    _imageService.GetAllArticleImages() 
+                    : _imageService.GetArticleImagesInArticles()
+            };
+            return View(model);
         }
 
         [Authorize(Roles = "SuperAdmin,Admin")]
@@ -52,7 +57,7 @@ namespace NLECA_Core_Newsletter_App.Controllers
             {
                 string images;
                 images = System.Text.Json.JsonSerializer.Serialize(imagesWithSameCheckSum);
-                return Json(new { success = false, fileexists = true, images = images });
+                return Json(new { success = true, fileexists = true, images = images });
             }
         }
 
@@ -94,24 +99,26 @@ namespace NLECA_Core_Newsletter_App.Controllers
         }
 
         [Authorize(Roles = "SuperAdmin,Admin")]
-        public IActionResult RemoveArticleImageFromUse(int articleImageId)
+        public IActionResult UseArticleImageInArticle(int articleId, string imageLocation)
         {
-            // TODO - J - Set up stored procedure and return for this
-            return RedirectToAction("ManageArticleImages");
+            ArticleModel article = _articleService.GetArticleByArticleId(articleId);
+            article.ImageFileLocation = imageLocation;
+            bool successfullUpdate = _articleService.UpdateArticle(article);
+            return RedirectToAction("EditArticle", "Article", new { articleId });
+        }
+
+        [Authorize(Roles = "SuperAdmin,Admin")]
+        public IActionResult RemoveArticleImageFromUse(string imageLocation)
+        {
+            //_imageService.RemoveArticleImage(imageLocation);
+            return RedirectToAction("ArticleImageManager");
         }
 
         [Authorize(Roles = "SuperAdmin")]
-        public IActionResult SuperAdminManageArticleImages()
+        public IActionResult DeleteArticleImage(string imageLocation)
         {
-            var images = _imageService.GetAllArticleImages();
-            return View(images);
-        }
-
-        [Authorize(Roles = "SuperAdmin")]
-        public IActionResult DeleteArticleImage(int articleImageId)
-        {
-            // TODO - J - Set up stored procedure and return for this
-            return RedirectToAction("SuperAdminManageArticleImages");
+            _imageService.DeleteArticleImage(imageLocation);
+            return RedirectToAction("ArticleImageManager");
         }
     }
 }

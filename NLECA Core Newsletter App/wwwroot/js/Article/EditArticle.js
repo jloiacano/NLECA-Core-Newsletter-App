@@ -36,8 +36,8 @@ EditArticle = {
         });
 
         $('.dragAndDropImageArea').click(function () {
-            // TODO - J - Set up Images Controller
-            alert('clicked image');
+            var articleId = $('#ModelArticleId').val();
+            window.location.href = '/ArticleImage/ArticleImageManager/?articleId=' + articleId;
         });
     },
 
@@ -125,8 +125,16 @@ EditArticle = {
                             $('#UploadArticleImageForm').submit();
                         }
                         else if (response.fileexists == true) {
-                            // show the file that exist and what articles it is in.
-                            alert("TODO #72e943n9");
+                            // TODO - J - Add this response in the view instead of an alert
+                            var images = JSON.parse(response.images);
+                            var image = images[0];
+                            var imagesExistString = "This image has already been uploaded with the name \"" +
+                                image.ImageName + "\" by " + image.UploadedByUserName + " and is these articles:\n"
+                            for (var i = 0; i < images.length; i++) {
+                                imagesExistString += images[i].ArticleTitle + " in " + images[i].NewsletterDisplayDate +
+                                    "'s newsletter: " + images[i].NewsletterMemo + "\n";
+                            }
+                            alert(imagesExistString);
                         }
                     }
 

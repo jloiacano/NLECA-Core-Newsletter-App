@@ -1,0 +1,79 @@
+﻿@using NLECA_Core_Newsletter_App.Models.ArticleImage;
+@model ArticleImageManagerModel
+@{
+    ViewData["Title"] = "ManageArticleImages";
+}
+
+@section Scripts{
+    <script type="text/javascript" src="~/js/Article/ArticleImageManager.js"></script>
+}
+
+<input type="hidden" id="ArticleId" value="@Model.ArticleId" />
+
+<h1>ManageArticleImages</h1>
+
+@if (Model.ArticleImages.Count() == 0)
+{
+    <h2>There are no images to manage.</h2>
+}
+
+@foreach (var images in Model.ArticleImages.GroupBy(x => x.ImageLocation))
+{
+    <div class="articleImage">
+        <div style="width: 200px; height: 200px; display: inline-block;">
+            <img src="@images.FirstOrDefault().ImageLocation" alt="image name: @images.FirstOrDefault().ImageName" />
+        </div>
+        <div style="display: inline-block; margin-left: 32px;">
+            <div><span>Name: @images.FirstOrDefault().ImageName</span></div>
+            <div><span>Uploaded by: @images.FirstOrDefault().UploadedByUserName</span></div>
+            @{ var test = images.Where(x => x.ArticleId != -1);}
+
+            @if (images.Where(x => x.ArticleId != -1).Count() != 0)
+            {
+                <div>
+                    <span>Shown in Articles:</span>
+                    <ul>
+
+                        @foreach (var image in images)
+                        {
+                            <li>
+                                @string.Format(
+                                "{0} of Newsletter dated {1}"
+                                , image.ArticleTitle
+                                , image.NewsletterDisplayDate)
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+        <div style="display: inline-block; margin-left: 32px;">
+            @if (Model.ArticleId == -1)
+            {
+                if (Model.IsSuperAdmin)
+                {
+                    @if (images.Where(x => x.ArticleId != -1).Count() == 0)
+                    {
+                        <button class="deleteArticleImage" data-todelete="@images.FirstOrDefault().ImageLocation">Delete</button>
+                    }
+                    else
+                    {
+                        <button class="deleteArticleImage"
+                                style="background-color: red; color: white;"
+                                data-todelete="@images.FirstOrDefault().ImageLocation">
+                            Delete
+                        </button>
+                    }
+                }
+
+                <button class="removeArticleImage" data-toremove="@images.FirstOrDefault().ImageLocation">Remove</button>
+            }
+            else
+            {
+                <button class="useArticleImage" data-touse="@images.FirstOrDefault().ImageLocation">Use This Image</button>
+            }
+
+        </div>
+    </div>
+}
+

@@ -21,11 +21,21 @@ namespace NLECA_Core_Newsletter_App.Models.Newsletter
 
         public ArticleImageInArticleModel(DataRow dataRow)
         {
-            ArticleId = Int32.Parse(dataRow["ArticleId"].ToString());
-            ArticleTitle = dataRow["ArticleTitle"].ToString();
-            NewsletterId = Int32.Parse(dataRow["NewsletterId"].ToString());
-            NewsletterDisplayDate = dataRow["DisplayDate"].ToString();
-            NewsletterMemo = dataRow["Memo"].ToString();
+            ArticleId = (dataRow["ArticleId"] == DBNull.Value) ? -1
+                : (int)dataRow["ArticleId"];
+
+            ArticleTitle = (dataRow["ArticleTitle"] == DBNull.Value) ? string.Empty 
+                : dataRow["ArticleTitle"].ToString();
+
+            NewsletterId = (dataRow["NewsletterId"] == DBNull.Value) ? -1
+                : (int)dataRow["NewsletterId"];
+
+            NewsletterDisplayDate = (dataRow["DisplayDate"] == DBNull.Value) ? string.Empty
+                : dataRow["DisplayDate"].ToString();
+
+            NewsletterMemo = (dataRow["Memo"] == DBNull.Value) ? string.Empty
+                : dataRow["Memo"].ToString();
+
             UploadedByUserId = dataRow["UploadedByUserId"].ToString();
             UploadedByUserName = dataRow["UploadedByUserName"].ToString();
             IsCurrent = string.Equals(dataRow["IsCurrent"].ToString(), "1") ? true : false;
