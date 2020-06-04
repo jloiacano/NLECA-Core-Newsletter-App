@@ -11,6 +11,8 @@ namespace NLECA_Core_Newsletter_App.Data.Initializer
         private readonly string SuperAdminPassword;
         private readonly string AdminUserName;
         private readonly string AdminPassword;
+        private readonly string ResidentUserName;
+        private readonly string ResidentPassword;
         private readonly string ReadOnlyUserName;
         private readonly string ReadOnlyPassword;
 
@@ -21,6 +23,8 @@ namespace NLECA_Core_Newsletter_App.Data.Initializer
             SuperAdminPassword = Configuration["SuperAdminUser:Password"];
             AdminUserName = Configuration["AdminUser:UserName"];
             AdminPassword = Configuration["AdminUser:Password"];
+            ResidentUserName = Configuration["ResidentUser:UserName"];
+            ResidentPassword = Configuration["ResidentUser:Password"];
             ReadOnlyUserName = Configuration["ReadOnlyUser:UserName"];
             ReadOnlyPassword = Configuration["ReadOnlyUser:Password"];
         }
@@ -82,6 +86,23 @@ namespace NLECA_Core_Newsletter_App.Data.Initializer
                 if (result.Succeeded)
                 {
                     userManager.AddToRoleAsync(user, RoleType.Admin.ToString()).Wait();
+                }
+            }
+
+            // ADD RESTIDENT
+            if (userManager.FindByEmailAsync(ResidentUserName).Result == null)
+            {
+                ApplicationIdentityUser user = new ApplicationIdentityUser();
+                user.UserName = ResidentUserName;
+                user.Email = ResidentUserName;
+                user.ContactName = "Resident User";
+                user.EmailConfirmed = true;
+
+                IdentityResult result = userManager.CreateAsync(user, ResidentPassword).Result;
+
+                if (result.Succeeded)
+                {
+                    userManager.AddToRoleAsync(user, RoleType.Resident.ToString()).Wait();
                 }
             }
 
