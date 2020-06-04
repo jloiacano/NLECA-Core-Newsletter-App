@@ -6,8 +6,15 @@
     display: none;
 }
 
-.changeArticleOrderButton {
+#memoSaveChanges{
+    display: none;
+}
 
+#displayDateSaveChanges {
+    display: none;
+}
+
+.changeArticleOrderButton {
 }
 
 .changeArticleOrderDirectionsSpan {

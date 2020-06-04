@@ -88,16 +88,7 @@ namespace NLECA_Core_Newsletter_App.Service.Services
             {
                 try
                 {
-                    newsletter.NewsletterId = Int32.Parse(newsletterResult["NewsletterId"].ToString());
-                    newsletter.CreatedDate = DateTime.Parse(newsletterResult["CreatedDate"].ToString());
-                    newsletter.CreatedBy = Int32.Parse(newsletterResult["CreatedBy"].ToString());
-                    newsletter.Memo = newsletterResult["Memo"].ToString();
-                    newsletter.DisplayDate = newsletterResult["DisplayDate"].ToString();
-                    if (newsletterResult.IsNull("PublishedDate") == false)
-                    {
-                        newsletter.PublishedDate = DateTime.Parse(newsletterResult["PublishedDate"].ToString());
-                    }
-                    newsletter.IsCurrent = newsletterResult["IsCurrent"].ToString() == "0" ? false : true;
+                    newsletter = new NewsletterModel(newsletterResult);
                 }
                 catch (Exception ex)
                 {
@@ -164,19 +155,7 @@ namespace NLECA_Core_Newsletter_App.Service.Services
 
                 foreach (DataRow newsletterRow in newsletterResults)
                 {
-                    NewsletterModel newsletterToAdd = new NewsletterModel()
-                    {
-                        NewsletterId = Int32.Parse(newsletterRow["NewsletterId"].ToString()),
-                        CreatedDate = DateTime.Parse(newsletterRow["CreatedDate"].ToString()),
-                        CreatedBy = Int32.Parse(newsletterRow["CreatedBy"].ToString()),
-                        Memo = newsletterRow["Memo"].ToString(),
-                        DisplayDate = newsletterRow["DisplayDate"].ToString(),
-                        IsCurrent = newsletterRow["IsCurrent"].ToString() == "0" ? false : true
-                    };
-                    if (newsletterRow.IsNull("PublishedDate") == false)
-                    {
-                        newsletterToAdd.PublishedDate = DateTime.Parse(newsletterRow["PublishedDate"].ToString());
-                    }
+                    NewsletterModel newsletterToAdd = new NewsletterModel(newsletterRow);
 
                     newslettersToReturn.Add(newsletterToAdd);
                 }
@@ -205,56 +184,50 @@ namespace NLECA_Core_Newsletter_App.Service.Services
             {
                 DataRow newsletterResult = GetNewsletterByNewsletterIdResult.Tables[0].AsEnumerable().FirstOrDefault();
 
-                newsletter.NewsletterId = Int32.Parse(newsletterResult["NewsletterId"].ToString());
-                newsletter.CreatedDate = DateTime.Parse(newsletterResult["CreatedDate"].ToString());
-                newsletter.CreatedBy = Int32.Parse(newsletterResult["CreatedBy"].ToString());
-                newsletter.Memo = newsletterResult["Memo"].ToString();
-                newsletter.DisplayDate = newsletterResult["DisplayDate"].ToString();
-                if (newsletterResult.IsNull("PublishedDate") == false)
-                {
-                    newsletter.PublishedDate = DateTime.Parse(newsletterResult["PublishedDate"].ToString());
-                }
-                newsletter.IsCurrent = newsletterResult["IsCurrent"].ToString() == "0" ? false : true;
+                newsletter = new NewsletterModel(newsletterResult);
             }
             catch (Exception ex)
             {
                 _logger.LogError("Unable to transcribe GetNewsletterByNewsletterIdResult to newsletter in NewsletterService/GetNewsletterById with the Id: " + newsletterId, ex);
             }
 
-            SqlParameter[] getArticlesParameters = { new SqlParameter("@newsletterId", newsletter.NewsletterId) };
-
-            DataSet GetArticlesByNewsletterIdResults = _sql.GetDatasetFromStoredProcedure("GetArticlesByNewsletterId", getArticlesParameters);
-
-            try
+            if (newsletter.CreatedDate != null)
             {
-                IEnumerable<DataRow> articleResults = GetArticlesByNewsletterIdResults.Tables[0].AsEnumerable();
+                SqlParameter[] getArticlesParameters = { new SqlParameter("@newsletterId", newsletter.NewsletterId) };
 
-                List<ArticleModel> articles = new List<ArticleModel>();
+                DataSet GetArticlesByNewsletterIdResults = _sql.GetDatasetFromStoredProcedure("GetArticlesByNewsletterId", getArticlesParameters);
 
-                foreach (DataRow row in articleResults)
+                try
                 {
-                    ArticleModel article = new ArticleModel()
+                    IEnumerable<DataRow> articleResults = GetArticlesByNewsletterIdResults.Tables[0].AsEnumerable();
+
+                    List<ArticleModel> articles = new List<ArticleModel>();
+
+                    foreach (DataRow row in articleResults)
                     {
-                        ArticleId = Int32.Parse(row["ArticleId"].ToString()),
-                        NewsletterId = newsletter.NewsletterId,
-                        ArticleSequence = Int32.Parse(row["ArticleSequence"].ToString()),
-                        ImageFileLocation = row["ImageFileLocation"].ToString(),
-                        ArticleType = Int32.Parse(row["ArticleType"].ToString()),
-                        ArticleTableOfContentsText = row["ArticleTableOfContentsText"].ToString(),
-                        ArticleTitle = row["ArticleTitle"].ToString(),
-                        ArticleText = row["ArticleText"].ToString(),
-                        AddedBy = Int32.Parse(row["AddedBy"].ToString()),
-                        DateAdded = DateTime.Parse(row["DateAdded"].ToString())
-                    };
+                        ArticleModel article = new ArticleModel()
+                        {
+                            ArticleId = Int32.Parse(row["ArticleId"].ToString()),
+                            NewsletterId = newsletter.NewsletterId,
+                            ArticleSequence = Int32.Parse(row["ArticleSequence"].ToString()),
+                            ImageFileLocation = row["ImageFileLocation"].ToString(),
+                            ArticleType = Int32.Parse(row["ArticleType"].ToString()),
+                            ArticleTableOfContentsText = row["ArticleTableOfContentsText"].ToString(),
+                            ArticleTitle = row["ArticleTitle"].ToString(),
+                            ArticleText = row["ArticleText"].ToString(),
+                            AddedBy = Int32.Parse(row["AddedBy"].ToString()),
+                            DateAdded = DateTime.Parse(row["DateAdded"].ToString())
+                        };
 
-                    articles.Add(article);
+                        articles.Add(article);
+                    }
+
+                    newsletter.Articles = articles.OrderBy(a => a.ArticleSequence);
                 }
-
-                newsletter.Articles = articles.OrderBy(a => a.ArticleSequence);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Unable to transcribe GetArticlesByNewsletterIdResults to articles in NewsletterService/GetPublishedNewsletter", ex);
+                catch (Exception ex)
+                {
+                    _logger.LogError("Unable to transcribe GetArticlesByNewsletterIdResults to articles in NewsletterService/GetPublishedNewsletter", ex);
+                }
             }
 
             return newsletter;

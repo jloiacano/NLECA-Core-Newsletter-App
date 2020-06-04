@@ -26,6 +26,8 @@ NewsletterEditor = {
         });
 
         $('#memoEditCancel').click(function () {
+            $('input[name="memo"]').val($('input[name="oldMemo"]').val())
+            $('#memoSaveChanges').hide();
             $('#memoEditArea').toggle();
             $('#memoArea').toggle();
         });
@@ -50,6 +52,8 @@ NewsletterEditor = {
         });
 
         $('#displayDateEditCancel').click(function () {
+            $('input[name="displayDate"]').val($('input[name="oldDisplayDate"]').val())
+            $('#displayDateSaveChanges').hide();
             $('#displayDateEditArea').toggle();
             $('#displayDateArea').toggle();
         });
