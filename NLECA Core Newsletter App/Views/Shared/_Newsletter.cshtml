@@ -1,7 +1,6 @@
-﻿@model NewsletterModel;
+﻿@using NLECA_Core_Newsletter_App.Models.Newsletter;
 
-@using NLECA_Core_Newsletter_App.Models.Newsletter;
-
+@model NewsletterModel;
 
 @section Scripts {
     <script src="~/js/Article/NewsletterArticle.js"></script>
@@ -93,6 +92,6 @@
     }
 }
 else
-	{
-	         <h2>There is no newsletter to display.</h2>
-	}
+{
+    <h2>There is no published newsletter to display.</h2>
+}

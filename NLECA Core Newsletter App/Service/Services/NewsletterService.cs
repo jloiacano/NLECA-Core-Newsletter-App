@@ -83,7 +83,7 @@ namespace NLECA_Core_Newsletter_App.Service.Services
 
             DataSet GetPublishedNewsletterResult = _sql.GetDatasetFromStoredProcedure("GetPublishedNewsletter");
 
-            if (GetPublishedNewsletterResult.Tables.Count > 0)
+            if (GetPublishedNewsletterResult.Tables[0].Rows.Count > 0)
             {
                 DataRow newsletterResult = GetPublishedNewsletterResult.Tables[0].AsEnumerable().FirstOrDefault();
 
@@ -141,20 +141,23 @@ namespace NLECA_Core_Newsletter_App.Service.Services
 
             DataSet GetAllNewslettersResult = _sql.GetDatasetFromStoredProcedure("GetAllNewsletters");
 
-            try
+            if (GetAllNewslettersResult.Tables[0].Rows.Count > 0)
             {
-                IEnumerable<DataRow> newsletterResults = GetAllNewslettersResult.Tables[0].AsEnumerable();
-
-                foreach (DataRow newsletterRow in newsletterResults)
+                try
                 {
-                    NewsletterModel newsletterToAdd = new NewsletterModel(newsletterRow);
+                    IEnumerable<DataRow> newsletterResults = GetAllNewslettersResult.Tables[0].AsEnumerable();
 
-                    newslettersToReturn.Add(newsletterToAdd);
+                    foreach (DataRow newsletterRow in newsletterResults)
+                    {
+                        NewsletterModel newsletterToAdd = new NewsletterModel(newsletterRow);
+
+                        newslettersToReturn.Add(newsletterToAdd);
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Unable to transcribe GetAllNewslettersResult to newsletters in NewsletterService/GetAllNewsletters", ex);
+                catch (Exception ex)
+                {
+                    _logger.LogError("Unable to transcribe GetAllNewslettersResult to newsletters in NewsletterService/GetAllNewsletters", ex);
+                }
             }
 
             return newslettersToReturn;
@@ -172,41 +175,44 @@ namespace NLECA_Core_Newsletter_App.Service.Services
             SqlParameter[] parameters = new SqlParameter[] { new SqlParameter("@newsletterId", newsletterId) };            
             DataSet GetNewsletterByNewsletterIdResult = _sql.GetDatasetFromStoredProcedure("GetNewsletterByNewsletterId", parameters);
 
-            try
+            if (GetNewsletterByNewsletterIdResult.Tables.Count > 0)
             {
-                DataRow newsletterResult = GetNewsletterByNewsletterIdResult.Tables[0].AsEnumerable().FirstOrDefault();
-
-                newsletter = new NewsletterModel(newsletterResult);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Unable to transcribe GetNewsletterByNewsletterIdResult to newsletter in NewsletterService/GetNewsletterById with the Id: " + newsletterId, ex);
-            }
-
-            if (newsletter.CreatedDate != null)
-            {
-                SqlParameter[] getArticlesParameters = { new SqlParameter("@newsletterId", newsletter.NewsletterId) };
-
-                DataSet GetArticlesByNewsletterIdResults = _sql.GetDatasetFromStoredProcedure("GetArticlesByNewsletterId", getArticlesParameters);
-
                 try
                 {
-                    IEnumerable<DataRow> articleResults = GetArticlesByNewsletterIdResults.Tables[0].AsEnumerable();
+                    DataRow newsletterResult = GetNewsletterByNewsletterIdResult.Tables[0].AsEnumerable().FirstOrDefault();
 
-                    List<ArticleModel> articles = new List<ArticleModel>();
-
-                    foreach (DataRow row in articleResults)
-                    {
-                        ArticleModel article = new ArticleModel(row);
-
-                        articles.Add(article);
-                    }
-
-                    newsletter.Articles = articles.OrderBy(a => a.ArticleSequence);
+                    newsletter = new NewsletterModel(newsletterResult);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Unable to transcribe GetArticlesByNewsletterIdResults to articles in NewsletterService/GetPublishedNewsletter", ex);
+                    _logger.LogError("Unable to transcribe GetNewsletterByNewsletterIdResult to newsletter in NewsletterService/GetNewsletterById with the Id: " + newsletterId, ex);
+                }
+
+                if (newsletter.CreatedDate != null)
+                {
+                    SqlParameter[] getArticlesParameters = { new SqlParameter("@newsletterId", newsletter.NewsletterId) };
+
+                    DataSet GetArticlesByNewsletterIdResults = _sql.GetDatasetFromStoredProcedure("GetArticlesByNewsletterId", getArticlesParameters);
+
+                    try
+                    {
+                        IEnumerable<DataRow> articleResults = GetArticlesByNewsletterIdResults.Tables[0].AsEnumerable();
+
+                        List<ArticleModel> articles = new List<ArticleModel>();
+
+                        foreach (DataRow row in articleResults)
+                        {
+                            ArticleModel article = new ArticleModel(row);
+
+                            articles.Add(article);
+                        }
+
+                        newsletter.Articles = articles.OrderBy(a => a.ArticleSequence);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError("Unable to transcribe GetArticlesByNewsletterIdResults to articles in NewsletterService/GetPublishedNewsletter", ex);
+                    }
                 }
             }
 

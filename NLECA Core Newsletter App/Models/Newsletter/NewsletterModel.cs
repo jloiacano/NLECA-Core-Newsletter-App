@@ -15,6 +15,7 @@ namespace NLECA_Core_Newsletter_App.Models.Newsletter
         public string DisplayDate { get; set; }
         public DateTime PublishedDate { get; set; }
         public bool IsCurrent { get; set; }
+        public bool HasBeenPublished { get; set; }
 
         public bool IsEdit { get; set; } = false;
 
@@ -32,9 +33,8 @@ namespace NLECA_Core_Newsletter_App.Models.Newsletter
             CreatedBy = (int)dataRow["CreatedBy"];
             Memo = dataRow["Memo"].ToString();
             DisplayDate = dataRow["DisplayDate"].ToString();
-            //PublishedDate = (DateTime)dataRow["PublishedDate"];
             IsCurrent = (bool)dataRow["IsCurrent"];
-            //IsCurrent = dataRow["IsCurrent"].ToString() == "0" ? false : true;
+            HasBeenPublished = (bool)dataRow["HasBeenPublished"];
 
             if (dataRow.IsNull("PublishedDate") == false)
             {
