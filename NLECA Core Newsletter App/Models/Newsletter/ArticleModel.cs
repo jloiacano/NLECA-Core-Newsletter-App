@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 
 namespace NLECA_Core_Newsletter_App.Models.Newsletter
 {
@@ -18,6 +19,21 @@ namespace NLECA_Core_Newsletter_App.Models.Newsletter
         public int AddedBy { get; set; }
         public DateTime DateAdded { get; set; }
 
+        public ArticleModel() {}
+
+        public ArticleModel(DataRow dataRow)
+        {
+            ArticleId = (int)dataRow["ArticleId"];
+            NewsletterId = (int)dataRow["NewsletterId"];
+            ArticleSequence = (int)dataRow["ArticleSequence"];
+            ImageFileLocation = dataRow["ImageFileLocation"].ToString();
+            ArticleType = (int)dataRow["ArticleType"];
+            ArticleTableOfContentsText = dataRow["ArticleTableOfContentsText"].ToString();
+            ArticleTitle = dataRow["ArticleTitle"].ToString();
+            ArticleText = dataRow["ArticleText"].ToString();
+            AddedBy = (int)dataRow["AddedBy"];
+            DateAdded = (DateTime)dataRow["DateAdded"];
+        }
 
         #region // operator overides
         public static bool operator == (ArticleModel article1, ArticleModel article2)
