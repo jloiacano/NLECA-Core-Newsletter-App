@@ -57,6 +57,7 @@ namespace NLECA_Core_Newsletter_App.Data.Initializer
                 ApplicationIdentityUser user = new ApplicationIdentityUser();
                 user.UserName = SuperAdminUserName;
                 user.Email = SuperAdminUserName;
+                user.ContactName = "Super Admin User";
                 user.EmailConfirmed = true;
 
                 IdentityResult result = userManager.CreateAsync(user, SuperAdminPassword).Result;
@@ -68,18 +69,19 @@ namespace NLECA_Core_Newsletter_App.Data.Initializer
             }
 
             // ADD ADMINUSER
-            if (userManager.FindByEmailAsync(SuperAdminUserName).Result == null)
+            if (userManager.FindByEmailAsync(AdminUserName).Result == null)
             {
                 ApplicationIdentityUser user = new ApplicationIdentityUser();
                 user.UserName = AdminUserName;
                 user.Email = AdminUserName;
+                user.ContactName = "Admin User";
                 user.EmailConfirmed = true;
 
                 IdentityResult result = userManager.CreateAsync(user, AdminPassword).Result;
 
                 if (result.Succeeded)
                 {
-                    userManager.AddToRoleAsync(user, RoleType.SuperAdmin.ToString()).Wait();
+                    userManager.AddToRoleAsync(user, RoleType.Admin.ToString()).Wait();
                 }
             }
 
@@ -89,6 +91,7 @@ namespace NLECA_Core_Newsletter_App.Data.Initializer
                 ApplicationIdentityUser user = new ApplicationIdentityUser();
                 user.UserName = ReadOnlyUserName;
                 user.Email = ReadOnlyUserName;
+                user.ContactName = "Read Only User";
                 user.EmailConfirmed = true;
 
                 IdentityResult result = userManager.CreateAsync(user, ReadOnlyPassword).Result;
