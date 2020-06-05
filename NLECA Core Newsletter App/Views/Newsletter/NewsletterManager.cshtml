@@ -9,8 +9,14 @@
 }
 
 
+@section HeadIncludes{
+    <link href="~/lib/jquery-ui/themes/smoothness/jquery-ui.css" rel="stylesheet" />
+    <link href="~/css/ManageNewsletter.css" rel="stylesheet" />
+}
+
 @section Scripts{
     <script type="text/javascript" src="~/js/Newsletter/NewsletterManager.js"></script>
+    <script src="~/lib/jquery-ui/jquery-ui.js"></script>
 }
 
 <h1>Newsletter Manager</h1>
@@ -18,32 +24,69 @@
 
 @foreach (NewsletterModel newsletter in Model)
 {
-<div class="individualNewletter" data-newsletterid="@newsletter.NewsletterId">
-    <h2>@DateTime.Parse(newsletter.DisplayDate).ToString("MMMM yyyy") Newsletter</h2>
-    <span>@newsletter.Memo - Created:  @newsletter.CreatedDate.ToString("MMMM dd, yyyy")</span>
+    <div class="individualNewletter" data-newsletterid="@newsletter.NewsletterId">
+        <h2>@DateTime.Parse(newsletter.DisplayDate).ToString("MMMM yyyy") Newsletter</h2>
+        <span>@newsletter.Memo - Created:  @newsletter.CreatedDate.ToString("MMMM dd, yyyy")</span>
 
-    @if (newsletter.IsCurrent)
-    {
-        <button id="UnpublishNewsletterButton">Unpublish</button>
-    }
-    else
-    {
-        <button id="EditNewsletterButton">Edit</button>
-        <button id="DeleteNewsletterButton">Delete</button>
-        if (newsletter.HasBeenPublished)
+        @if (newsletter.IsCurrent)
         {
-            <button id="PublishNewsletterButton">Re-Publish</button>
+            <button id="UnpublishNewsletterButton">Unpublish</button>
         }
         else
         {
-            <button id="PublishNewsletterButton">Publish</button>
+            <button id="EditNewsletterButton">Edit</button>
+            <button id="DeleteNewsletterButton">Delete</button>
+            if (newsletter.HasBeenPublished)
+            {
+                <button id="PublishNewsletterButton">Re-Publish</button>
+            }
+            else
+            {
+                <button id="PublishNewsletterButton">Publish</button>
+            }
         }
-    }
-    <hr />
-</div>
+        <hr />
+    </div>
 }
 
-@*Add Newsletter*@
+@* ADD NEWSLETTER *@
 <button id="AddNewsletterButton">Add New Newsletter</button>
 
+@* DIALOGS *@
+<div id="UnpublishNewsletterDialog"
+     title="Unpublish?">
+    <span class="dialogTextLine">
+        Are you sure you would like to unpublish this newsletter?
+    </span>
+    <span class="dialogTextLine">
+        No newsletter will be shown on the main NLECA page.
+    </span>
+</div>
+
+<div id="PublishNewsletterDialog"
+     title="Publish?">
+    <span class="dialogTextLine">
+        Are you sure you would like to Publish this newsletter?
+    </span>
+    <span class="dialogTextLine">
+        This will replace the newsletter shown on the main NLECA page.
+    </span>
+</div>
+
+<div id="DeleteNewsletterDialog"
+     title="DELETE?">
+    <span class="dialogTextLine">
+        Are you
+        <span style="color: red;">ABSOLUTELY SURE</span>
+        you would like to
+        <span style="color: red;">DELETE</span>
+        this newsletter?
+    </span>
+    <span class="dialogTextLine">
+        No data of this newsletter will be saved.
+    </span>
+    <span class="dialogTextLine">
+        It will be gone forever.
+    </span>
+</div>
 
