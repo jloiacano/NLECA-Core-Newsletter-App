@@ -1,10 +1,10 @@
-﻿var NewsletterEditor = NewsletterEditor || {};
+﻿var NewsletterManager = NewsletterManager || {};
 
 $(document).ready(function () {
-    NewsletterEditor.init();
+    NewsletterManager.init();
 });
 
-NewsletterEditor = {
+NewsletterManager = {
 
     currentlySorting: false,
     sortingPrechangeIndex: 0,
@@ -59,15 +59,15 @@ NewsletterEditor = {
         });
 
         $('.changeArticleOrderButton').click(function () {
-            NewsletterEditor.setupSortableArticles();
+            NewsletterManager.setupSortableArticles();
         });
 
         $('.saveArticleOrderButton').click(function () {
-            NewsletterEditor.saveArticleOrder();
+            NewsletterManager.saveArticleOrder();
         });
 
         $('.articleContent').click(function (x) {
-            NewsletterEditor.editArticle(this);
+            NewsletterManager.editArticle(this);
         });
 
         $('.addArticleButton').click(function () {
@@ -86,11 +86,11 @@ NewsletterEditor = {
                 placeholder: "articlePlaceHolder",
                 opacity: 0.6,
                 start: function (event, ui) {
-                    NewsletterEditor.sortingPrechangeIndex = ui.item.index();
+                    NewsletterManager.sortingPrechangeIndex = ui.item.index();
                 },
                 stop: function (event, ui) {
-                    NewsletterEditor.sortingPostchangeIndex = ui.item.index();
-                    NewsletterEditor.changeOtherSortableArticleOrder('#sortableTableOfContents')
+                    NewsletterManager.sortingPostchangeIndex = ui.item.index();
+                    NewsletterManager.changeOtherSortableArticleOrder('#sortableTableOfContents')
                 }
             }).disableSelection();
         $('#sortableTableOfContents')
@@ -99,21 +99,21 @@ NewsletterEditor = {
                 placeholder: "tableOfContentsPlaceHolder",
                 opacity: 0.6,
                 start: function (event, ui) {
-                    NewsletterEditor.sortingPrechangeIndex = ui.item.index();
+                    NewsletterManager.sortingPrechangeIndex = ui.item.index();
                 },
                 stop: function (event, ui) {
-                    NewsletterEditor.sortingPostchangeIndex = ui.item.index();
-                    NewsletterEditor.changeOtherSortableArticleOrder('#Articles')
+                    NewsletterManager.sortingPostchangeIndex = ui.item.index();
+                    NewsletterManager.changeOtherSortableArticleOrder('#Articles')
                 }
             }).disableSelection();
-        NewsletterEditor.currentlySorting = true;
+        NewsletterManager.currentlySorting = true;
     },
 
     saveArticleOrder: function () {
         //get the new article order;
         var newArticleOrder = $("#Articles").sortable("toArray");
-        var articleIds = NewsletterEditor.getNewOrderOfArticleIds(newArticleOrder);
-        if (NewsletterEditor.articleOrderChanged(newArticleOrder)) {
+        var articleIds = NewsletterManager.getNewOrderOfArticleIds(newArticleOrder);
+        if (NewsletterManager.articleOrderChanged(newArticleOrder)) {
             $.ajax({
                 url: '/Article/UpdateArticleOrder',
                 type: 'POST',
@@ -158,15 +158,15 @@ NewsletterEditor = {
     },
 
     changeOtherSortableArticleOrder: function (listToChange) {
-        var pre = NewsletterEditor.sortingPrechangeIndex;
-        var post = NewsletterEditor.sortingPostchangeIndex;
+        var pre = NewsletterManager.sortingPrechangeIndex;
+        var post = NewsletterManager.sortingPostchangeIndex;
         if (post > pre) {
             $(listToChange + ' .ui-sortable-handle:eq(' + pre + ')').insertAfter(listToChange + ' .ui-sortable-handle:eq(' + post + ')');
         } else {
             $(listToChange + ' .ui-sortable-handle:eq(' + pre + ')').insertBefore(listToChange + ' .ui-sortable-handle:eq(' + post + ')');
         }
-        NewsletterEditor.sortingPrechangeIndex = 0;
-        NewsletterEditor.sortingPostchangeIndex = 0;
+        NewsletterManager.sortingPrechangeIndex = 0;
+        NewsletterManager.sortingPostchangeIndex = 0;
     },
 
     editArticle: function (articleDiv) {

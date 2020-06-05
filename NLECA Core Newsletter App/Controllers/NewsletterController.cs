@@ -90,7 +90,7 @@ namespace NLECA_Core_Newsletter_App.Controllers
             return RedirectToAction("EditNewsletter", new { newsletterId = newsletterId });
         }
 
-        [Authorize(Roles = "SuperAdmin,Admin,ReadOnlyUser")]
+        [Authorize(Roles = "SuperAdmin,Admin")]
         public IActionResult RemoveNewsletter(int newsletterId)
         {
             if (User.IsInRole("ReadOnlyUser"))
@@ -120,11 +120,10 @@ namespace NLECA_Core_Newsletter_App.Controllers
             return RedirectToAction("NewsletterManager");
         }
 
-        [Authorize(Roles = "SuperAdmin,Admin,ReadOnlyUser")]
-        public IActionResult AlertManager()
+        [Authorize(Roles = "SuperAdmin,Admin")]
+        public IActionResult PublishNewsletter(int newsletterId)
         {
-            List<NewsletterModel> model = new List<NewsletterModel>();
-            return View(model);
+            return RedirectToAction("NewsletterManager");
         }
     }
 }
