@@ -22,7 +22,9 @@ EditArticle = {
             , show: "slide"
             , buttons: {
                 "YES, DELETE IT": function () {
-                    EditArticle.DeleteArticle();
+                    var newsletterId = $(this).data('newsletterId');
+                    var articleId = $(this).data('articleId');
+                    EditArticle.DeleteArticle(newsletterId, articleId);
                 }
                 , "NO": function () { $(this).dialog("close"); }
             },
@@ -58,8 +60,13 @@ EditArticle = {
             history.back();
         });
 
-        $('#ArticleDeleteButton').click(function () {
-            $('#DeleteArticleDialog').dialog('open');
+        $('#ArticleDeleteButton').click(function (e) {
+            var newsletterId = $(e.target).data('newsletterid');
+            var articleId = $(e.target).data('articleid');
+            $('#DeleteArticleDialog')
+                .data('newsletterId', newsletterId)
+                .data('articleId', articleId)
+                .dialog('open');
         });
 
         $('.dragAndDropImageArea').click(function () {
@@ -147,8 +154,8 @@ EditArticle = {
         }
     },
 
-    DeleteArticle: function () {
-        $('#DeleteArticleForm').submit();
+    DeleteArticle: function (newsletterId, articleId) {
+        window.location.href = '/Article/RemoveArticle/?newsletterId=' + newsletterId + '&articleId=' + articleId;
     },
 
     CheckIfFileExists: function (e) {

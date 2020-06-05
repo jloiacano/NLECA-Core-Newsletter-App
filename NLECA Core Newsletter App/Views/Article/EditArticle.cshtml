@@ -1,12 +1,8 @@
-﻿@model NLECA_Core_Newsletter_App.Models.Newsletter.EditArticleModel
+﻿@using NLECA_Core_Newsletter_App.Models.Newsletter;
+
+@model EditArticleModel
 @{
     ViewData["Title"] = "EditArticle";
-}
-
-@using NLECA_Core_Newsletter_App.Data;
-@{
-    string intValue = "IntValue";
-    string textValue = "Text";
 }
 
 @section HeadIncludes {
@@ -39,7 +35,7 @@
     <label for="articleTypeSelector">Article Type: </label>
     <select id="ArticleTypeDropdown"
             asp-for="Article.ArticleType"
-            asp-items="@(new SelectList(Model.ArticleTypes, intValue, textValue))">
+            asp-items="@(new SelectList(Model.ArticleTypes, "IntValue", "Text"))">
     </select>
 
     <div>
@@ -109,15 +105,17 @@
     <input hidden name="redirect" id="redirect" value="EditNewsletter" />
 
     <button type="submit">Save Changes</button>
+
     <button id="ArticleEditCancelButton" type="button">Cancel</button>
-    <button id="ArticleDeleteButton" type="button">DELETE ARTICLE</button>
+    <button id="ArticleDeleteButton"
+            type="button"
+            data-newsletterid="@Model.Article.NewsletterId"
+            data-articleid="@Model.Article.ArticleId">
+        DELETE ARTICLE
+    </button>
 </form>
 
-<form id="DeleteArticleForm" action="/Article/RemoveArticle" method="post">
-    <input type="hidden" name="newsletterId" value="@Model.Article.NewsletterId" />
-    <input type="hidden" name="articleId" value="@Model.Article.ArticleId" />
-</form>
-
+@* DIALOGS *@
 <div id="DeleteArticleDialog"
      title="DELETE?">
     <span class="dialogTextLine">
