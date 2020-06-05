@@ -9,4 +9,12 @@
     width: 100%;
 }
 
+.dialogTextLine {
+    display: block;
+}
+
+.dialogWarningText {
+    color: red;
+}
+
 

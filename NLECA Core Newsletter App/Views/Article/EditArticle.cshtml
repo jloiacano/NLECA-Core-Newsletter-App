@@ -9,10 +9,15 @@
     string textValue = "Text";
 }
 
-<link href="~/css/EditArticle.css" rel="stylesheet" />
-
 @section HeadIncludes {
-<script src="https://cdn.ckeditor.com/4.14.0/standard/ckeditor.js"></script>
+    <link href="~/lib/jquery-ui/themes/smoothness/jquery-ui.css" rel="stylesheet" />
+    <link href="~/css/EditArticle.css" rel="stylesheet" />
+    <script src="https://cdn.ckeditor.com/4.14.0/standard/ckeditor.js"></script>
+}
+
+@section Scripts {
+    <script src="~/js/Article/EditArticle.js"></script>
+    <script src="~/lib/jquery-ui/jquery-ui.js"></script>
 }
 
 <h1>EditArticle</h1>
@@ -26,14 +31,14 @@
     <input hidden asp-for="Article.ArticleId" />
     <input hidden asp-for="Article.NewsletterId" />
     <input hidden asp-for="Article.ArticleSequence" />
-    <input hidden asp-for="Article.ImageFileLocation" id="articleImageFileLocation"/>
+    <input hidden asp-for="Article.ImageFileLocation" id="articleImageFileLocation" />
     <input hidden asp-for="Article.AddedBy" />
     <input hidden asp-for="Article.DateAdded" />
 
 
     <label for="articleTypeSelector">Article Type: </label>
     <select id="ArticleTypeDropdown"
-            asp-for="Article.ArticleType" 
+            asp-for="Article.ArticleType"
             asp-items="@(new SelectList(Model.ArticleTypes, intValue, textValue))">
     </select>
 
@@ -101,7 +106,7 @@
         </div>
     </div>
     <input hidden type="file" name="imageFile" id="ImageFileInput" accept="image/*" />
-    <input hidden name="redirect" id="redirect" value="EditNewsletter"/>
+    <input hidden name="redirect" id="redirect" value="EditNewsletter" />
 
     <button type="submit">Save Changes</button>
     <button id="ArticleEditCancelButton" type="button">Cancel</button>
@@ -113,7 +118,19 @@
     <input type="hidden" name="articleId" value="@Model.Article.ArticleId" />
 </form>
 
-
-@section Scripts {
-<script src="~/js/Article/EditArticle.js"></script>
-}
+<div id="DeleteArticleDialog"
+     title="DELETE?">
+    <span class="dialogTextLine">
+        Are you
+        <span class="dialogWarningText">ABSOLUTELY SURE</span>
+        you would like to
+        <span class="dialogWarningText">DELETE</span>
+        this article?
+    </span>
+    <span class="dialogTextLine">
+        No data of this article will be saved.
+    </span>
+    <span class="dialogTextLine">
+        It will be gone forever.
+    </span>
+</div>

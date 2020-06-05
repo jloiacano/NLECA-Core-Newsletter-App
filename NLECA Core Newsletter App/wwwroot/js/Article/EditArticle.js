@@ -14,8 +14,24 @@ EditArticle = {
     originalArticleText: "",
 
     init: function () {
+        // DIALOGS
+        $('#DeleteArticleDialog').dialog({
+            autoOpen: false
+            , modal: true
+            , hide: "slide"
+            , show: "slide"
+            , buttons: {
+                "YES, DELETE IT": function () {
+                    EditArticle.DeleteArticle();
+                }
+                , "NO": function () { $(this).dialog("close"); }
+            },
+        });
+
+        // CKEDITOR
         CKEDITOR.replace('ArticleText');
 
+        // ORIGINAL VALUES
         EditArticle.originalRedirect = $('#redirect').val();
         EditArticle.originalArticleType = $('#ArticleTypeDropdown').val();
         EditArticle.originalArticleTableOfContentsText = $('.articleTableOfContentsText').val();
@@ -43,7 +59,7 @@ EditArticle = {
         });
 
         $('#ArticleDeleteButton').click(function () {
-            EditArticle.DeleteArticle();
+            $('#DeleteArticleDialog').dialog('open');
         });
 
         $('.dragAndDropImageArea').click(function () {
@@ -132,7 +148,6 @@ EditArticle = {
     },
 
     DeleteArticle: function () {
-        // TODO - J - Maybe add confirmation dialog.... ?
         $('#DeleteArticleForm').submit();
     },
 

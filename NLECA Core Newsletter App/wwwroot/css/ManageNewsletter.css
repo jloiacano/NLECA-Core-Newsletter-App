@@ -1,3 +1,7 @@
 ﻿.dialogTextLine {
     display: block;
 }
+
+.dialogWarningText {
+    color: red;
+}
