@@ -104,6 +104,7 @@ body {
         }
 
 #TableOfContentsWrapper {
+    z-index: 1;
     position: fixed;
     top: 80px;
     left: 30px;
@@ -152,14 +153,14 @@ body {
         display: none;
         position: absolute;
         left: -224px;
-        top: 48px;
+        top: 0px;
     }
 
     .articleContent .rightArticleImage {
         display: none;
         position: absolute;
         right: -224px;
-        top: 48px;
+        top: 0px;
     }
 
     .articleContent .bottomArticleImage {
@@ -167,4 +168,8 @@ body {
         width: 100%;
         text-align: center;
         margin-top: 24px; 
+    }
+
+    .articleContent .articleImageShow {
+        display: block;
     }

@@ -4,21 +4,36 @@
 
         <a name="@string.Format("article{0}", Model.ArticleId)"></a>
 
-        <h2>@Model.ArticleTitle</h2>
+        @if (Model.ArticleType == 1)
+        {
+            <div class="leftArticleImage articleImageShow">
+                <img src="@Model.ImageFileLocation" />
+            </div>
 
-        <div class="topArticleImage">
-            <img src="~/Images/ArticleImages/dontForgetToReplace.png" />
-        </div>
-        <div class="leftArticleImage">
-            <img src="~/Images/ArticleImages/dontForgetToReplace.png" />
-        </div>
-        <div class="rightArticleImage">
-            <img src="~/Images/ArticleImages/dontForgetToReplace.png" />
-        </div>
+        }
+        @if (Model.ArticleType == 2)
+        {
+            <div class="rightArticleImage articleImageShow">
+                <img src="@Model.ImageFileLocation" />
+            </div>
+        }
+
+        @if (Model.ArticleType == 3)
+        {
+            <div class="topArticleImage articleImageShow">
+                <img src="@Model.ImageFileLocation" />
+            </div>
+        }
+
+        <h2>@Model.ArticleTitle</h2>
         <div id="ArticleText">
             @Html.Raw(Model.ArticleText)
         </div>
-        <div class="bottomArticleImage">
-            <img src="~/Images/ArticleImages/dontForgetToReplace.png" />
-        </div>
+
+        @if (Model.ArticleType == 4)
+        {
+            <div class="bottomArticleImage articleImageShow">
+                <img src="@Model.ImageFileLocation" />
+            </div>
+        }
     </div>
