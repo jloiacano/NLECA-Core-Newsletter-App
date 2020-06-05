@@ -117,18 +117,11 @@ EditArticle = {
     },
 
     CheckForUnsavedChanges: function () {
-        var changes = false;
-
-        //CHECK THESE FOR DIFFERENT.
         if ($('#ArticleTypeDropdown').val() != EditArticle.originalArticleType
             || $('#ArticleTableOfContentsText').val() != EditArticle.originalArticleTableOfContentsText
             || $('#ArticleTitle').val() != EditArticle.originalArticleTitle
             || CKEDITOR.instances.ArticleText.getData() != EditArticle.originalArticleText)
         {
-            changes = true;
-        }
-
-        if (changes) {
             $('#redirect').val("ArticleImageManager");
             return true;
         }
