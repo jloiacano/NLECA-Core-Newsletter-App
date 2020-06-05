@@ -123,6 +123,14 @@ namespace NLECA_Core_Newsletter_App.Controllers
         [Authorize(Roles = "SuperAdmin,Admin")]
         public IActionResult PublishNewsletter(int newsletterId)
         {
+            _newsletter.PublishNewsletter(newsletterId);
+            return RedirectToAction("NewsletterManager");
+        }
+
+        [Authorize(Roles = "SuperAdmin,Admin")]
+        public IActionResult UnpublishNewsletter(int newsletterId)
+        {
+            _newsletter.UnpublishNewsletter(newsletterId);
             return RedirectToAction("NewsletterManager");
         }
     }

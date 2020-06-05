@@ -251,7 +251,7 @@ namespace NLECA_Core_Newsletter_App.Service.Services
             }
 
 
-            return rowsEffected > 0 ? true : false;
+            return rowsEffected > 0;
         }
         #endregion
 
@@ -281,6 +281,69 @@ namespace NLECA_Core_Newsletter_App.Service.Services
 
 
             return rowsEffected > 0 ? true : false;
+        }
+        #endregion
+
+        #region // Publish
+        /// <summary>
+        /// Publishes the newsletter by newsletter id
+        /// </summary>
+        /// <param name="newsletterId">id of the newsletter to publish</param>
+        /// <returns>true if the newsletter was published successfully</returns>
+        public bool PublishNewsletter(int newsletterId)
+        {
+            int rowsEffected = 0;
+
+            try
+            {
+                SqlParameter[] parameters = new SqlParameter[]
+                {
+                    new SqlParameter("@newsletterId", newsletterId),
+                };
+
+                rowsEffected = _sql.GetReturnValueFromStoredProcedure("PublishNewsletter", parameters);
+            }
+            catch (Exception ex)
+            {
+                string error = string.Format(
+                    "There was an publishing newsletter {0} in the Newsletter Service"
+                    , newsletterId);
+                _logger.LogError(error, ex);
+            }
+
+            return rowsEffected > 0;
+        }
+        #endregion
+
+        #region // Unpublish
+
+        /// <summary>
+        /// Unpublishes the newsletter by newsletter id
+        /// </summary>
+        /// <param name="newsletterId">id of the newsletter to unpublish</param>
+        /// <returns>true if the newsletter was unpublished successfully</returns>
+        public bool UnpublishNewsletter(int newsletterId)
+        {
+            int rowsEffected = 0;
+
+            try
+            {
+                SqlParameter[] parameters = new SqlParameter[]
+                {
+                    new SqlParameter("@newsletterId", newsletterId),
+                };
+
+                rowsEffected = _sql.GetReturnValueFromStoredProcedure("UnpublishNewsletter", parameters);
+            }
+            catch (Exception ex)
+            {
+                string error = string.Format(
+                    "There was an unpublishing newsletter {0} in the Newsletter Service"
+                    , newsletterId);
+                _logger.LogError(error, ex);
+            }
+
+            return rowsEffected > 0;
         }
         #endregion
     }

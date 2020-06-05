@@ -24,5 +24,10 @@ NewsletterManager = {
             var newsletterId = $(e.target).closest('.individualNewletter').data('newsletterid');
             window.location.href = '/Newsletter/PublishNewsletter/?newsletterId=' + newsletterId;
         });
+
+        $('#UnpublishNewsletterButton').click(function (e) {
+            var newsletterId = $(e.target).closest('.individualNewletter').data('newsletterid');
+            window.location.href = '/Newsletter/UnpublishNewsletter/?newsletterId=' + newsletterId;
+        });
     },
 }

@@ -38,6 +38,20 @@ namespace NLECA_Core_Newsletter_App.Service.Interfaces
         bool UpdateNewsletter(NewsletterModel newsletter);
 
         /// <summary>
+        /// Publishes the newsletter by newsletter id
+        /// </summary>
+        /// <param name="newsletterId">id of the newsletter to publish</param>
+        /// <returns>true if the newsletter was published successfully</returns>
+        bool PublishNewsletter(int newsletterId);
+
+        /// <summary>
+        /// Unpublishes the newsletter by newsletter id
+        /// </summary>
+        /// <param name="newsletterId">id of the newsletter to unpublish</param>
+        /// <returns>true if the newsletter was unpublished successfully</returns>
+        bool UnpublishNewsletter(int newsletterId);
+
+        /// <summary>
         /// Deletes a newsletter entry from the database
         /// </summary>
         /// <param name="newsletterId"></param>

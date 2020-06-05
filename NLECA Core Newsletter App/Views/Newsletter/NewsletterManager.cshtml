@@ -18,15 +18,29 @@
 
 @foreach (NewsletterModel newsletter in Model)
 {
-    <div class="individualNewletter"  data-newsletterid="@newsletter.NewsletterId">
-        <h2>@DateTime.Parse(newsletter.DisplayDate).ToString("MMMM yyyy") Newsletter</h2>
-        <span>@newsletter.Memo - Created:  @newsletter.CreatedDate.ToString("MMMM dd, yyyy")</span>
+<div class="individualNewletter" data-newsletterid="@newsletter.NewsletterId">
+    <h2>@DateTime.Parse(newsletter.DisplayDate).ToString("MMMM yyyy") Newsletter</h2>
+    <span>@newsletter.Memo - Created:  @newsletter.CreatedDate.ToString("MMMM dd, yyyy")</span>
 
+    @if (newsletter.IsCurrent)
+    {
+        <button id="UnpublishNewsletterButton">Unpublish</button>
+    }
+    else
+    {
         <button id="EditNewsletterButton">Edit</button>
         <button id="DeleteNewsletterButton">Delete</button>
-        <button id="PublishNewsletterButton">Publish</button>
-        <hr />
-    </div>
+        if (newsletter.HasBeenPublished)
+        {
+            <button id="PublishNewsletterButton">Re-Publish</button>
+        }
+        else
+        {
+            <button id="PublishNewsletterButton">Publish</button>
+        }
+    }
+    <hr />
+</div>
 }
 
 @*Add Newsletter*@
