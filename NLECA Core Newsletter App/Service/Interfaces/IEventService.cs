@@ -50,9 +50,9 @@ namespace NLECA_Core_Newsletter_App.Service.Interfaces
         /// <summary>
         /// Updates an existing EventModel in the database
         /// </summary>
-        /// <param name="eventId">Id of the EventModel to be updated</param>
+        /// <param name="eventModel">EventModel with the updates</param>
         /// <returns>true if EventModel was successfully updated</returns>
-        bool UpdateEvent(int eventId);
+        bool UpdateEvent(EventModel eventModel);
 
         /// <summary>
         /// Deletes an existing EventModel in the database
