@@ -11,7 +11,7 @@ namespace NLECA_Core_Newsletter_App.Service.Interfaces
         /// </summary>
         /// <param name="eventModel">the event details</param>
         /// <returns>true if event was successfully added</returns>
-        bool AddEvent(EventModel eventModel);
+        int AddEvent(EventModel eventModel);
 
         /// <summary>
         /// Gets a single event, and its details, from the database
@@ -25,6 +25,18 @@ namespace NLECA_Core_Newsletter_App.Service.Interfaces
         /// </summary>
         /// <returns>All the EventModels in the database</returns>
         IEnumerable<EventModel> GetAllEvents();
+
+        /// <summary>
+        /// Gets all the events in the database which have been published
+        /// </summary>
+        /// <returns>All the EventModels in the database which have been published</returns>
+        IEnumerable<EventModel> GetAllPublishedEvents();
+
+        /// <summary>
+        /// Gets all the events in the database occuring after now
+        /// </summary>
+        /// <returns>All the EventModels in the database occuring after now</returns>
+        IEnumerable<EventModel> GetAllFutureEvents();
 
         /// <summary>
         /// Gets all events, either occuring on a day, or the day is within the
@@ -53,6 +65,20 @@ namespace NLECA_Core_Newsletter_App.Service.Interfaces
         /// <param name="eventModel">EventModel with the updates</param>
         /// <returns>true if EventModel was successfully updated</returns>
         bool UpdateEvent(EventModel eventModel);
+
+        /// <summary>
+        /// Publishes the event by its id
+        /// </summary>
+        /// <param name="eventId">Id of the event you would like to publish</param>
+        /// <returns>true if event was successfully published</returns>
+        bool PublishEvent(int eventId);
+
+        /// <summary>
+        /// Unpublishes the event by its id
+        /// </summary>
+        /// <param name="eventId">Id of the event you would like to unpublish</param>
+        /// <returns>true if event was successfully unpublished</returns>
+        bool UnpublishEvent(int eventId);
 
         /// <summary>
         /// Deletes an existing EventModel in the database

@@ -19,30 +19,25 @@ namespace NLECA_Core_Newsletter_App.Service.Services
             _logger = logger;
             _sql = sql;
         }
-        public bool AddEvent(EventModel eventModel)
+        public int AddEvent(EventModel eventModel)
         {
 
-            int rowseffected = 0;
+            int newEventId = 0;
 
             try
             {
                 SqlParameter[] parameters = {
                     new SqlParameter("@addedByUserId", eventModel.AddedByUserId)
                     ,new SqlParameter("@addedByUserName", eventModel.AddedByUserName)
-                    ,new SqlParameter("@dateAdded", _sql.ConvertDateTimeForSQL(eventModel.DateAdded))
-                    ,new SqlParameter("@eventTitle", eventModel.EventTitle)
-                    ,new SqlParameter("@isAllDayEvent", eventModel.IsAllDayEvent)
-                    ,new SqlParameter("@isMultiDayEvent", eventModel.IsMultiDayEvent)
-                    ,new SqlParameter("@eventDate", _sql.ConvertDateTimeForSQL(eventModel.EventDate))
-                    ,new SqlParameter("@eventDateEnd", _sql.ConvertDateTimeForSQL(eventModel.EventDateEnd))
-                    ,new SqlParameter("@dateIsFinalized", eventModel.DateIsFinalized)
-                    ,new SqlParameter("@eventLocation", eventModel.EventLocation)
-                    ,new SqlParameter("@eventHost", eventModel.EventHost)
-                    ,new SqlParameter("@eventShortDetails", eventModel.EventShortDetails)
-                    ,new SqlParameter("@eventLongDetails", eventModel.EventLongDetails)
-                    ,new SqlParameter("@eventImageLocation", eventModel.EventImageLocation)
+                    //,new SqlParameter("@dateAdded", _sql.ConvertDateTimeForSQL(eventModel.DateAdded))
+                    ////,new SqlParameter("@eventTitle", eventModel.EventTitle)
+                    ////,new SqlParameter("@isAllDayEvent", eventModel.IsAllDayEvent)
+                    ////,new SqlParameter("@isMultiDayEvent", eventModel.IsMultiDayEvent)
+                    //,new SqlParameter("@eventDate", _sql.ConvertDateTimeForSQL(eventModel.EventDate))
+                    //,new SqlParameter("@eventDateEnd", _sql.ConvertDateTimeForSQL(eventModel.EventDateEnd))
+
                 };
-                rowseffected = _sql.GetReturnValueFromStoredProcedure("AddEvent", parameters);
+                newEventId = _sql.GetReturnValueFromStoredProcedure("AddEvent", parameters);
             }
             catch (Exception ex)
             {
@@ -53,12 +48,29 @@ namespace NLECA_Core_Newsletter_App.Service.Services
             }
 
 
-            return rowseffected > 0;
+            return newEventId;
         }
 
         public EventModel GetEventById(int eventId)
         {
-            throw new NotImplementedException();
+            SqlParameter[] parameters = new SqlParameter[] { new SqlParameter("@eventId", eventId) };
+            DataSet GetEventByIdResult = _sql.GetDatasetFromStoredProcedure("GetEventById", parameters);
+
+            try
+            {
+                DataRow eventResult = GetEventByIdResult.Tables[0].AsEnumerable().FirstOrDefault();
+
+                return new EventModel(eventResult);
+            }
+            catch (Exception ex)
+            {
+                string error = string.Format(
+                   "There was an error retrieving the EventModel #{0} in EventService/GetEventById",
+                   eventId.ToString());
+                _logger.LogError(error, ex);
+            }
+
+            return null;
         }
 
         public IEnumerable<EventModel> GetAllEvents()
@@ -81,6 +93,56 @@ namespace NLECA_Core_Newsletter_App.Service.Services
             {
                 string error = string.Format(
                     "There was an error retrieving all Events in EventService/GetAllEvents");
+                _logger.LogError(error, ex);
+            }
+            return events.AsEnumerable();
+        }
+
+        public IEnumerable<EventModel> GetAllPublishedEvents()
+        {
+            DataSet eventsDataSet = _sql.GetDatasetFromStoredProcedure("GetAllPublishedEvents");
+
+            List<EventModel> events = new List<EventModel>();
+
+            try
+            {
+                IEnumerable<DataRow> eventResults = eventsDataSet.Tables[0].AsEnumerable();
+
+                foreach (var eventResult in eventResults)
+                {
+                    EventModel eventModel = new EventModel(eventResult);
+                    events.Add(eventModel);
+                }
+            }
+            catch (Exception ex)
+            {
+                string error = string.Format(
+                    "There was an error retrieving all Events in EventService/GetAllPublishedEvents");
+                _logger.LogError(error, ex);
+            }
+            return events.AsEnumerable();
+        }
+
+        public IEnumerable<EventModel> GetAllFutureEvents()
+        {
+            DataSet eventsDataSet = _sql.GetDatasetFromStoredProcedure("GetAllFutureEvents");
+
+            List<EventModel> events = new List<EventModel>();
+
+            try
+            {
+                IEnumerable<DataRow> eventResults = eventsDataSet.Tables[0].AsEnumerable();
+
+                foreach (var eventResult in eventResults)
+                {
+                    EventModel eventModel = new EventModel(eventResult);
+                    events.Add(eventModel);
+                }
+            }
+            catch (Exception ex)
+            {
+                string error = string.Format(
+                    "There was an error retrieving all Events in EventService/GetAllFutureEvents");
                 _logger.LogError(error, ex);
             }
             return events.AsEnumerable();
@@ -180,6 +242,52 @@ namespace NLECA_Core_Newsletter_App.Service.Services
                 string error = string.Format(
                     "There was an error updating Event #{0} into database EventService/UpdateEvent",
                     eventModel.EventId);
+                _logger.LogError(error, ex);
+            }
+
+            return rowseffected > 0;
+        }
+
+        public bool PublishEvent(int eventId)
+        {
+            int rowseffected = 0;
+            try
+            {
+                SqlParameter[] parameters = new SqlParameter[]
+                {
+                    new SqlParameter("@eventId", eventId)
+                };
+
+                rowseffected = _sql.GetReturnValueFromStoredProcedure("PublishEvent", parameters);
+            }
+            catch (Exception ex)
+            {
+                string error = string.Format(
+                    "There was an error publishing Event #{0} in EventService/PublishEvent",
+                    eventId);
+                _logger.LogError(error, ex);
+            }
+
+            return rowseffected > 0;
+        }
+
+        public bool UnpublishEvent(int eventId)
+        {
+            int rowseffected = 0;
+            try
+            {
+                SqlParameter[] parameters = new SqlParameter[]
+                {
+                    new SqlParameter("@eventId", eventId)
+                };
+
+                rowseffected = _sql.GetReturnValueFromStoredProcedure("UnpublishEvent", parameters);
+            }
+            catch (Exception ex)
+            {
+                string error = string.Format(
+                    "There was an error unpublishing Event #{0} in EventService/UnpublishEvent",
+                    eventId);
                 _logger.LogError(error, ex);
             }
 

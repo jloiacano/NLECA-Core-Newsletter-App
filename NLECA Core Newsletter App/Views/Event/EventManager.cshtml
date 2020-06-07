@@ -1,0 +1,53 @@
+﻿@using NLECA_Core_Newsletter_App.Models.Event;
+@model IEnumerable<EventModel>
+@{
+    ViewData["Title"] = "EventManager";
+}
+
+@section HeadIncludes {
+}
+
+@section Scripts {
+    <script src="~/js/Event/EventManager.js"></script>
+}
+
+<h1>ManageEvents</h1>
+
+@if (Model.Count() > 0)
+{
+    @foreach (EventModel eventModel in Model)
+    {
+<div class="individualEvent" data-eventid="@eventModel.EventId">
+    <div class="eventInfoArea">
+        <div>
+            <span>Event #@eventModel.EventId @eventModel.EventTitle</span>
+        </div>
+        <div>
+            <span>Added By @eventModel.AddedByUserName</span>
+        </div>
+        <div>
+            <span>Added On @eventModel.DateAdded</span>
+        </div>
+    </div>
+    @if (eventModel.IsPublished == false)
+    {
+        <button class="editEventButton">Edit</button>
+        <button class="deleteEventButton">Delete</button>
+        <button class="publishEventButton">Publish Event</button>
+    }
+    else
+    {
+        <button class="unpublishEventButton">Unpublish Event</button>
+    }
+</div>
+        <hr />
+    }
+    <button id="AddEventButton">Add New Event</button>
+
+}
+else
+{
+    <h2>There are no events to show. Feel Free to <span class="addEventButton btn btn-primary">Add An Event</span></h2>
+}
+
+

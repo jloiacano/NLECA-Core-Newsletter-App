@@ -1,10 +1,10 @@
-﻿var NewsletterManager = NewsletterManager || {};
+﻿var EventManager = EventManager || {};
 
 $(document).ready(function () {
-    NewsletterManager.init();
+    EventManager.init();
 });
 
-NewsletterManager = {
+EventManager = {
 
     currentlySorting: false,
     sortingPrechangeIndex: 0,
@@ -59,15 +59,15 @@ NewsletterManager = {
         });
 
         $('.changeArticleOrderButton').click(function () {
-            NewsletterManager.setupSortableArticles();
+            EventManager.setupSortableArticles();
         });
 
         $('.saveArticleOrderButton').click(function () {
-            NewsletterManager.saveArticleOrder();
+            EventManager.saveArticleOrder();
         });
 
         $('.articleContent').click(function (x) {
-            NewsletterManager.editArticle(this);
+            EventManager.editArticle(this);
         });
 
         $('.addArticleButton').click(function () {
@@ -86,11 +86,11 @@ NewsletterManager = {
                 placeholder: "articlePlaceHolder",
                 opacity: 0.6,
                 start: function (event, ui) {
-                    NewsletterManager.sortingPrechangeIndex = ui.item.index();
+                    EventManager.sortingPrechangeIndex = ui.item.index();
                 },
                 stop: function (event, ui) {
-                    NewsletterManager.sortingPostchangeIndex = ui.item.index();
-                    NewsletterManager.changeOtherSortableArticleOrder('#sortableTableOfContents')
+                    EventManager.sortingPostchangeIndex = ui.item.index();
+                    EventManager.changeOtherSortableArticleOrder('#sortableTableOfContents')
                 }
             }).disableSelection();
         $('#sortableTableOfContents')
@@ -99,21 +99,21 @@ NewsletterManager = {
                 placeholder: "tableOfContentsPlaceHolder",
                 opacity: 0.6,
                 start: function (event, ui) {
-                    NewsletterManager.sortingPrechangeIndex = ui.item.index();
+                    EventManager.sortingPrechangeIndex = ui.item.index();
                 },
                 stop: function (event, ui) {
-                    NewsletterManager.sortingPostchangeIndex = ui.item.index();
-                    NewsletterManager.changeOtherSortableArticleOrder('#Articles')
+                    EventManager.sortingPostchangeIndex = ui.item.index();
+                    EventManager.changeOtherSortableArticleOrder('#Articles')
                 }
             }).disableSelection();
-        NewsletterManager.currentlySorting = true;
+        EventManager.currentlySorting = true;
     },
 
     saveArticleOrder: function () {
         //get the new article order;
         var newArticleOrder = $("#Articles").sortable("toArray");
-        var articleIds = NewsletterManager.getNewOrderOfArticleIds(newArticleOrder);
-        if (NewsletterManager.articleOrderChanged(newArticleOrder)) {
+        var articleIds = EventManager.getNewOrderOfArticleIds(newArticleOrder);
+        if (EventManager.articleOrderChanged(newArticleOrder)) {
             $.ajax({
                 url: '/Article/UpdateArticleOrder',
                 type: 'POST',
@@ -158,15 +158,15 @@ NewsletterManager = {
     },
 
     changeOtherSortableArticleOrder: function (listToChange) {
-        var pre = NewsletterManager.sortingPrechangeIndex;
-        var post = NewsletterManager.sortingPostchangeIndex;
+        var pre = EventManager.sortingPrechangeIndex;
+        var post = EventManager.sortingPostchangeIndex;
         if (post > pre) {
             $(listToChange + ' .ui-sortable-handle:eq(' + pre + ')').insertAfter(listToChange + ' .ui-sortable-handle:eq(' + post + ')');
         } else {
             $(listToChange + ' .ui-sortable-handle:eq(' + pre + ')').insertBefore(listToChange + ' .ui-sortable-handle:eq(' + post + ')');
         }
-        NewsletterManager.sortingPrechangeIndex = 0;
-        NewsletterManager.sortingPostchangeIndex = 0;
+        EventManager.sortingPrechangeIndex = 0;
+        EventManager.sortingPostchangeIndex = 0;
     },
 
     editArticle: function (articleDiv) {

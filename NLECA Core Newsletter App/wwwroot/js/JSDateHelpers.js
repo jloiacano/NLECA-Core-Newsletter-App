@@ -105,6 +105,40 @@ Date.prototype.ConvertToGMTString = function () {
     return ''.concat(gmtStringWithoutComma.slice(0, 3), ',', gmtStringWithoutComma.slice(3));
 }
 
+Date.prototype.toDatetimeLocal = function toDatetimeLocal() {
+    var date = this,
+        ten = function (i) {
+            return (i < 10 ? '0' + i : i);
+        },
+        YYYY = date.getFullYear(),
+        MM = ten(date.getMonth() + 1),
+        DD = ten(date.getDate()),
+        HH = ten(date.getHours()),
+        II = ten(date.getMinutes()),
+        SS = ten(date.getSeconds())
+        ;
+    return YYYY + '-' + MM + '-' + DD + 'T' + HH + ':' + II + ':' + SS;
+};
+
+Date.prototype.toTimeHoursAndMinutes = function toTimeHoursAndMinutes() {
+    var date = this,
+        ten = function (i) {
+            return (i < 10 ? '0' + i : i);
+        },
+        HH = ten(date.getHours()),
+        II = ten(date.getMinutes())
+        ;
+    return HH + ':' + II;
+};
+
+Date.prototype.removeOffset = function removeOffset() {
+    var date = this,
+    offset = date.getTimezoneOffset();
+    var dateWithoutOffset = date.addMinutes(-offset)
+    return dateWithoutOffset;
+};
+
+
 function makeDoubleDigits(digit) {
     var stringDigit = digit.toString();
     var digitToReturn = '0';

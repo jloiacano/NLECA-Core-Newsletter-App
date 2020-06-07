@@ -1,0 +1,101 @@
+﻿@model NLECA_Core_Newsletter_App.Models.Event.EventModel
+
+@{
+    ViewData["Title"] = "EditEvent";
+}
+
+@section HeadIncludes {
+    <link href="~/css/EditEvent.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <script src="~/js/Event/EditEvent.js"></script>
+}
+
+<h1>EditEvent</h1>
+<form id="EventForm" action="/Event/UpdateEvent" method="post">
+
+    <input id="EventId" type="hidden" name="EventId" value="@Model.EventId" />
+    <input id="AddedByUserId" type="hidden" name="AddedByUserId" value="@Model.AddedByUserId" />
+    <input id="AddedByUserName" type="hidden" name="AddedByUserName" value="@Model.AddedByUserName" />
+    <input id="DateAdded" type="hidden" name="DateAdded" value="@Model.DateAdded" />
+    <input id="EventImageLocation" type="hidden" name="EventImageLocation" value="@Model.EventImageLocation" />
+
+    <input id="IsAllDayEvent" type="hidden" name="IsAllDayEvent" value="@Model.IsAllDayEvent" />
+    <input id="IsMultiDayEvent" type="hidden" name="IsMultiDayEvent" value="@Model.IsMultiDayEvent" />
+    <input id="DateIsFinalized" type="hidden" name="DateIsFinalized" value="@Model.DateIsFinalized" />
+
+    <input id="EventDate" type="hidden" name="EventDate" value="@Model.EventDate" />
+    <input id="EventDateEnd" type="hidden" name="EventDateEnd" value="@Model.EventDateEnd" />
+
+
+
+    <span id="EventTypeValidationWarning" class="validationWarning">
+        You must select an event type.
+    </span>
+    <div>
+        <label for="EventTitle">Title of the event:</label>
+        <input id="EventTitle" type="text" name="EventTitle" value="@Model.EventTitle" />
+    </div>
+    <div>
+        <input type="radio" id="TimedEventRadio" name="eventType" value="TimedEvent"
+               @*if it's not a new Event (title already saved) and it's not IsAllDayEvent or IsMultiDayEvent*@
+               @((!string.IsNullOrEmpty(Model.EventTitle) && (!Model.IsAllDayEvent && !Model.IsMultiDayEvent)) ? "checked" : "")>
+        <label for="other">This event is between specific times on the same day.</label>
+    </div>
+
+    <div id="TimedEventDateTimeArea" class="eventDateTimeArea">
+        <div>
+            <label>Event Date:</label>
+            <input id="TimedEventDate" type="date" value="@Model.EventDate.ToString("yyyy-MM-dd")" />
+        </div>
+        <label>Event Start:</label>
+        <input id="TimedEventTime" type="time" value="@Model.EventDate.ToString("hh:mm:00")" />
+        <label>Event End:</label>
+        <input id="TimedEventTimeEnd" type="time" value="@Model.EventDateEnd.ToString("hh:mm:00")" />
+    </div>
+
+    <div>
+        <input type="radio" id="IsAllDayEventRadio" name="eventType" value="IsAllDayEvent"
+               @(Model.IsAllDayEvent ? "checked" : "")>
+        <label for="male">This is an all day event.</label><br>
+    </div>
+
+    <div id="AllDayEventDateTimeArea" class="eventDateTimeArea">
+        <label>Event Date:</label>
+        <input id="AllDayEventDate" type="date" value="@Model.EventDate.ToString("yyyy-MM-dd")" />
+    </div>
+
+    <div>
+        <input type="radio" id="IsMultiDayEventRadio" name="eventType" value="IsMultiDayEvent"
+               @(Model.IsMultiDayEvent ? "checked" : "")>
+        <label for="female">This event spans multiple days.</label><br>
+    </div>
+
+    <div id="MultiDayEventDateTimeArea" class="eventDateTimeArea">
+        <label>Event Start:</label>
+        <input id="MultiDayEventDate" type="datetime-local" value="@Model.EventDate.ToString("yyyy-MM-ddThh:mm")" />
+        <label>Event End:</label>
+        <input id="MultiDayEventDateEnd" type="datetime-local" value="@Model.EventDateEnd.ToString("yyyy-MM-ddThh:mm")" />
+    </div>
+
+    <div>
+        <label for="EventLocation">Location of the Event:</label>
+        <input id="EventLocation" type="text" name="EventLocation" value="@Model.EventLocation" />
+    </div>
+    <div>
+        <label for="EventHost">Who is hosting the event:</label>
+        <input id="EventHost" type="text" name="EventHost" value="@Model.EventHost" />
+    </div>
+    <div>
+        <label for="EventShortDetails">Short Detail blurb of the Event:</label>
+        <input id="EventShortDetails" type="text" name="EventShortDetails" value="@Model.EventShortDetails" />
+    </div>
+    <div>
+        <label for="EventLongDetails">Full Details of the Event:</label>
+        <input id="EventLongDetails" type="text" name="EventLongDetails" value="@Model.EventLongDetails" />
+    </div>
+    <button id="SaveEventButton" type="button">Save Event</button>
+</form>
+
+

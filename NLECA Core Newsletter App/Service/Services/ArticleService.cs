@@ -81,16 +81,7 @@ namespace NLECA_Core_Newsletter_App.Service.Services
             {
                 DataRow articleResult = GetArticleByArticleIdResult.Tables[0].AsEnumerable().FirstOrDefault();
 
-                article.ArticleId = Int32.Parse(articleResult["ArticleId"].ToString());
-                article.NewsletterId = Int32.Parse(articleResult["NewsletterId"].ToString());
-                article.ArticleSequence = Int32.Parse(articleResult["ArticleSequence"].ToString());
-                article.ImageFileLocation = articleResult["ImageFileLocation"].ToString();
-                article.ArticleType = Int32.Parse(articleResult["ArticleType"].ToString());
-                article.ArticleTableOfContentsText = articleResult["ArticleTableOfContentsText"].ToString();
-                article.ArticleTitle = articleResult["ArticleTitle"].ToString();
-                article.ArticleText = articleResult["ArticleText"].ToString();
-                article.AddedBy = Int32.Parse(articleResult["AddedBy"].ToString());
-                article.DateAdded = DateTime.Parse(articleResult["DateAdded"].ToString());
+                article = new ArticleModel(articleResult);
             }
             catch (Exception ex)
             {

@@ -155,6 +155,7 @@ namespace NLECA_Core_Newsletter_App
                 services.AddScoped<IArticleService, ArticleService>();
                 services.AddScoped<ISQLHelperService, SQLHelperService>();
                 services.AddScoped<IArticleImageService, ArticleImageService>();
+                services.AddScoped<IEventService, EventService>();
             }
             catch (Exception ex)
             {
