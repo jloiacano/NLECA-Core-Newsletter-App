@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using NLECA_Core_Newsletter_App.Models.Event;
 using NLECA_Core_Newsletter_App.Models.Newsletter;
 using NLECA_Core_Newsletter_App.Service.Interfaces;
 using System;
@@ -98,29 +100,9 @@ namespace NLECA_Core_Newsletter_App.Service.Services
                         _logger.LogError("Unable to transcribe newsletterResult to newsletter Model in NewsletterService/GetPublishedNewsletter", ex);
                     }
 
-                    SqlParameter[] getArticlesParameters = { new SqlParameter("@newsletterId", newsletter.NewsletterId) };
+                    newsletter.Articles = GetArticlesForNewsletter(newsletter.NewsletterId, "GetPublishedNewsletter");
 
-                    DataSet GetArticlesByNewsletterIdResults = _sql.GetDatasetFromStoredProcedure("GetArticlesByNewsletterId", getArticlesParameters);
-
-                    try
-                    {
-                        IEnumerable<DataRow> articleResults = GetArticlesByNewsletterIdResults.Tables[0].AsEnumerable();
-
-                        List<ArticleModel> articles = new List<ArticleModel>();
-
-                        foreach (DataRow row in articleResults)
-                        {
-                            ArticleModel article = new ArticleModel(row);
-
-                            articles.Add(article);
-                        }
-
-                        newsletter.Articles = articles.OrderBy(a => a.ArticleSequence);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError("Unable to transcribe GetArticlesByNewsletterIdResults to articles in NewsletterService/GetPublishedNewsletter", ex);
-                    }
+                    newsletter.Events = GetEventsForNewsletter(newsletter.EventsStartDate, newsletter.EventsEndDate, "GetPublishedNewsletter");
                 }
                 else
                 {
@@ -190,29 +172,11 @@ namespace NLECA_Core_Newsletter_App.Service.Services
 
                 if (newsletter.CreatedDate != null)
                 {
-                    SqlParameter[] getArticlesParameters = { new SqlParameter("@newsletterId", newsletter.NewsletterId) };
 
-                    DataSet GetArticlesByNewsletterIdResults = _sql.GetDatasetFromStoredProcedure("GetArticlesByNewsletterId", getArticlesParameters);
+                    newsletter.Articles = GetArticlesForNewsletter(newsletter.NewsletterId, "GetNewsletterById");
 
-                    try
-                    {
-                        IEnumerable<DataRow> articleResults = GetArticlesByNewsletterIdResults.Tables[0].AsEnumerable();
+                    newsletter.Events = GetEventsForNewsletter(newsletter.EventsStartDate, newsletter.EventsEndDate, "GetNewsletterById");
 
-                        List<ArticleModel> articles = new List<ArticleModel>();
-
-                        foreach (DataRow row in articleResults)
-                        {
-                            ArticleModel article = new ArticleModel(row);
-
-                            articles.Add(article);
-                        }
-
-                        newsletter.Articles = articles.OrderBy(a => a.ArticleSequence);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError("Unable to transcribe GetArticlesByNewsletterIdResults to articles in NewsletterService/GetPublishedNewsletter", ex);
-                    }
                 }
             }
 
@@ -345,6 +309,70 @@ namespace NLECA_Core_Newsletter_App.Service.Services
 
             return rowsEffected > 0;
         }
+        #endregion
+
+        #region // Helpers
+
+        private IEnumerable<ArticleModel> GetArticlesForNewsletter(int newsletterId, string callingMethod)
+        {
+            SqlParameter[] getArticlesParameters = { new SqlParameter("@newsletterId", newsletterId) };
+
+            DataSet GetArticlesByNewsletterIdResults = _sql.GetDatasetFromStoredProcedure("GetArticlesByNewsletterId", getArticlesParameters);
+
+            List<ArticleModel> articles = new List<ArticleModel>();
+
+            try
+            {
+                IEnumerable<DataRow> articleResults = GetArticlesByNewsletterIdResults.Tables[0].AsEnumerable();
+
+
+                foreach (DataRow row in articleResults)
+                {
+                    ArticleModel article = new ArticleModel(row);
+
+                    articles.Add(article);
+                }
+            }
+            catch (Exception ex)
+            {
+                string error = string.Format("Unable to transcribe GetArticlesByNewsletterIdResults to articles in NewsletterService/{0}",
+                    callingMethod);
+                _logger.LogError(error, ex);
+            }
+
+            return articles.OrderBy(a => a.ArticleSequence);
+        }
+
+        private IEnumerable<EventModel> GetEventsForNewsletter(DateTime startDate, DateTime endDate, string callingMethod)
+        {
+            SqlParameter[] getEventsParameters = {
+                        new SqlParameter("@start", _sql.ConvertDateTimeForSQL(endDate)),
+                        new SqlParameter("@end", _sql.ConvertDateTimeForSQL(endDate))
+                    };
+
+            DataSet GetEventsInDateRangeResults = _sql.GetDatasetFromStoredProcedure("GetEventsInDateRange", getEventsParameters);
+
+            List<EventModel> eventModels = new List<EventModel>();
+            try
+            {
+                IEnumerable<DataRow> eventResults = GetEventsInDateRangeResults.Tables[0].AsEnumerable();
+
+                foreach (DataRow row in eventResults)
+                {
+                    EventModel eventRow = new EventModel(row);
+
+                    eventModels.Add(eventRow);
+                }
+            }
+            catch (Exception ex)
+            {
+                string error = string.Format("Unable to transcribe GetEventsInDateRangeResults to events in NewsletterService/{0}",
+                    callingMethod);
+                _logger.LogError(error, ex);
+            }
+            return eventModels.OrderBy(a => a.EventDate);
+        }
+
         #endregion
     }
 }
