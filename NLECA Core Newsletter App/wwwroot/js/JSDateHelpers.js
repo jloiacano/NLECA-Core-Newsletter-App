@@ -10,49 +10,49 @@ const dateYear = 365 * dateDay;
 Date.prototype.addYears = function (y) {
     this.setTime(this.getTime() + (y * dateYear));
     return this;
-}
+};
 
 Date.prototype.addMonths = function (M) {
     this.setTime(this.getTime() + (M * dateMonth));
     return this;
-}
+};
 
 Date.prototype.addWeeks = function (w) {
     this.setTime(this.getTime() + (w * dateWeek));
     return this;
-}
+};
 
 Date.prototype.addDays = function (d) {
     this.setTime(this.getTime() + (d * dateDay));
     return this;
-}
+};
 
 Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * dateHour));
     return this;
-}
+};
 
 Date.prototype.addMinutes = function (m) {
     this.setTime(this.getTime() + (m * dateMinute));
     return this;
-}
+};
 
 Date.prototype.addSeconds = function (s) {
     this.setTime(this.getTime() + (s * dateSecond));
     return this;
-}
+};
 
 Date.prototype.Min = function () {
     return new Date(-8640000000000000);
-}
+};
 
 Date.prototype.Zero = function () {
     return new Date(+0);
-}
+};
 
 Date.prototype.Max = function () {
     return new Date(8640000000000000);
-}
+};
 
 Date.prototype.ConvertToReadableLocalTime = function () {
     var threeLetterDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -76,6 +76,11 @@ Date.prototype.ConvertToReadableLocalTime = function () {
     }
 
     return ''.concat(HH, '-', mm, '-', meridiem, '-on-', ddd, '-', MM, '-', dd, '-', yyyy, '-(', ss + ')');
+};
+
+Date.prototype.getDifferenceOfDays = function (subtrahendDate) {
+    var difference = Math.abs(this - subtrahendDate);
+    return Math.floor(difference / 86400000);
 }
 
 // Takes a Date object and turns it into a GMT string (does not adjust time of the Date object)
@@ -93,7 +98,7 @@ Date.prototype.getGMTString = function () {
     var ss = makeDoubleDigits(this.getSeconds());
 
     return ''.concat(ddd, ', ', dd, ' ', MMM, ' ', yyyy, ' ', HH, ':', mm, ':', ss, ' GMT');
-}
+};
 
 //Takes a Date object and converts the time (adds or subtracts offset) and then returns the string version
 Date.prototype.ConvertToGMTString = function () {
@@ -103,40 +108,82 @@ Date.prototype.ConvertToGMTString = function () {
     var gmtIndex = preGmtString.indexOf('GMT-') + 3;
     var gmtStringWithoutComma = preGmtString.substring(0, gmtIndex);
     return ''.concat(gmtStringWithoutComma.slice(0, 3), ',', gmtStringWithoutComma.slice(3));
-}
+};
 
-Date.prototype.toDatetimeLocal = function toDatetimeLocal() {
+Date.prototype.FromHTMLInputValue = function (htmlInputValue) {
+    var tenify = function (i) {
+        return (i < 10 ? '0' + i : i);
+    };
+
+    if (htmlInputValue.includes("T")) {
+        return new Date(htmlInputValue);
+    }
+    else if (htmlInputValue.includes('-')) {
+        htmlInputValue += 'T00:00';
+        return new Date(htmlInputValue);
+    }
+    else if (htmlInputValue.includes(':')) {
+        var timeParts = htmlInputValue.split(':');
+        var dateToReturn = new Date();
+        dateToReturn.setHours(tenify(timeParts[0]));
+        dateToReturn.setMinutes(tenify(timeParts[1]));
+        return dateToReturn;
+    }
+    else {
+        console.log(htmlInputValue + ' was unable to be converted to Date() in .FromHTMLInputValue()');
+    }
+};
+
+Date.prototype.toDateHTMLInputValue = function () {
     var date = this,
-        ten = function (i) {
+        tenify = function (i) {
             return (i < 10 ? '0' + i : i);
         },
         YYYY = date.getFullYear(),
-        MM = ten(date.getMonth() + 1),
-        DD = ten(date.getDate()),
-        HH = ten(date.getHours()),
-        II = ten(date.getMinutes()),
-        SS = ten(date.getSeconds())
+        MM = tenify(date.getMonth() + 1),
+        DD = tenify(date.getDate())
+        ;
+    return YYYY + '-' + MM + '-' + DD;
+};
+
+Date.prototype.toDatetimeLocalInputValue = function () {
+    var date = this,
+        tenify = function (i) {
+            return (i < 10 ? '0' + i : i);
+        },
+        YYYY = date.getFullYear(),
+        MM = tenify(date.getMonth() + 1),
+        DD = tenify(date.getDate()),
+        HH = tenify(date.getHours()),
+        II = tenify(date.getMinutes()),
+        SS = tenify(date.getSeconds())
         ;
     return YYYY + '-' + MM + '-' + DD + 'T' + HH + ':' + II + ':' + SS;
 };
 
-Date.prototype.toTimeHoursAndMinutes = function toTimeHoursAndMinutes() {
+Date.prototype.toTimeHTMLInputValue = function () {
     var date = this,
-        ten = function (i) {
+        tenify = function (i) {
             return (i < 10 ? '0' + i : i);
         },
-        HH = ten(date.getHours()),
-        II = ten(date.getMinutes())
+        HH = tenify(date.getHours()),
+        II = tenify(date.getMinutes())
         ;
     return HH + ':' + II;
 };
 
-Date.prototype.removeOffset = function removeOffset() {
+Date.prototype.removeOffset = function () {
     var date = this,
     offset = date.getTimezoneOffset();
-    var dateWithoutOffset = date.addMinutes(-offset)
+    var dateWithoutOffset = date.addMinutes(-offset);
     return dateWithoutOffset;
 };
+
+Date.prototype.stripTime = function () {
+    var date = this;
+    date.setHours(0, 0, 0, 0);
+    return date;
+}
 
 
 function makeDoubleDigits(digit) {

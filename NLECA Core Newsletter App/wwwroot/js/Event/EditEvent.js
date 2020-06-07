@@ -42,84 +42,50 @@ EventManager = {
     SetUpDateTimeValidations: function () {
         // When a start or end date or time is changed, make sure the other is appropriately less or more.
         $('#TimedEventTime').change(function () {
-            var changedTime = $(this).val(),
-            timeToCheck = $('#TimedEventTimeEnd').val();
+            var changedTime = new Date().FromHTMLInputValue($(this).val()),
+                timeToCheck = new Date().FromHTMLInputValue($('#TimedEventTimeEnd').val());
 
-            if (GetComparableTime(changedTime, 0) > GetComparableTime(timeToCheck, -15)) {
-                var newTimedEventTimeEnd = GetNewTimedEventTime(changedTime , 15);
+            if (changedTime > timeToCheck.addMinutes(-15)) {
+                var newTimedEventTimeEnd = changedTime.addMinutes(15).toTimeHTMLInputValue();
                 $('#TimedEventTimeEnd').val(newTimedEventTimeEnd)
             }
         });
 
         $('#TimedEventTimeEnd').change(function () {
-            var changedTime = $(this).val(),
-                timeToCheck = $('#TimedEventTime').val();
+            var changedTime = new Date().FromHTMLInputValue($(this).val()),
+                timeToCheck = new Date().FromHTMLInputValue($('#TimedEventTime').val());
 
-            if (GetComparableTime(changedTime, 0) < GetComparableTime(timeToCheck, 15)) {
-                var newTimedEventTime = GetNewTimedEventTime(changedTime, -15);
+            if (changedTime < timeToCheck.addMinutes(15)) {
+                var newTimedEventTime = changedTime.addMinutes(-15).toTimeHTMLInputValue();
                 $('#TimedEventTime').val(newTimedEventTime)
             }
         });
 
-        function GetComparableTime(time, difference) {
-            var timeSplit = time.split(':');
-            var dateToUse = new Date();
-            dateToUse.setHours(timeSplit[0]);
-            dateToUse.setMinutes(timeSplit[1]);
-            dateToUse.addMinutes(difference);
-            return dateToUse.toTimeHoursAndMinutes();
-        }
-
-        function GetNewTimedEventTime(time, change) {
-            var splitTime = time.split(':'),
-                dateTimeValue = new Date();
-            dateTimeValue.setHours(splitTime[0]);
-            dateTimeValue.setMinutes(splitTime[1]);
-            dateTimeValue.addMinutes(change);
-            return (dateTimeValue.getHours() < 10 ? '0' : '') + dateTimeValue.getHours() + ':'
-                + (dateTimeValue.getMinutes() < 10 ? '0' : '') + dateTimeValue.getMinutes();
-        };
-
         $('#MultiDayEventDate').change(function () {
-            var changedDateTime = $(this).val()
-            dateTimeToCheck = $('#MultiDayEventDateEnd').val();
+            var changedDateTime = new Date().FromHTMLInputValue($(this).val()),
+                dateTimeToCheck = new Date().FromHTMLInputValue($('#MultiDayEventDateEnd').val()),
+                comparableChangedDate = new Date(changedDateTime).stripTime(),
+                comparableDateToCheck = new Date(dateTimeToCheck).stripTime();
 
-            if (GetComparableDate(changedDateTime) >= GetComparableDate(dateTimeToCheck)) {
-                var differenceOfDays = GetDifferenceOfDays(changedDateTime, dateTimeToCheck);
-                var newEventDateEnd = GetNewEventDate(dateTimeToCheck, differenceOfDays + 1);
+            if (comparableChangedDate >= comparableDateToCheck) {
+                var differenceOfDays = changedDateTime.getDifferenceOfDays(dateTimeToCheck);
+                var newEventDateEnd = dateTimeToCheck.addDays(differenceOfDays + 1).toDatetimeLocalInputValue();
                 $('#MultiDayEventDateEnd').val(newEventDateEnd);
             }
         });
 
         $('#MultiDayEventDateEnd').change(function () {
-            var changedDateTime = $(this).val()
-            dateTimeToCheck = $('#MultiDayEventDate').val();
+            var changedDateTime = new Date().FromHTMLInputValue($(this).val()),
+                dateTimeToCheck = new Date().FromHTMLInputValue($('#MultiDayEventDate').val()),
+                comparableChangedDate = new Date(changedDateTime).stripTime(),
+                comparableDateToCheck = new Date(dateTimeToCheck).stripTime();
 
-            if (GetComparableDate(changedDateTime) <= GetComparableDate(dateTimeToCheck)) {
-                var differenceOfDays = GetDifferenceOfDays(changedDateTime, dateTimeToCheck);
-                var newEventDate = GetNewEventDate(dateTimeToCheck, -differenceOfDays - 1);
+            if (comparableChangedDate <= comparableDateToCheck) {
+                var differenceOfDays = changedDateTime.getDifferenceOfDays(dateTimeToCheck);
+                var newEventDate = dateTimeToCheck.addDays(-differenceOfDays - 1).toDatetimeLocalInputValue();
                 $('#MultiDayEventDate').val(newEventDate);
             }
         });
-
-        function GetComparableDate(date) {
-            var comparable = new Date(date);
-            comparable.setHours(0, 0, 0, 0);
-            return comparable;
-        };
-
-        function GetDifferenceOfDays(date1, date2) {
-            var firstDate = new Date(date1).getTime(),
-                secondDate = new Date(date2).getTime();
-
-            var difference = Math.abs(firstDate - secondDate);
-            return Math.floor(difference / 86400000);
-        }
-
-        function GetNewEventDate(date, change) {
-            var newDate = new Date(date).addDays(change);
-            return newDate.removeOffset().toISOString().slice(0, -8);
-        };
     },
 
     SaveEvent: function () {
