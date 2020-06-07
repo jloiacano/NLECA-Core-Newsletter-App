@@ -204,7 +204,9 @@ namespace NLECA_Core_Newsletter_App.Service.Services
                     new SqlParameter("@memo", newsletter.Memo),
                     new SqlParameter("@displayDate", newsletter.DisplayDate),
                     new SqlParameter("@publishedDate", _sql.ConvertDateTimeForSQL(newsletter.PublishedDate)),
-                    new SqlParameter("@isCurrent", newsletter.IsCurrent == true ? "1" : "0")
+                    new SqlParameter("@isCurrent", newsletter.IsCurrent == true ? "1" : "0"),
+                    new SqlParameter("@eventsStartDate", _sql.ConvertDateTimeForSQL(newsletter.EventsStartDate)),
+                    new SqlParameter("@eventsEndDate", _sql.ConvertDateTimeForSQL(newsletter.EventsEndDate))
                 };
 
                 rowsEffected = _sql.GetReturnValueFromStoredProcedure("UpdateNewsletter", parameters);

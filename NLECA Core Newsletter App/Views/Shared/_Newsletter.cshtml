@@ -1,4 +1,5 @@
 ﻿@using NLECA_Core_Newsletter_App.Models.Newsletter;
+@using NLECA_Core_Newsletter_App.Models.Event;
 
 @model NewsletterModel;
 
@@ -89,6 +90,22 @@
 
             }
         </div>
+    }
+
+    @if (Model.Events.Count() == 0)
+    {
+        <span>There are no events for this Newsletter.</span>
+    }
+    else
+    {
+        <h2>UPCOMING EVENTS:</h2>
+
+        @foreach (EventModel eventModel in Model.Events)
+        {
+            <div>
+                <span>@eventModel.EventTitle</span>
+            </div>
+        }
     }
 }
 else
