@@ -92,20 +92,41 @@
         </div>
     }
 
+    // TODO - J - Add anchor for events here
+
     @if (Model.Events.Count() == 0)
     {
-        <span>There are no events for this Newsletter.</span>
+        <div class="eventArea">
+            <h2>There are no events for this Newsletter.</h2>
+        </div>
     }
-    else
-    {
-        <h2>UPCOMING EVENTS:</h2>
 
-        @foreach (EventModel eventModel in Model.Events)
-        {
+    @if (Model.IsEdit)
+    {
+        <div class="eventDateRangeEditArea">
             <div>
-                <span>@eventModel.EventTitle</span>
+                <label>Start of Event Date Range</label>
+                <input class="eventDateRangeStart" type="date" value="@Model.EventsStartDate.ToString("yyyy-MM-dd")" />
+
+                <label>End of Event Date Range</label>
+                <input class="eventDateRangeEnd" type="date" value="@Model.EventsEndDate.ToString("yyyy-MM-dd")" />
+
+                <button class="saveEventDateRangeButton"> Update Event Date Range</button>
             </div>
-        }
+            <div id="ManageEventsRedirectArea">
+                <div>
+                    <span>OR</span>
+                </div>
+                <button id="ManageEventsButton">Manage Events</button>
+            </div>
+        </div>
+    }
+
+    @if (Model.Events.Count() != 0)
+    {
+        <div class="eventArea">
+            <partial name="/Views/Event/Partials/_EventsInNewsletter.cshtml" model="Model.Events" />
+        </div>
     }
 }
 else

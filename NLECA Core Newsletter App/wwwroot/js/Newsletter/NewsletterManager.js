@@ -1,10 +1,10 @@
-﻿var EventManager = EventManager || {};
+﻿var NewsletterManager = NewsletterManager || {};
 
 $(document).ready(function () {
-    EventManager.init();
+    NewsletterManager.init();
 });
 
-EventManager = {
+NewsletterManager = {
 
     init: function () {
 
@@ -16,7 +16,7 @@ EventManager = {
             , show: "slide"
             , buttons: {
                 YES: function () {
-                    EventManager.UnpublishNewsletter($(this).data('newsletterId'));
+                    NewsletterManager.UnpublishNewsletter($(this).data('newsletterId'));
                 }
                 ,NO: function () { $(this).dialog("close"); }
             },
@@ -29,7 +29,7 @@ EventManager = {
             , show: "slide"
             , buttons: {
                 YES: function () {
-                    EventManager.PublishNewsletter($(this).data('newsletterId'));
+                    NewsletterManager.PublishNewsletter($(this).data('newsletterId'));
                 }
                 , NO: function () { $(this).dialog("close"); }
             },
@@ -42,7 +42,7 @@ EventManager = {
             , show: "slide"
             , buttons: {
                 "YES, DELETE IT": function () {
-                    EventManager.DeleteNewsletter($(this).data('newsletterId'));
+                    NewsletterManager.DeleteNewsletter($(this).data('newsletterId'));
                 }
                 , "NO": function () { $(this).dialog("close"); }
             },

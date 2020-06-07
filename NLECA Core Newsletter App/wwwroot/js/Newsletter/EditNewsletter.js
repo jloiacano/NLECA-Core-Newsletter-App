@@ -1,10 +1,10 @@
-﻿var EventManager = EventManager || {};
+﻿var EditNewsletter = EditNewsletter || {};
 
 $(document).ready(function () {
-    EventManager.init();
+    EditNewsletter.init();
 });
 
-EventManager = {
+EditNewsletter = {
 
     currentlySorting: false,
     sortingPrechangeIndex: 0,
@@ -59,20 +59,34 @@ EventManager = {
         });
 
         $('.changeArticleOrderButton').click(function () {
-            EventManager.setupSortableArticles();
+            EditNewsletter.setupSortableArticles();
         });
 
         $('.saveArticleOrderButton').click(function () {
-            EventManager.saveArticleOrder();
+            EditNewsletter.saveArticleOrder();
         });
 
         $('.articleContent').click(function (x) {
-            EventManager.editArticle(this);
+            EditNewsletter.editArticle(this);
         });
 
         $('.addArticleButton').click(function () {
             $('#AddArticleForm').submit();
-        })
+        });
+
+        $('.eventArea').click(function () {
+            $('.eventDateRangeEditArea').show();
+        });
+
+        EditNewsletter.SetUpEventDateRangeInputs();
+
+        $('.saveEventDateRangeButton').click(function () {
+            // TODO - J - to update date range.
+        });
+
+        $('#ManageEventsButton').click(function () {
+            window.location.href = '/Event/AddEvent/';
+        });
     },
 
     setupSortableArticles: function () {
@@ -86,11 +100,11 @@ EventManager = {
                 placeholder: "articlePlaceHolder",
                 opacity: 0.6,
                 start: function (event, ui) {
-                    EventManager.sortingPrechangeIndex = ui.item.index();
+                    EditNewsletter.sortingPrechangeIndex = ui.item.index();
                 },
                 stop: function (event, ui) {
-                    EventManager.sortingPostchangeIndex = ui.item.index();
-                    EventManager.changeOtherSortableArticleOrder('#sortableTableOfContents')
+                    EditNewsletter.sortingPostchangeIndex = ui.item.index();
+                    EditNewsletter.changeOtherSortableArticleOrder('#sortableTableOfContents')
                 }
             }).disableSelection();
         $('#sortableTableOfContents')
@@ -99,21 +113,21 @@ EventManager = {
                 placeholder: "tableOfContentsPlaceHolder",
                 opacity: 0.6,
                 start: function (event, ui) {
-                    EventManager.sortingPrechangeIndex = ui.item.index();
+                    EditNewsletter.sortingPrechangeIndex = ui.item.index();
                 },
                 stop: function (event, ui) {
-                    EventManager.sortingPostchangeIndex = ui.item.index();
-                    EventManager.changeOtherSortableArticleOrder('#Articles')
+                    EditNewsletter.sortingPostchangeIndex = ui.item.index();
+                    EditNewsletter.changeOtherSortableArticleOrder('#Articles')
                 }
             }).disableSelection();
-        EventManager.currentlySorting = true;
+        EditNewsletter.currentlySorting = true;
     },
 
     saveArticleOrder: function () {
         //get the new article order;
         var newArticleOrder = $("#Articles").sortable("toArray");
-        var articleIds = EventManager.getNewOrderOfArticleIds(newArticleOrder);
-        if (EventManager.articleOrderChanged(newArticleOrder)) {
+        var articleIds = EditNewsletter.getNewOrderOfArticleIds(newArticleOrder);
+        if (EditNewsletter.articleOrderChanged(newArticleOrder)) {
             $.ajax({
                 url: '/Article/UpdateArticleOrder',
                 type: 'POST',
@@ -158,15 +172,15 @@ EventManager = {
     },
 
     changeOtherSortableArticleOrder: function (listToChange) {
-        var pre = EventManager.sortingPrechangeIndex;
-        var post = EventManager.sortingPostchangeIndex;
+        var pre = EditNewsletter.sortingPrechangeIndex;
+        var post = EditNewsletter.sortingPostchangeIndex;
         if (post > pre) {
             $(listToChange + ' .ui-sortable-handle:eq(' + pre + ')').insertAfter(listToChange + ' .ui-sortable-handle:eq(' + post + ')');
         } else {
             $(listToChange + ' .ui-sortable-handle:eq(' + pre + ')').insertBefore(listToChange + ' .ui-sortable-handle:eq(' + post + ')');
         }
-        EventManager.sortingPrechangeIndex = 0;
-        EventManager.sortingPostchangeIndex = 0;
+        EditNewsletter.sortingPrechangeIndex = 0;
+        EditNewsletter.sortingPostchangeIndex = 0;
     },
 
     editArticle: function (articleDiv) {
@@ -175,7 +189,7 @@ EventManager = {
         $('#EditArticleForm').submit();
     },
 
-    addArticle: function () {
+    SetUpEventDateRangeInputs: function () {
 
     }
 }

@@ -1,0 +1,12 @@
+﻿@using NLECA_Core_Newsletter_App.Models.Event;
+@model IEnumerable<EventModel>
+
+<h2>UPCOMING EVENTS:</h2>
+
+@foreach (EventModel eventModel in Model)
+{
+
+    <div>
+        <span>@eventModel.EventTitle</span>
+    </div>
+}

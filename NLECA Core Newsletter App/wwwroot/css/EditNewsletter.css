@@ -72,3 +72,16 @@
     cursor: url('../images/editcursor.png') 0 32, auto;
 }
 
+#NewsletterEditor .eventArea:hover {
+    background-color: lightyellow;
+    cursor: url('../images/editcursor.png') 0 32, auto;
+}
+
+#NewsletterEditor .eventDateRangeEditArea {
+    display: none;
+}
+
+#NewsletterEditor #ManageEventsRedirectArea {
+    text-align: center;
+}
+

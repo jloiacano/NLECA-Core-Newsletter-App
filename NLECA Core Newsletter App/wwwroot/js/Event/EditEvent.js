@@ -1,22 +1,22 @@
-﻿var EventManager = EventManager || {};
+﻿var EditEvent = EditEvent || {};
 
 $(document).ready(function () {
-    EventManager.init();
+    EditEvent.init();
 });
 
-EventManager = {
+EditEvent = {
     init: function () {
-        EventManager.ShowCorrectDateTimeInputs();
+        EditEvent.ShowCorrectDateTimeInputs();
 
         $('#SaveEventButton').click(function () {
-            EventManager.SaveEvent();
+            EditEvent.SaveEvent();
         });
 
         $("input[name='eventType']").change(function () {
-            EventManager.ShowCorrectDateTimeInputs();
+            EditEvent.ShowCorrectDateTimeInputs();
         });
 
-        EventManager.SetUpDateTimeValidations();
+        EditEvent.SetUpDateTimeValidations();
     },
 
     ShowCorrectDateTimeInputs: function () {
@@ -102,7 +102,7 @@ EventManager = {
 
             function GetCorrectDateFormat(date, time) {
                 var datetime = new Date(date + 'T' + time);
-                return EventManager.AdjustDateTimeForInput(datetime);
+                return EditEvent.AdjustDateTimeForInput(datetime);
             }
         }
         else if (radioValue == 'IsAllDayEvent') {
@@ -116,15 +116,15 @@ EventManager = {
             $('#IsAllDayEvent').val(false);
             $('#IsMultiDayEvent').val(true);
 
-            var startDate = EventManager.AdjustDateTimeForInput(new Date($('#MultiDayEventDate').val()));
-            var endDate = EventManager.AdjustDateTimeForInput(new Date($('#MultiDayEventDateEnd').val()));
+            var startDate = EditEvent.AdjustDateTimeForInput(new Date($('#MultiDayEventDate').val()));
+            var endDate = EditEvent.AdjustDateTimeForInput(new Date($('#MultiDayEventDateEnd').val()));
 
             $('#EventDate').val(startDate);
             $('#EventDateEnd').val(endDate);
 
             function GetCorrectDateFormat(incorrectFormat) {
                 var datetime = new Date(incorrectFormat);
-                return EventManager.AdjustDateTimeForInput(datetime);
+                return EditEvent.AdjustDateTimeForInput(datetime);
             }
         }
 
