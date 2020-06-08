@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,7 +18,11 @@ namespace NLECA_Core_Newsletter_App.Models.Alert
         public DateTime AlertDateEnd { get; set; }
         public string AlertShortDetails { get; set; }
         public string AlertLongDetails { get; set; }
+
+
+        [DisplayFormat(ConvertEmptyStringToNull = false)]
         public string AlertImageLocation { get; set; }
+
         public bool IsPublished { get; set; }
 
         public AlertModel() { }

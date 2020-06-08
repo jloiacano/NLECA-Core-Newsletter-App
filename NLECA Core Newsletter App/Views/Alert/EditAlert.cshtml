@@ -1,0 +1,51 @@
+﻿@using NLECA_Core_Newsletter_App.Models.Alert;
+@model AlertModel
+
+
+@section HeadIncludes {
+    <link href="~/css/EditAlert.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <script src="~/js/Alert/EditAlert.js"></script>
+}
+
+<h2>Alert #@Model.AlertId</h2>
+<form id="UpdateArticleForm" action="/Alert/UpdateAlert" method="post">
+    <div>
+        <input hidden type="text" id="AlertId" name="AlertId" value="@Model.AlertId.ToString()" />
+        <input hidden type="text" id="AddedByUserId" name="AddedByUserId" value="@Model.AddedByUserId" />
+        <input hidden type="text" id="AddedByUserName" name="AddedByUserName" value="@Model.AddedByUserName" />
+        <input hidden type="text" id="DateAdded" name="DateAdded" value="@Model.DateAdded" />
+        <input hidden type="text" id="AlertImageLocation" name="AlertImageLocation" value="@Model.AlertImageLocation" />
+        <input hidden type="text" id="IsPublished" name="IsPublished" value="@Model.IsPublished" />
+    </div>
+    <div>
+        <label for="AlertTitle">Title:</label>
+        <input type="text" id="AlertTitle" name="AlertTitle" value="@Model.AlertTitle" />
+    </div>
+    <div>
+        <label for="AlertDate">Alert Starts:</label>
+        <input type="datetime-local" id="AlertDate" name="AlertDate" value="@Model.AlertDate.ToString("yyyy-MM-ddThh:mm")" />
+    </div>
+    <div>
+        <label for="AlertDateEnd">Alert End:</label>
+        <input type="datetime-local" id="AlertDateEnd" name="AlertDateEnd" value="@Model.AlertDateEnd.ToString("yyyy-MM-ddThh:mm")" />
+    </div>
+    <div>
+        <label for="AlertShortDetails">Alert blurb</label>
+        <input type="text" id="AlertShortDetails" name="AlertShortDetails" value="@Model.AlertShortDetails" />
+    </div>
+    <div>
+        <label for="AlertLongDetails">Details</label>
+        <input type="text" id="AlertLongDetails" name="AlertLongDetails" value="@Model.AlertLongDetails" />
+    </div>
+    @if (string.IsNullOrEmpty(Model.AlertTitle))
+    {
+        <button id="UpdateArticleButton">SAVE</button>
+    }
+    else
+    {
+        <button id="UpdateArticleButton">Update Article</button>
+    }
+</form>

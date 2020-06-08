@@ -1,3 +1,37 @@
 ﻿@using NLECA_Core_Newsletter_App.Models.Alert;
 @model IEnumerable<AlertModel>
+
+@section HeadIncludes {
+    <link href="~/css/ManageAlerts.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <script src="~/js/Alert/AlertManager.js"></script>
+}
+
 <h2>Alert Manager</h2>
+
+@if (Model.Count() == 0)
+{
+    <span>
+        There are no current alerts to manage. If you would like, go ahead and
+        <span class="addAlertButton btn btn-primary">Add an Alert</span>
+    </span>
+}
+
+@foreach (AlertModel alert in Model)
+{
+<div class="individualAlert" data-alertid="@alert.AlertId">
+    <h3>Alert#@alert.AlertId - @alert.AlertTitle</h3>
+    <div>
+        <span>@alert.AlertShortDetails</span>
+    </div>
+    <div>
+        <span>@alert.AlertLongDetails</span>
+    </div>
+    <div>
+        <span>@alert.AlertDate TO @alert.AlertDateEnd</span>
+    </div>
+    <button class="editAlertButton">Edit</button>
+</div>
+}
