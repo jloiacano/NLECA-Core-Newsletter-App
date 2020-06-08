@@ -33,6 +33,13 @@ namespace NLECA_Core_Newsletter_App.Service.Interfaces
         IEnumerable<AlertModel> GetAllPublishedAlerts();
 
         /// <summary>
+        /// Gets all of the Alerts in the database which are published and
+        /// the current time is within the timerange of the alert. 
+        /// </summary>
+        /// <returns>All of the current alerts which are published</returns>
+        IEnumerable<AlertModel> GetAllCurrentAlerts();
+
+        /// <summary>
         /// Gets all of the Alerts in the database occuring after now
         /// </summary>
         /// <returns>All of the Alerts in the database occuring after now</returns>

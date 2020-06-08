@@ -141,6 +141,31 @@ namespace NLECA_Core_Newsletter_App.Service.Services
             return alerts.AsEnumerable();
         }
 
+        public IEnumerable<AlertModel> GetAllCurrentAlerts()
+        {
+            DataSet alertsDataSet = _sql.GetDatasetFromStoredProcedure("GetAllCurrentAlerts");
+
+            List<AlertModel> alerts = new List<AlertModel>();
+
+            try
+            {
+                IEnumerable<DataRow> alertResults = alertsDataSet.Tables[0].AsEnumerable();
+
+                foreach (var alertResult in alertResults)
+                {
+                    AlertModel alertModel = new AlertModel(alertResult);
+                    alerts.Add(alertModel);
+                }
+            }
+            catch (Exception ex)
+            {
+                string error = string.Format(
+                    "There was an error retrieving all Alerts in AlertService/GetAllCurrentAlerts");
+                _logger.LogError(error, ex);
+            }
+            return alerts.AsEnumerable();
+        }
+
         public bool UpdateAlert(AlertModel alertModel)
         {
             int rowseffected = 0;
