@@ -53,24 +53,24 @@ NewsletterManager = {
             window.location.href = '/Newsletter/AddNewsletter/';
         });
 
-        $('#EditNewsletterButton').click(function (e) {
+        $('.editNewsletterButton').click(function (e) {
             var newsletterId = $(e.target).closest('.individualNewletter').data('newsletterid');
             window.location.href = '/Newsletter/EditNewsletter/?newsletterId=' + newsletterId;
         });
 
-        $('#DeleteNewsletterButton').click(function (e) {
+        $('.deleteNewsletterButton').click(function (e) {
             $("#DeleteNewsletterDialog")
                 .data('newsletterId', $(e.target).closest('.individualNewletter').data('newsletterid'))
                 .dialog('open');
         });
 
-        $('#PublishNewsletterButton').click(function (e) {
+        $('.publishNewsletterButton').click(function (e) {
             $("#PublishNewsletterDialog")
                 .data('newsletterId', $(e.target).closest('.individualNewletter').data('newsletterid'))
                 .dialog('open');
         });
 
-        $('#UnpublishNewsletterButton').click(function (e) {
+        $('.unpublishNewsletterButton').click(function (e) {
             $("#UnpublishNewsletterDialog")
                 .data('newsletterId', $(e.target).closest('.individualNewletter').data('newsletterid'))
                 .dialog('open');

@@ -30,19 +30,19 @@
 
         @if (newsletter.IsCurrent)
         {
-            <button id="UnpublishNewsletterButton">Unpublish</button>
+            <button class="unpublishNewsletterButton">Unpublish</button>
         }
         else
         {
-            <button id="EditNewsletterButton">Edit</button>
-            <button id="DeleteNewsletterButton">Delete</button>
+            <button class="editNewsletterButton">Edit</button>
+            <button class="deleteNewsletterButton">Delete</button>
             if (newsletter.HasBeenPublished)
             {
-                <button id="PublishNewsletterButton">Re-Publish</button>
+                <button class="publishNewsletterButton">Re-Publish</button>
             }
             else
             {
-                <button id="PublishNewsletterButton">Publish</button>
+                <button class="publishNewsletterButton">Publish</button>
             }
         }
         <hr />

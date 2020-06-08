@@ -111,12 +111,35 @@ namespace NLECA_Core_Newsletter_App.Controllers
             return RedirectToAction("NewsletterManager");
         }
 
-
         [Authorize(Roles = "SuperAdmin,Admin")]
         [HttpPost]
         public IActionResult SaveNewsletter(NewsletterModel newsletter)
         {
             NewsletterModel model = newsletter;
+            return RedirectToAction("NewsletterManager");
+        }
+
+        [Authorize(Roles = "SuperAdmin,Admin")]
+        public IActionResult UpdateNewsletterDateRange(string start, string end, int newsletterId)
+        {
+            var startParts = start.Split('-');
+            int startYear = Int32.Parse(startParts[0]);
+            int startMonth = Int32.Parse(startParts[1]);
+            int startDay = Int32.Parse(startParts[2]);
+
+            var endParts = end.Split('-');
+            int endYear = Int32.Parse(endParts[0]);
+            int endMonth = Int32.Parse(endParts[1]);
+            int endDay = Int32.Parse(endParts[2]);
+
+            DateTime startDate = new DateTime(startYear, startMonth, startDay);
+            DateTime endDate = new DateTime(endYear, endMonth, endDay);
+
+            NewsletterModel newsletter = _newsletter.GetNewsletterById(newsletterId);
+            newsletter.EventsStartDate = startDate;
+            newsletter.EventsEndDate = endDate;
+            _newsletter.UpdateNewsletter(newsletter);
+
             return RedirectToAction("NewsletterManager");
         }
 

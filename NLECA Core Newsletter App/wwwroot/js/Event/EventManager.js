@@ -8,7 +8,7 @@ EventManager = {
     init: function () {
 
         $('.addEventButton').click(function () {
-            window.location.href = '/Event/EventManager/';
+            window.location.href = '/Event/AddEvent/';
         });
 
         $('.editEventButton').click(function () {

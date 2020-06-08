@@ -81,11 +81,11 @@ EditNewsletter = {
         EditNewsletter.SetUpEventDateRangeInputs();
 
         $('.saveEventDateRangeButton').click(function () {
-            // TODO - J - to update date range.
+            EditNewsletter.UpdateEventDates();
         });
 
         $('#ManageEventsButton').click(function () {
-            window.location.href = '/Event/AddEvent/';
+            window.location.href = '/Event/EventManager/';
         });
     },
 
@@ -191,5 +191,40 @@ EditNewsletter = {
 
     SetUpEventDateRangeInputs: function () {
 
+        $('#EventDateRangeStartInput').change(function () {
+            var changedDateTime = new Date().FromHTMLInputValue($(this).val()),
+                dateTimeToCheck = new Date().FromHTMLInputValue($('#EventDateRangeEndInput').val()),
+                comparableChangedDate = new Date(changedDateTime).stripTime(),
+                comparableDateToCheck = new Date(dateTimeToCheck).stripTime();
+
+            if (comparableChangedDate >= comparableDateToCheck) {
+                var differenceOfDays = changedDateTime.getDifferenceOfDays(dateTimeToCheck);
+                var newEventDateEnd = dateTimeToCheck.addDays(differenceOfDays + 1).toDateHTMLInputValue();
+                $('#EventDateRangeEndInput').val(newEventDateEnd);
+            }
+        });
+        $('#EventDateRangeEndInput').change(function () {
+            var changedDateTime = new Date().FromHTMLInputValue($(this).val()),
+                dateTimeToCheck = new Date().FromHTMLInputValue($('#EventDateRangeStartInput').val()),
+                comparableChangedDate = new Date(changedDateTime).stripTime(),
+                comparableDateToCheck = new Date(dateTimeToCheck).stripTime();
+
+            if (comparableChangedDate <= comparableDateToCheck) {
+                var differenceOfDays = changedDateTime.getDifferenceOfDays(dateTimeToCheck);
+                var newEventDate = dateTimeToCheck.addDays(-differenceOfDays - 1).toDateHTMLInputValue();
+                $('#EventDateRangeStartInput').val(newEventDate);
+            }
+        });
+    },
+
+    UpdateEventDates: function () {
+        var start = $('#EventDateRangeStartInput').val(),
+            end = $('#EventDateRangeEndInput').val(),
+            newsletterId = $("input[name='newsletterId']").val(),
+            updateDateRangeLocation = '/Newsletter/UpdateNewsletterDateRange/?'
+                + 'start=' + start
+                + '&end=' + end
+                + '&newsletterId=' + newsletterId;
+        window.location.href = updateDateRangeLocation;
     }
 }

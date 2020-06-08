@@ -347,9 +347,12 @@ namespace NLECA_Core_Newsletter_App.Service.Services
 
         private IEnumerable<EventModel> GetEventsForNewsletter(DateTime startDate, DateTime endDate, string callingMethod)
         {
+            string start = _sql.ConvertDateTimeForSQL(startDate);
+            string end = _sql.ConvertDateTimeForSQL(endDate);
+
             SqlParameter[] getEventsParameters = {
-                        new SqlParameter("@start", _sql.ConvertDateTimeForSQL(endDate)),
-                        new SqlParameter("@end", _sql.ConvertDateTimeForSQL(endDate))
+                        new SqlParameter("@start", start),
+                        new SqlParameter("@end", end)
                     };
 
             DataSet GetEventsInDateRangeResults = _sql.GetDatasetFromStoredProcedure("GetEventsInDateRange", getEventsParameters);

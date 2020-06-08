@@ -106,10 +106,10 @@
         <div class="eventDateRangeEditArea">
             <div>
                 <label>Start of Event Date Range</label>
-                <input class="eventDateRangeStart" type="date" value="@Model.EventsStartDate.ToString("yyyy-MM-dd")" />
+                <input id="EventDateRangeStartInput" type="date" value="@Model.EventsStartDate.ToString("yyyy-MM-dd")" />
 
                 <label>End of Event Date Range</label>
-                <input class="eventDateRangeEnd" type="date" value="@Model.EventsEndDate.ToString("yyyy-MM-dd")" />
+                <input id="EventDateRangeEndInput" type="date" value="@Model.EventsEndDate.ToString("yyyy-MM-dd")" />
 
                 <button class="saveEventDateRangeButton"> Update Event Date Range</button>
             </div>
