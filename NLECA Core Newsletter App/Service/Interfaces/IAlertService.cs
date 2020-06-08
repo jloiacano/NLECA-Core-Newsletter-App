@@ -11,14 +11,14 @@ namespace NLECA_Core_Newsletter_App.Service.Interfaces
         /// </summary>
         /// <param name="alertModel">AlertModel to be added</param>
         /// <returns>true if AlertModel was successfully added to database</returns>
-        bool AddAlert(AlertModel alertModel);
+        int AddAlert(AlertModel alertModel);
 
         /// <summary>
         /// Gets a single alert, and its details, from the database
         /// </summary>
         /// <param name="AlertId">The Id of the Alert</param>
         /// <returns>A single AlertModel with all the alert details</returns>
-        AlertModel GetAlertById(int AlertId);
+        AlertModel GetAlertById(int alertId);
 
         /// <summary>
         /// Gets all of the Alerts in the database

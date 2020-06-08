@@ -29,12 +29,6 @@ namespace NLECA_Core_Newsletter_App.Service.Services
                 SqlParameter[] parameters = {
                     new SqlParameter("@addedByUserId", eventModel.AddedByUserId)
                     ,new SqlParameter("@addedByUserName", eventModel.AddedByUserName)
-                    //,new SqlParameter("@dateAdded", _sql.ConvertDateTimeForSQL(eventModel.DateAdded))
-                    ////,new SqlParameter("@eventTitle", eventModel.EventTitle)
-                    ////,new SqlParameter("@isAllDayEvent", eventModel.IsAllDayEvent)
-                    ////,new SqlParameter("@isMultiDayEvent", eventModel.IsMultiDayEvent)
-                    //,new SqlParameter("@eventDate", _sql.ConvertDateTimeForSQL(eventModel.EventDate))
-                    //,new SqlParameter("@eventDateEnd", _sql.ConvertDateTimeForSQL(eventModel.EventDateEnd))
 
                 };
                 newEventId = _sql.GetReturnValueFromStoredProcedure("AddEvent", parameters);
