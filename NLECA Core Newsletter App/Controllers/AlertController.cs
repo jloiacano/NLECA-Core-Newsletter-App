@@ -61,5 +61,29 @@ namespace NLECA_Core_Newsletter_App.Controllers
 
             return RedirectToAction("AlertManager");
         }
+
+        [Authorize(Roles = "SuperAdmin,Admin")]
+        public IActionResult PublishAlert(int alertId)
+        {
+            bool successfullPublish = _alertService.PublishAlert(alertId);
+
+            return RedirectToAction("AlertManager");
+        }
+
+        [Authorize(Roles = "SuperAdmin,Admin")]
+        public IActionResult UnpublishAlert(int alertId)
+        {
+            bool successfullUnpublish = _alertService.UnpublishAlert(alertId);
+
+            return RedirectToAction("AlertManager");
+        }
+
+        [Authorize(Roles = "SuperAdmin,Admin")]
+        public IActionResult DeleteAlert(int alertId)
+        {
+            bool successfullDelete = _alertService.DeleteAlert(alertId);
+
+            return RedirectToAction("AlertManager");
+        }
     }
 }

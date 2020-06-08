@@ -32,6 +32,16 @@
     <div>
         <span>@alert.AlertDate TO @alert.AlertDateEnd</span>
     </div>
-    <button class="editAlertButton">Edit</button>
+    @if (alert.IsPublished)
+    {
+        <button class="unpublishAlertButton">Unpublish</button>
+    }
+    else
+    {
+        <button class="editAlertButton">Edit</button>
+        <button class="deleteAlertButton">Delete</button>
+        <button class="publishAlertButton">Publish</button>
+    }
 </div>
+    <button class="addAlertButton">Add New Alert</button>
 }

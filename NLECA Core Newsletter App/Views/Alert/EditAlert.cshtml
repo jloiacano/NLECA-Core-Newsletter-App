@@ -13,7 +13,7 @@
 <h2>Alert #@Model.AlertId</h2>
 <form id="UpdateArticleForm" action="/Alert/UpdateAlert" method="post">
     <div>
-        <input hidden type="text" id="AlertId" name="AlertId" value="@Model.AlertId.ToString()" />
+        <input hidden type="text" id="AlertId" name="AlertId" value="@Model.AlertId" />
         <input hidden type="text" id="AddedByUserId" name="AddedByUserId" value="@Model.AddedByUserId" />
         <input hidden type="text" id="AddedByUserName" name="AddedByUserName" value="@Model.AddedByUserName" />
         <input hidden type="text" id="DateAdded" name="DateAdded" value="@Model.DateAdded" />
