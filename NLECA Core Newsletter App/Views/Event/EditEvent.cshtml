@@ -1,7 +1,7 @@
 ﻿@model NLECA_Core_Newsletter_App.Models.Event.EventModel
 
 @{
-    ViewData["Title"] = "EditEvent";
+    ViewData["Title"] = "Event Editor";
 }
 
 @section HeadIncludes {
@@ -12,7 +12,8 @@
     <script src="~/js/Event/EditEvent.js"></script>
 }
 
-<h1>EditEvent</h1>
+<h1>Event Editor</h1>
+
 <form id="EventForm" action="/Event/UpdateEvent" method="post">
 
     <input id="EventId" type="hidden" name="EventId" value="@Model.EventId" />

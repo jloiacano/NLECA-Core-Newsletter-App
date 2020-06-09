@@ -1,0 +1,24 @@
+﻿@using NLECA_Core_Newsletter_App.Models.Alert;
+@model AlertModel
+
+@{
+    ViewData["Title"] = Model.AlertTitle;
+}
+
+@section HeadIncludes {
+
+}
+
+@section Scripts {
+}
+
+<h1>@Model.AlertTitle</h1>
+
+<div class="alertLongDetails">@Model.AlertLongDetails</div>
+
+<div class="alertExpirationInformation">
+    <span>This alert will expire on </span>
+    <span>@Model.AlertDateEnd.ToShortDateString()</span>
+    <span> at </span>
+    <span>@Model.AlertDateEnd.ToShortTimeString()</span>
+</div>

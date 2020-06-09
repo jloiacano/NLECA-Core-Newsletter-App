@@ -1,0 +1,15 @@
+﻿@using NLECA_Core_Newsletter_App.Models.Alert;
+@model IEnumerable<AlertModel>
+
+@foreach (AlertModel alert in Model)
+{
+    <div class="displayedAlert" data-alertid="@alert.AlertId">
+        <span class="alertTitleArea">ALERT: @alert.AlertTitle</span>
+        <span class="alertShortDetailsArea">@alert.AlertShortDetails</span>
+        <span class="hideAlert rightButtons">REMOVE</span>
+        <span class="showAlertDetails rightButtons">SHOW MORE DETAILS</span>
+    </div>
+
+}
+
+

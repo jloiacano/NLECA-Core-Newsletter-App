@@ -1,4 +1,23 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿var Site = Site || {};
 
-// Write your JavaScript code.
+$(document).ready(function () {
+    Site.init();
+});
+
+Site = {
+    init: function () {
+        console.log('Site initialized');
+
+        $('.undoHideAlertsButton').click(function () {
+            Site.UndoHideAlerts();
+        })
+    },
+
+    UndoHideAlerts: function () {
+
+        var expiration = new Date().addDays(-1).toUTCString();
+        var expiredHiddenAlertsCookie = 'HiddenAlerts=; path=/;  expires=' + expiration + ';';
+        document.cookie = expiredHiddenAlertsCookie;
+        window.location.reload(true); 
+    }
+}

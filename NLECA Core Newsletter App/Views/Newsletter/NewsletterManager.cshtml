@@ -3,7 +3,7 @@
 @model List<NewsletterModel>
 
 @{
-    ViewData["Title"] = "EditNewsletter";
+    ViewData["Title"] = "Newsletter Manager";
     bool canEdit = User.IsInRole("SuperAdmin") || User.IsInRole("Admin");
     string editorEnabledClass = canEdit ? "" : "disabled";
 }

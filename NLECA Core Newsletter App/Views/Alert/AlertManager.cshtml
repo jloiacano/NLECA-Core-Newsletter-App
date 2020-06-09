@@ -1,4 +1,8 @@
-﻿@using NLECA_Core_Newsletter_App.Models.Alert;
+﻿@{
+    ViewData["Title"] = "Alert Manager";
+}
+
+@using NLECA_Core_Newsletter_App.Models.Alert;
 @model IEnumerable<AlertModel>
 
 @section HeadIncludes {
@@ -18,30 +22,42 @@
         <span class="addAlertButton btn btn-primary">Add an Alert</span>
     </span>
 }
-
-@foreach (AlertModel alert in Model)
+else
 {
-<div class="individualAlert" data-alertid="@alert.AlertId">
-    <h3>Alert#@alert.AlertId - @alert.AlertTitle</h3>
-    <div>
-        <span>@alert.AlertShortDetails</span>
-    </div>
-    <div>
-        <span>@alert.AlertLongDetails</span>
-    </div>
-    <div>
-        <span>@alert.AlertDate TO @alert.AlertDateEnd</span>
-    </div>
-    @if (alert.IsPublished)
-    {
-        <button class="unpublishAlertButton">Unpublish</button>
-    }
-    else
-    {
-        <button class="editAlertButton">Edit</button>
-        <button class="deleteAlertButton">Delete</button>
-        <button class="publishAlertButton">Publish</button>
-    }
-</div>
+
+
     <button class="addAlertButton">Add New Alert</button>
+
+    @if (User.IsInRole("SuperAdmin"))
+    {
+        <button class="undoHideAlertsButton">Clear Hidden Alerts Cookie</button>
+    }
+
+
+    @foreach (AlertModel alert in Model)
+    {
+        <div class="individualAlert" data-alertid="@alert.AlertId">
+            <h3>Alert#@alert.AlertId - @alert.AlertTitle</h3>
+            <div>
+                <span>@alert.AlertShortDetails</span>
+            </div>
+            <div>
+                <span>@alert.AlertLongDetails</span>
+            </div>
+            <div>
+                <span>@alert.AlertDate TO @alert.AlertDateEnd</span>
+            </div>
+            @if (alert.IsPublished)
+            {
+                <button class="unpublishAlertButton">Unpublish</button>
+            }
+            else
+            {
+                <button class="editAlertButton">Edit</button>
+                <button class="deleteAlertButton">Delete</button>
+                <button class="publishAlertButton">Publish</button>
+            }
+        </div>
+        <hr />
+    }
 }

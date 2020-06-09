@@ -5,10 +5,11 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - NLECA Newsletter</title>
+    <title>NLECA - @ViewData["Title"]</title>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/jquery-ui/jquery-ui.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    <link href="~/lib/jquery-ui/jquery-ui.css" rel="stylesheet" />
 
     @RenderSection("HeadIncludes", required: false)
 </head>
@@ -16,7 +17,9 @@
     <header>
         @await Component.InvokeAsync("HeaderMenu")
     </header>
-
+    <div id="AlertArea">
+        @await Component.InvokeAsync("Alerts")
+    </div>
     @await Component.InvokeAsync("SplashScreen")
     @await Component.InvokeAsync("Spinner")
 
@@ -34,6 +37,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/JSDateHelpers.js" asp-append-version="true"></script>
+    <script src="~/js/Alert/DisplayedAlerts.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
