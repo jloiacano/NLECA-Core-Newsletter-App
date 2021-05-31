@@ -176,12 +176,15 @@ body {
 
     .articleContent .topArticleImage {
         display: none;
+        height: 200px;
         width: 100%;
         text-align: center;
         margin-bottom: 24px;
     }
 
     .articleContent .leftArticleImage {
+        width: 200px;
+        height: 200px;
         display: none;
         position: absolute;
         left: -224px;
@@ -189,17 +192,30 @@ body {
     }
 
     .articleContent .rightArticleImage {
+        width: 200px;
+        height: 200px;
         display: none;
         position: absolute;
         right: -224px;
         top: 0px;
     }
 
+    .articleContent .leftRightArticleImage {
+        max-width: 100%;
+        max-height: 100%;
+    }
+
     .articleContent .bottomArticleImage {
         display: none;
+        height: 200px;
         width: 100%;
         text-align: center;
-        margin-top: 24px; 
+        margin-top: 24px;
+    }
+
+    .articleContent .topBottomArticleImage {
+        max-width: 100%;
+        max-height: 100%;
     }
 
     .articleContent .articleImageShow {

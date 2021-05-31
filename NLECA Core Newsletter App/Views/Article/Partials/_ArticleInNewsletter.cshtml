@@ -7,21 +7,21 @@
         @if (Model.ArticleType == 1)
         {
             <div class="leftArticleImage articleImageShow">
-                <img src="@Model.ImageFileLocation" />
+                <img class="leftRightArticleImage" src="@Model.ImageFileLocation" />
             </div>
 
         }
         @if (Model.ArticleType == 2)
         {
             <div class="rightArticleImage articleImageShow">
-                <img src="@Model.ImageFileLocation" />
+                <img class="leftRightArticleImage" src="@Model.ImageFileLocation" />
             </div>
         }
 
         @if (Model.ArticleType == 3)
         {
             <div class="topArticleImage articleImageShow">
-                <img src="@Model.ImageFileLocation" />
+                <img class="topBottomArticleImage" src="@Model.ImageFileLocation" />
             </div>
         }
 
@@ -33,7 +33,7 @@
         @if (Model.ArticleType == 4)
         {
             <div class="bottomArticleImage articleImageShow">
-                <img src="@Model.ImageFileLocation" />
+                <img class="topBottomArticleImage" src="@Model.ImageFileLocation" />
             </div>
         }
     </div>

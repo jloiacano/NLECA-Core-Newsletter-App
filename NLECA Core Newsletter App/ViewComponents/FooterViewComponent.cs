@@ -9,7 +9,7 @@ namespace NLECA_Core_Newsletter_App.ViewComponents
         {
             FooterModel footerModel = new FooterModel()
             {
-                BrandName = "nleca footer"
+                BrandName = "loiacanoDesigns"
             };
 
             return View(footerModel);
