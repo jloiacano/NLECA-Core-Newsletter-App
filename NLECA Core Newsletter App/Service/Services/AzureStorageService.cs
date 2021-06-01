@@ -11,17 +11,11 @@ namespace NLECA_Core_Newsletter_App.Service.Services
 
         private readonly ILogger<AzureStorageService> _logger;
 
-        private IConfiguration _configuration;
-        private string DevConncetionString { get; }
-
         public AzureStorageService(
             ILogger<AzureStorageService> logger
-            , IConfiguration configuration
             )
         {
             _logger = logger;
-            _configuration = configuration;
-            DevConncetionString = configuration["DevStorageConnectionString"];
         }
         public CloudBlobContainer GetBlobContainer(string azureConnectionString, string containerName)
         {
@@ -35,7 +29,7 @@ namespace NLECA_Core_Newsletter_App.Service.Services
             }
             catch (System.Exception ex)
             {
-                _logger.LogError("Error in AzureStorageService/GetBlobContainer", ex);
+                _logger.LogError("Error in AzureStorageService/GetBlobContainer" + azureConnectionString, ex);
                 throw;
             }
         }
