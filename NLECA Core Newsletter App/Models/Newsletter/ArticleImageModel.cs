@@ -17,19 +17,17 @@ namespace NLECA_Core_Newsletter_App.Models.Newsletter
         public string SimpleCheckSum { get; private set; }
         public string ImageFileExtension { get; private set; }
         public string ImageName { get; private set; }
-        public string StoredImageName { get; private set; }
         public string ImageLocation { get; private set; }
         public bool IsValidImageFormat { get; private set; }
 
-        public ArticleImageModel(IFormFile imageFile)
+        public ArticleImageModel(Uri storageUri, IFormFile imageFile)
         {
             ImageFile = imageFile;
             FileBytes = ConvertFileToByteArray(imageFile);
             SimpleCheckSum = GetSimpleCheckSumFromFile();
             ImageFileExtension = "." + imageFile.FileName.Split('.')[imageFile.FileName.Split('.').Length - 1];
             ImageName = imageFile.FileName.Remove(imageFile.FileName.IndexOf(ImageFileExtension));
-            StoredImageName = string.Format("{0}{1}", Guid.NewGuid().ToString(), ImageFileExtension);
-            ImageLocation = string.Format("../../Images/ArticleImages/{0}", StoredImageName);
+            ImageLocation = string.Format("{0}/{1}", storageUri, imageFile.FileName);
             IsValidImageFormat = GetImageFormat(FileBytes) != ImageFormat.unknown;
         }
 

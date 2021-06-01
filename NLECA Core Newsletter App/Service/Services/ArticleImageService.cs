@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NLECA_Core_Newsletter_App.Models.Newsletter;
 using NLECA_Core_Newsletter_App.Service.Interfaces;
@@ -9,17 +9,29 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 
 namespace NLECA_Core_Newsletter_App.Service.Services
 {
     public class ArticleImageService : IArticleImageService
     {
+        private IConfiguration _configuration;
+        private string AzureConncetionString { get; }
+        private readonly IAzureStorageService _azureStorageService;
         private readonly ILogger<ArticleImageService> _logger;
         private readonly ISQLHelperService _sql;
         private readonly string _wwwRoot;
 
-        public ArticleImageService(ILogger<ArticleImageService> logger, ISQLHelperService sql, IWebHostEnvironment env)
+        public ArticleImageService(
+            IConfiguration configuration
+            , IAzureStorageService azureStorageService
+            , ILogger<ArticleImageService> logger
+            , ISQLHelperService sql
+            , IWebHostEnvironment env)
         {
+            _configuration = configuration;
+            AzureConncetionString = _configuration["AzureStorageConnectionString"];
+            _azureStorageService = azureStorageService;
             _logger = logger;
             _sql = sql;
             _wwwRoot = env.ContentRootPath;
@@ -113,36 +125,25 @@ namespace NLECA_Core_Newsletter_App.Service.Services
 
         public bool UploadArticleImage(ArticleImageModel image)
         {
-            bool success = false;
-            if (SaveFile(image))
-            {
-                success = EnterImageIntoDatabase(image);
-            }
-            return success;
-        }
+            bool success;
 
-
-        private bool SaveFile(ArticleImageModel image)
-        {
-            bool success = false;
             try
             {
-                string path = Path.Combine(
-                    Directory.GetCurrentDirectory(),
-                    "wwwroot\\Images\\ArticleImages",
-                    image.StoredImageName);
+                var container = _azureStorageService.GetBlobContainer(AzureConncetionString, "article-images");
+                var content = ContentDispositionHeaderValue.Parse(image.ImageFile.ContentDisposition);
+                var fileName = content.FileName.Trim('"');
 
-                using (FileStream fileStream = new FileStream(path, FileMode.Create))
-                {
-                    image.ImageFile.CopyTo(fileStream);
-                    success = true;
-                }
+                // Get a reference to a Block Blob
+                var blockBlob = container.GetBlockBlobReference(fileName);
+                success = blockBlob.UploadFromStreamAsync(image.ImageFile.OpenReadStream()).IsCompletedSuccessfully;
+                EnterImageIntoDatabase(image);
+
             }
             catch (Exception ex)
             {
-                string error = string.Format("There was an error Saving {0} in ArticleImageService/SaveFile", image.ImageName);
-                _logger.LogError(error, ex);
+                throw ex;
             }
+
             return success;
         }
 

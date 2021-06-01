@@ -17,7 +17,11 @@ namespace NLECA_Core_Newsletter_App.Controllers
         private readonly IArticleImageService _imageService;
         private readonly UserManager<ApplicationIdentityUser> _userManager;
 
-        public ArticleImageController(ILogger<ArticleImageController> logger, IArticleService articleService, IArticleImageService imageService, UserManager<ApplicationIdentityUser> userManager)
+        public ArticleImageController(
+            ILogger<ArticleImageController> logger
+            , IArticleService articleService
+            , IArticleImageService imageService
+            , UserManager<ApplicationIdentityUser> userManager)
         {
             _logger = logger;
             _articleService = articleService;

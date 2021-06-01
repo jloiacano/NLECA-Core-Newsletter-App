@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.WindowsAzure.Storage.Blob;
 using NLECA_Core_Newsletter_App.Data;
 using NLECA_Core_Newsletter_App.Models.Newsletter;
 using NLECA_Core_Newsletter_App.Service.Interfaces;
-using NLECA_Core_Newsletter_App.Service.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,14 +15,23 @@ namespace NLECA_Core_Newsletter_App.Controllers
 {
     public class ArticleController : Controller
     {
+        private readonly IConfiguration _configuration;
         private readonly IArticleService _articleService;
         private readonly IArticleImageService _imageService;
+        private readonly IAzureStorageService _azureStorageService;
         private readonly UserManager<ApplicationIdentityUser> _userManager;
 
-        public ArticleController(IArticleService articleService, IArticleImageService imageService, UserManager<ApplicationIdentityUser> userManager)
+        public ArticleController(
+            IConfiguration configuration
+            , IArticleService articleService
+            , IArticleImageService imageService
+            , IAzureStorageService azureStorageService
+            , UserManager<ApplicationIdentityUser> userManager)
         {
+            _configuration = configuration;
             _articleService = articleService;
             _imageService = imageService;
+            _azureStorageService = azureStorageService;
             _userManager = userManager;
         }
 
@@ -55,7 +65,13 @@ namespace NLECA_Core_Newsletter_App.Controllers
         {
             if (imageFile != null)
             {
-                ArticleImageModel articleImage = new ArticleImageModel(imageFile);
+                CloudBlobContainer container = _azureStorageService.GetBlobContainer(_configuration["AzureStorageConnectionString"], "article-images");
+                Uri storageUri = container.StorageUri.PrimaryUri;
+                // USE THIS CODE IF THE STORAGE EMULATOR GETS REMADE AND GIVES YOU A HARD TIME
+                //var permissions = container.GetPermissionsAsync().Result;
+                //permissions.PublicAccess = BlobContainerPublicAccessType.Container;
+                //container.SetPermissionsAsync(permissions);
+                ArticleImageModel articleImage = new ArticleImageModel(storageUri, imageFile);
                 articleImage.UploadedByUserId = _userManager.GetUserId(this.User);
                 articleImage.UploadedByUserName = this.User.Identity.Name;
                 _imageService.UploadArticleImage(articleImage);
