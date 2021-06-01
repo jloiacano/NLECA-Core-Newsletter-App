@@ -25,9 +25,19 @@ namespace NLECA_Core_Newsletter_App.Service.Services
         }
         public CloudBlobContainer GetBlobContainer(string azureConnectionString, string containerName)
         {
-            var storageAccount = CloudStorageAccount.Parse(azureConnectionString);
-            var blobClient = storageAccount.CreateCloudBlobClient();
-            return blobClient.GetContainerReference(containerName);
+            CloudStorageAccount storageAccount;
+            CloudBlobClient blobClient;
+            try
+            {
+                storageAccount = CloudStorageAccount.Parse(azureConnectionString);
+                blobClient = storageAccount.CreateCloudBlobClient();
+                return blobClient.GetContainerReference(containerName);
+            }
+            catch (System.Exception)
+            {
+                _logger.LogError("Error in GetBlobContainer");
+                throw;
+            }
         }
     }
 }
