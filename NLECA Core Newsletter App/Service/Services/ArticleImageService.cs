@@ -141,6 +141,7 @@ namespace NLECA_Core_Newsletter_App.Service.Services
             }
             catch (Exception ex)
             {
+                _logger.LogError("Error in ArticleImageService/UploadArticleImage", ex);
                 throw ex;
             }
 

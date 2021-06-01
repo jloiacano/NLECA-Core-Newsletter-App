@@ -33,9 +33,9 @@ namespace NLECA_Core_Newsletter_App.Service.Services
                 blobClient = storageAccount.CreateCloudBlobClient();
                 return blobClient.GetContainerReference(containerName);
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                _logger.LogError("Error in GetBlobContainer");
+                _logger.LogError("Error in AzureStorageService/GetBlobContainer", ex);
                 throw;
             }
         }
