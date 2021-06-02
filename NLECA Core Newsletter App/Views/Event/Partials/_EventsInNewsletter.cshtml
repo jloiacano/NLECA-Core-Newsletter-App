@@ -5,8 +5,22 @@
 
 @foreach (EventModel eventModel in Model)
 {
-
+<div style="border: 1px solid grey; margin: 2px 0; padding: 2px 8px;">
     <div>
-        <span>@eventModel.EventTitle</span>
+        <div style="display: inline-block; width: 49%;">
+            <span>@eventModel.EventTitle</span>
+        </div>
+        <div style="display: inline-block; width: 49%;">
+            <span>on: @eventModel.EventDate.ToShortDateString() from: @eventModel.EventDate.ToShortTimeString() to @eventModel.EventDateEnd.ToShortTimeString()</span>
+        </div>
     </div>
+    <div>
+        <div style="display: inline-block; width: 49%;">
+            <span>hosted by: @eventModel.EventHost</span>
+        </div>
+        <div style="display: inline-block; width: 49%;">
+            <span>at: @eventModel.EventLocation</span>
+        </div>
+    </div>
+</div>
 }

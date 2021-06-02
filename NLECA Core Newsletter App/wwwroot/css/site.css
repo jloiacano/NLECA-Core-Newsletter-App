@@ -176,7 +176,7 @@ body {
 
     .articleContent .topArticleImage {
         display: none;
-        height: 200px;
+        max-height: 200px;
         width: 100%;
         text-align: center;
         margin-bottom: 24px;
@@ -207,7 +207,7 @@ body {
 
     .articleContent .bottomArticleImage {
         display: none;
-        height: 200px;
+        max-height: 200px;
         width: 100%;
         text-align: center;
         margin-top: 24px;

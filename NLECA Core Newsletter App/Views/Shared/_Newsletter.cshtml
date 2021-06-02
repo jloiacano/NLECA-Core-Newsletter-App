@@ -62,6 +62,18 @@
                             <a href="@string.Format("#article{0}", article.ArticleId)">@article.ArticleTableOfContentsText</a>
                         </div>
                     }
+                    @if (Model.IsEdit == false)
+                    {
+                        @if (Model.Events.Count() > 0)
+                        {
+                            <div>
+                                <a href="#upcomingEvents">Upcoming Events</a>
+                            </div>
+                        }
+                        <div>
+                            <a href="#boardMemberContacts">Contacts</a>
+                        </div>
+                    }
                 </div>
             </div>
             @if (Model.IsEdit)
@@ -92,7 +104,7 @@
         </div>
     }
 
-    // TODO - J - Add anchor for events here
+    <a name="upcomingEvents"></a>
 
     @if (Model.Events.Count() == 0)
     {
@@ -128,6 +140,12 @@
             <partial name="/Views/Event/Partials/_EventsInNewsletter.cshtml" model="Model.Events" />
         </div>
     }
+
+    <a name="boardMemberContacts"></a>
+    <div>
+        <h2>Contacts:</h2>
+        <span>THIS IS WHERE CONTACTS WILL GO</span>
+    </div>
 }
 else
 {
