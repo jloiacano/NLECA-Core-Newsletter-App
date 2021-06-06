@@ -158,6 +158,7 @@ namespace NLECA_Core_Newsletter_App
                 services.AddScoped<IEventService, EventService>();
                 services.AddScoped<IAlertService, AlertService>();
                 services.AddScoped<IAzureStorageService, AzureStorageService>();
+                services.AddScoped<IUserAdminService, UserAdminService>();
             }
             catch (Exception ex)
             {
